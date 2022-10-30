@@ -24,5 +24,3 @@ public class TeleportOnJoinEvents implements Listener {
         }
     }
 }
-
-
