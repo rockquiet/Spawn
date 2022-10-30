@@ -1,0 +1,20 @@
+name: Spawn
+version: '${project.version}'
+main: me.rockquiet.spawn.Spawn
+api-version: 1.13
+authors: [ rockquiet ]
+description: highly configurable spawn plugin
+commands:
+  spawn:
+    description: teleport to spawn
+    permission: spawn.use
+permissions:
+  spawn.use:
+    description: teleport to spawn
+    default: true
+  spawn.set:
+    description: set spawn at current location
+    default: op
+  spawn.reload:
+    description: reload config
+    default: op

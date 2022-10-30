@@ -1,0 +1,47 @@
+# ---------------------------------------------------- #
+#                  Spawn by rockquiet                  #
+# ---------------------------------------------------- #
+#
+# command        -> permission
+# ------------------------------------------------------
+# /spawn         -> spawn.use     (default for everyone)
+# /spawn set     -> spawn.set     (default for op)
+# /spawn reload  -> spawn.reload  (default for op)
+#
+options:
+  # toggle if the player should receive a message after teleporting
+  message-on-teleport: false
+  #
+  # toggle if the player should be teleported to spawn on join
+  teleport-on-join: false
+  # toggle if the player should be teleported to spawn only on first join
+  teleport-on-first-join: false
+  #
+  # VOID TELEPORT
+  # toggle if the player should be teleported to spawn if falling in void
+  teleport-out-of-void: false
+  # the height at which the player gets teleported out of the void to spawn
+  # Minecraft playable Altitude: -64 -> 320 [integer]
+  void-check-height: -64
+#
+# basic formatting with '&' codes is supported
+messages:
+  # successful teleport to spawn
+  teleport: '&aTeleported to Spawn'
+  #
+  # spawn set at current position
+  spawn-set: '&aSpawn set successfully'
+  #
+  # config reloaded
+  config-reload: '&aConfig reloaded successfully'
+  #
+  # no spawn set in config - set one with /spawn set
+  no-spawn: '&cNo Spawn is set!'
+  # no permissions for command
+  no-permission: '&cNo permissions!'
+  # command cannot be used in console
+  no-player: '&cCommand can only be used by players!'
+#
+# Location data of Spawn
+# only edit if you know what you are doing
+spawn: {}
