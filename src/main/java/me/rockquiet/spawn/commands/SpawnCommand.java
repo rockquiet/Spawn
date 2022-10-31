@@ -7,8 +7,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.Objects;
-
 public class SpawnCommand implements CommandExecutor{
 
     @Override
@@ -18,7 +16,8 @@ public class SpawnCommand implements CommandExecutor{
             // teleport to spawn - /spawn
             if (args.length == 0) {
                 if (player.isOp() || player.hasPermission("spawn.use")) {
-                    player.teleport(Spawn.getPlugin().getSpawn());
+                    //player.teleport(Spawn.getPlugin().getSpawn());
+                    Spawn.getPlugin().teleportPlayer(player);
 
                     Spawn.getPlugin().teleportMessage(player);
                 }
@@ -33,22 +32,22 @@ public class SpawnCommand implements CommandExecutor{
                     Spawn.getPlugin().getConfig().set("spawn.pitch", player.getLocation().getPitch());
                     Spawn.getPlugin().saveConfig();
 
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(Spawn.getPlugin().getConfig().getString("messages.spawn-set"))));
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', Spawn.getPlugin().getConfig().getString("messages.spawn-set")));
                 } else {
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(Spawn.getPlugin().getConfig().getString("messages.no-permission"))));
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', Spawn.getPlugin().getConfig().getString("messages.no-permission")));
                 }
             // reload config - /spawn reload
             } else if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
                 if (player.isOp() || player.hasPermission("spawn.reload")) {
                     Spawn.getPlugin().reloadConfig();
 
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(Spawn.getPlugin().getConfig().getString("messages.config-reload"))));
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', Spawn.getPlugin().getConfig().getString("messages.config-reload")));
                 } else {
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(Spawn.getPlugin().getConfig().getString("messages.no-permission"))));
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', Spawn.getPlugin().getConfig().getString("messages.no-permission")));
                 }
             }
         } else {
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(Spawn.getPlugin().getConfig().getString("messages.no-player"))));
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', Spawn.getPlugin().getConfig().getString("messages.no-player")));
         }
         return false;
     }

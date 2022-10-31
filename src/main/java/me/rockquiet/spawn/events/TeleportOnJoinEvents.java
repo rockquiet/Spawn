@@ -13,12 +13,14 @@ public class TeleportOnJoinEvents implements Listener {
         Player player = event.getPlayer();
         if (player.hasPlayedBefore()) {
             if (Spawn.getPlugin().getConfig().getBoolean("options.teleport-on-join")) {
-                player.teleport(Spawn.getPlugin().getSpawn());
+                //player.teleport(Spawn.getPlugin().getSpawn());
+                Spawn.getPlugin().teleportPlayer(player);
 
                 Spawn.getPlugin().teleportMessage(player);
             }
         } else if (Spawn.getPlugin().getConfig().getBoolean("options.teleport-on-first-join")) {
-            player.teleport(Spawn.getPlugin().getSpawn());
+            //player.teleport(Spawn.getPlugin().getSpawn());
+            Spawn.getPlugin().teleportPlayer(player);
 
             Spawn.getPlugin().teleportMessage(player);
         }
