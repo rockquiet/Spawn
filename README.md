@@ -24,3 +24,7 @@ Yet another Spawn plugin with many configurable options.
 ### config file
 
 -> up-to-date [config.yml](https://github.com/rockquiet/Spawn/blob/master/src/main/resources/config.yml) in the repo
+
+## Download
+
+Plugin jars are available in the [Releases](https://github.com/rockquiet/Spawn/releases) Section.
