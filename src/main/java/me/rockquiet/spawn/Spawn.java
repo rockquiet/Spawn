@@ -3,6 +3,7 @@ package me.rockquiet.spawn;
 import me.rockquiet.spawn.commands.SpawnCommand;
 import me.rockquiet.spawn.commands.TabComplete;
 import me.rockquiet.spawn.events.TeleportOnJoinEvents;
+import me.rockquiet.spawn.events.TeleportOnRespawnEvent;
 import me.rockquiet.spawn.events.TeleportOutOfVoidEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -29,6 +30,7 @@ public final class Spawn extends JavaPlugin {
 
         Bukkit.getPluginManager().registerEvents(new TeleportOnJoinEvents(), this);
         Bukkit.getPluginManager().registerEvents(new TeleportOutOfVoidEvent(), this);
+        Bukkit.getPluginManager().registerEvents(new TeleportOnRespawnEvent(), this);
     }
 
     public static Spawn getPlugin() {

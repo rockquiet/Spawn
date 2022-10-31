@@ -23,6 +23,12 @@ options:
   # the height at which the player gets teleported out of the void to spawn
   # Minecraft playable Altitude: -64 -> 320 [integer]
   void-check-height: -64
+  #
+  # DEATH TELEPORT
+  # toggle if the player should be teleported to spawn if they die
+  teleport-on-respawn: false
+  # toggle if the bed spawn-point should be ignored
+  ignore-bed-spawn: false
 #
 # basic formatting with '&' codes is supported
 messages:
