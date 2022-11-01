@@ -27,4 +27,4 @@ Yet another Spawn plugin with many configurable options.
 
 ## Download
 
-Plugin jars are available in the [Releases](https://github.com/rockquiet/Spawn/releases) Section.
+Plugin jars are available in the [Releases](https://github.com/rockquiet/Spawn/releases) Section and on [Modrinth](https://modrinth.com/plugin/spawn).
