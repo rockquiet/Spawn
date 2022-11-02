@@ -48,7 +48,12 @@ public final class Spawn extends JavaPlugin {
 
     public void teleportPlayer(Player player) {
         if (getConfig().getString("spawn.world") != null && getConfig().getString("spawn.x") != null && getConfig().getString("spawn.y") != null && getConfig().getString("spawn.z") != null && getConfig().getString("spawn.yaw") != null && getConfig().getString("spawn.pitch") != null) {
-            player.teleport(getSpawn());
+            if (!getConfig().getBoolean("options.fall-damage")) {
+                player.setFallDistance(0F);
+                player.teleport(getSpawn());
+            } else {
+                player.teleport(getSpawn());
+            }
         } else {
             sendMessage(player, "messages.no-spawn");
         }

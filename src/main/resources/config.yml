@@ -29,6 +29,9 @@ options:
   teleport-on-respawn: false
   # toggle if the bed spawn-point should be ignored
   ignore-bed-spawn: false
+  #
+  # toggle if the player receives fall damage on teleport
+  fall-damage: false
 #
 # basic formatting with '&' codes is supported
 messages:
