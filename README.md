@@ -20,19 +20,9 @@ Yet another Spawn plugin with many configurable options.
 - Fall damage on teleport can be disabled
 - All messages can be edited and disabled
 
-## Configuration
+## Documentation
 
-### Commands
-
-| command       | permission          | description                   |
-|---------------|---------------------|-------------------------------|
-| /spawn        | spawn.use (default) | Teleport to spawn             |
-| /spawn set    | spawn.set (op)      | Set spawn at current location |
-| /spawn reload | spawn.reload (op)   | Reload config                 |
-
-### config file
-
--> up-to-date [config.yml](https://github.com/rockquiet/Spawn/blob/master/src/main/resources/config.yml) in the repo
+All commands, permissions and configuration options are available in the [Github Wiki](https://github.com/rockquiet/Spawn/wiki).
 
 ## Download
 
