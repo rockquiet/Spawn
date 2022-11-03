@@ -17,8 +17,8 @@ Yet another Spawn plugin with many configurable options.
 - Teleport to Spawn on join / only on first join
 - Teleport to Spawn on death (bed spawn-point can be ignored)
 - Teleport to Spawn if falling in void (void height is configurable)
-- Teleport message can be disabled
-- All messages can be edited
+- Fall damage on teleport can be disabled
+- All messages can be edited and disabled
 
 ## Configuration
 
