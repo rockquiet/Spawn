@@ -9,9 +9,6 @@
 # /spawn reload  -> spawn.reload  (default for op)
 #
 options:
-  # toggle if the player should receive a message after teleporting
-  message-on-teleport: false
-  #
   # toggle if the player should be teleported to spawn on join
   teleport-on-join: false
   # toggle if the player should be teleported to spawn only on first join
@@ -34,6 +31,7 @@ options:
   fall-damage: false
 #
 # basic formatting with '&' codes is supported
+# to disable a message set it to: ''
 messages:
   # successful teleport to spawn
   teleport: '&aTeleported to Spawn'

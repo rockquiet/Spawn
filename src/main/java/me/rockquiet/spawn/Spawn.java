@@ -50,22 +50,19 @@ public final class Spawn extends JavaPlugin {
         if (getConfig().getString("spawn.world") != null && getConfig().getString("spawn.x") != null && getConfig().getString("spawn.y") != null && getConfig().getString("spawn.z") != null && getConfig().getString("spawn.yaw") != null && getConfig().getString("spawn.pitch") != null) {
             if (!getConfig().getBoolean("options.fall-damage")) {
                 player.setFallDistance(0F);
-                player.teleport(getSpawn());
-            } else {
-                player.teleport(getSpawn());
             }
+            player.teleport(getSpawn());
+            Spawn.getPlugin().sendMessage(player, "messages.teleport");
         } else {
             sendMessage(player, "messages.no-spawn");
         }
     }
 
-    public void teleportMessage(Player player) {
-        if (getConfig().getBoolean("options.message-on-teleport")) {
-            sendMessage(player, "messages.teleport");
-        }
-    }
-
     public void sendMessage(Player player, String message) {
-        player.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString(message)));
+        if (getConfig().getString(message).isEmpty() || getConfig().getString(message) == null) {
+            // do not send a message to the player
+        } else {
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString(message)));
+        }
     }
 }

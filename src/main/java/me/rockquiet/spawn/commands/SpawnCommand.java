@@ -17,8 +17,6 @@ public class SpawnCommand implements CommandExecutor {
             if (args.length == 0) {
                 if (player.isOp() || player.hasPermission("spawn.use")) {
                     Spawn.getPlugin().teleportPlayer(player);
-
-                    Spawn.getPlugin().teleportMessage(player);
                 }
             // save current position as spawn in config - /spawn set
             } else if (args.length == 1 && args[0].equalsIgnoreCase("set")) {
