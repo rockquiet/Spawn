@@ -52,7 +52,7 @@ public final class Spawn extends JavaPlugin {
 
             spawnEffects(player);
 
-            Spawn.getPlugin().sendMessage(player, "messages.teleport");
+            sendMessage(player, "messages.teleport");
         } else {
             sendMessage(player, "messages.no-spawn");
         }

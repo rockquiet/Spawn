@@ -1,14 +1,11 @@
 # ---------------------------------------------------- #
 #                  Spawn by rockquiet                  #
 # ---------------------------------------------------- #
-#
-# command        -> permission
-# ------------------------------------------------------
-# /spawn         -> spawn.use     (default for everyone)
-# /spawn set     -> spawn.set     (default for op)
-# /spawn reload  -> spawn.reload  (default for op)
-#
+#    Wiki - https://github.com/rockquiet/Spawn/wiki    #
+# ---------------------------------------------------- #
 options:
+  # toggle if the player receives fall damage on teleport
+  fall-damage: false
   # toggle if the player should be teleported to spawn on join
   teleport-on-join: false
   # toggle if the player should be teleported to spawn only on first join
@@ -45,9 +42,6 @@ options:
   sound-volume: 1.0
   # the pitch of the sound
   sound-pitch: 1.0
-  #
-  # toggle if the player receives fall damage on teleport
-  fall-damage: false
 #
 # basic formatting with '&' codes is supported
 # to disable a message set it to: ''
