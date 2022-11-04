@@ -17,6 +17,8 @@ public class TeleportOnRespawnEvent implements Listener {
                 if (Spawn.getPlugin().getConfig().getString("spawn.world") != null && Spawn.getPlugin().getConfig().getString("spawn.x") != null && Spawn.getPlugin().getConfig().getString("spawn.y") != null && Spawn.getPlugin().getConfig().getString("spawn.z") != null && Spawn.getPlugin().getConfig().getString("spawn.yaw") != null && Spawn.getPlugin().getConfig().getString("spawn.pitch") != null) {
                     event.setRespawnLocation(Spawn.getPlugin().getSpawn());
 
+                    Spawn.getPlugin().spawnEffects(player);
+
                     Spawn.getPlugin().sendMessage(player, "messages.teleport");
                 } else {
                     Spawn.getPlugin().sendMessage(player, "messages.no-spawn");
@@ -24,6 +26,8 @@ public class TeleportOnRespawnEvent implements Listener {
             } else if (player.getBedSpawnLocation() == null) {
                 if (Spawn.getPlugin().getConfig().getString("spawn.world") != null && Spawn.getPlugin().getConfig().getString("spawn.x") != null && Spawn.getPlugin().getConfig().getString("spawn.y") != null && Spawn.getPlugin().getConfig().getString("spawn.z") != null && Spawn.getPlugin().getConfig().getString("spawn.yaw") != null && Spawn.getPlugin().getConfig().getString("spawn.pitch") != null) {
                     event.setRespawnLocation(Spawn.getPlugin().getSpawn());
+
+                    Spawn.getPlugin().spawnEffects(player);
 
                     Spawn.getPlugin().sendMessage(player, "messages.teleport");
                 } else {

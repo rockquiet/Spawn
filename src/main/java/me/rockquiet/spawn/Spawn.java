@@ -5,10 +5,7 @@ import me.rockquiet.spawn.commands.TabComplete;
 import me.rockquiet.spawn.events.TeleportOnJoinEvents;
 import me.rockquiet.spawn.events.TeleportOnRespawnEvent;
 import me.rockquiet.spawn.events.TeleportOutOfVoidEvent;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -52,10 +49,27 @@ public final class Spawn extends JavaPlugin {
                 player.setFallDistance(0F);
             }
             player.teleport(getSpawn());
+
+            spawnEffects(player);
+
             Spawn.getPlugin().sendMessage(player, "messages.teleport");
         } else {
             sendMessage(player, "messages.no-spawn");
         }
+    }
+
+    public void spawnEffects(Player player) {
+        // Particles
+        if (!Bukkit.getVersion().contains("1.8")) {
+            player.spawnParticle(Particle.valueOf(getConfig().getString("options.particle")), getSpawn(), getConfig().getInt("options.particle-amount"));
+        } else {
+            // workaround for 1.8
+            for (int p = 0; p < getConfig().getInt("options.particle-amount"); p++) {
+                Bukkit.getWorld(getSpawn().getWorld().getName()).playEffect(getSpawn(), Effect.valueOf(getConfig().getString("options.particle")), 0);
+            }
+        }
+        // Sounds
+        player.playSound(getSpawn(), Sound.valueOf(getConfig().getString("options.sound")), (float) getConfig().getDouble("options.sound-volume"), (float) getConfig().getDouble("options.sound-pitch"));
     }
 
     public void sendMessage(Player player, String message) {
