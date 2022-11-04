@@ -27,6 +27,25 @@ options:
   # toggle if the bed spawn-point should be ignored
   ignore-bed-spawn: false
   #
+  # PARTICLES
+  # spawns particles on teleport
+  # all particles: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Particle.html
+  # use these for 1.8: https://hub.spigotmc.org/nexus/service/local/repositories/snapshots/archive/org/spigotmc/spigot-api/1.8.8-R0.1-SNAPSHOT/spigot-api-1.8.8-R0.1-20160221.082514-43-javadoc.jar/!/org/bukkit/Effect.html
+  particle: PORTAL
+  # the number of particles which get used
+  # to disable particles set it to: -1
+  particle-amount: 40
+  #
+  # SOUNDS
+  # plays a sound on teleport
+  # sounds for Minecraft 1.8 - 1.19: https://www.andre601.ch/Spigot-Sounds/sounds/
+  sound: ENTITY_ENDERMAN_TELEPORT
+  # the volume of the sound
+  # to disable sounds set it to: 0.0
+  sound-volume: 1.0
+  # the pitch of the sound
+  sound-pitch: 1.0
+  #
   # toggle if the player receives fall damage on teleport
   fall-damage: false
 #
