@@ -48,6 +48,10 @@ options:
 messages:
   # successful teleport to spawn
   teleport: '&aTeleported to Spawn'
+  # successfully teleported another player to spawn - /spawn %player%
+  teleport-other: '&aSuccessfully teleported player to Spawn'
+  # if the player to be teleported is offline - /spawn %player%
+  player-not-found: '&cPlayer not found!'
   #
   # spawn set at current position
   spawn-set: '&aSpawn set successfully'

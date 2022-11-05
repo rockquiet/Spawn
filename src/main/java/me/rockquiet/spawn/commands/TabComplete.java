@@ -1,8 +1,10 @@
 package me.rockquiet.spawn.commands;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
 
 import java.util.ArrayList;
@@ -18,8 +20,18 @@ public class TabComplete implements TabCompleter {
 
         if (args.length == 1 && cmd.getLabel().equalsIgnoreCase("spawn")) {
             results.clear();
-            results.add("set");
-            results.add("reload");
+            if (sender.hasPermission("spawn.others")) {
+                for (Player p: Bukkit.getOnlinePlayers()) {
+                    results.add(p.getName());
+                    results.remove(sender.getName());
+                }
+            }
+            if (sender.hasPermission("spawn.set")) {
+                results.add("set");
+            }
+            if (sender.hasPermission("spawn.reload")) {
+                results.add("reload");
+            }
 
         } else if (args.length >= 2) {
             results.clear();

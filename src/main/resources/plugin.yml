@@ -12,6 +12,9 @@ permissions:
   spawn.use:
     description: teleport to spawn
     default: true
+  spawn.others:
+    description: teleport another player to spawn
+    default: op
   spawn.set:
     description: set spawn at current location
     default: op
