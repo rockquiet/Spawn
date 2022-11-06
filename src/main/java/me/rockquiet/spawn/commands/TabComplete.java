@@ -19,7 +19,6 @@ public class TabComplete implements TabCompleter {
         final List<String> completions = new ArrayList<>();
 
         if (args.length == 1 && cmd.getLabel().equalsIgnoreCase("spawn")) {
-            results.clear();
             if (sender.hasPermission("spawn.others")) {
                 for (Player p: Bukkit.getOnlinePlayers()) {
                     results.add(p.getName());
@@ -32,17 +31,11 @@ public class TabComplete implements TabCompleter {
             if (sender.hasPermission("spawn.reload")) {
                 results.add("reload");
             }
-
-        } else if (args.length >= 2) {
-            results.clear();
         }
-
         StringUtil.copyPartialMatches(args[0], results, completions);
         Collections.sort(completions);
         results.clear();
-        for (String s: completions) {
-            results.add(s);
-        }
+        results.addAll(completions);
         return results;
     }
 }
