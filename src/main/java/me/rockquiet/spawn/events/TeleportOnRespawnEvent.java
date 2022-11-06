@@ -19,9 +19,9 @@ public class TeleportOnRespawnEvent implements Listener {
 
                     Spawn.getPlugin().spawnEffects(player);
 
-                    Spawn.getPlugin().sendMessage(player, "messages.teleport");
+                    Spawn.getPlugin().sendMessageToPlayer(player, "messages.teleport");
                 } else {
-                    Spawn.getPlugin().sendMessage(player, "messages.no-spawn");
+                    Spawn.getPlugin().sendMessageToPlayer(player, "messages.no-spawn");
                 }
             } else if (player.getBedSpawnLocation() == null) {
                 if (Spawn.getPlugin().getConfig().getString("spawn.world") != null && Spawn.getPlugin().getConfig().getString("spawn.x") != null && Spawn.getPlugin().getConfig().getString("spawn.y") != null && Spawn.getPlugin().getConfig().getString("spawn.z") != null && Spawn.getPlugin().getConfig().getString("spawn.yaw") != null && Spawn.getPlugin().getConfig().getString("spawn.pitch") != null) {
@@ -29,9 +29,9 @@ public class TeleportOnRespawnEvent implements Listener {
 
                     Spawn.getPlugin().spawnEffects(player);
 
-                    Spawn.getPlugin().sendMessage(player, "messages.teleport");
+                    Spawn.getPlugin().sendMessageToPlayer(player, "messages.teleport");
                 } else {
-                    Spawn.getPlugin().sendMessage(player, "messages.no-spawn");
+                    Spawn.getPlugin().sendMessageToPlayer(player, "messages.no-spawn");
                 }
             }
         }

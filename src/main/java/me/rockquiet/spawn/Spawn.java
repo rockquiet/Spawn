@@ -6,6 +6,7 @@ import me.rockquiet.spawn.events.TeleportOnJoinEvents;
 import me.rockquiet.spawn.events.TeleportOnRespawnEvent;
 import me.rockquiet.spawn.events.TeleportOutOfVoidEvent;
 import org.bukkit.*;
+import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -52,9 +53,9 @@ public final class Spawn extends JavaPlugin {
 
             spawnEffects(player);
 
-            sendMessage(player, "messages.teleport");
+            sendMessageToPlayer(player, "messages.teleport");
         } else {
-            sendMessage(player, "messages.no-spawn");
+            sendMessageToPlayer(player, "messages.no-spawn");
         }
     }
 
@@ -72,11 +73,18 @@ public final class Spawn extends JavaPlugin {
         player.playSound(getSpawn(), Sound.valueOf(getConfig().getString("options.sound")), (float) getConfig().getDouble("options.sound-volume"), (float) getConfig().getDouble("options.sound-pitch"));
     }
 
-    public void sendMessage(Player player, String message) {
+    public void sendMessageToPlayer(Player player, String message) {
         if (getConfig().getString(message).isEmpty() || getConfig().getString(message) == null) {
             // do not send a message to the player
         } else {
             player.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString(message)));
+        }
+    }
+    public void sendMessageToSender(CommandSender sender, String message) {
+        if (getConfig().getString(message).isEmpty() || getConfig().getString(message) == null) {
+            // do not send a message to the sender
+        } else {
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString(message)));
         }
     }
 }

@@ -2,7 +2,6 @@ package me.rockquiet.spawn.commands;
 
 import me.rockquiet.spawn.Spawn;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -33,18 +32,18 @@ public class SpawnCommand implements CommandExecutor {
                         Spawn.getPlugin().getConfig().set("spawn.pitch", player.getLocation().getPitch());
                         Spawn.getPlugin().saveConfig();
 
-                        Spawn.getPlugin().sendMessage(player, "messages.spawn-set");
+                        Spawn.getPlugin().sendMessageToPlayer(player, "messages.spawn-set");
                     } else {
-                        Spawn.getPlugin().sendMessage(player, "messages.no-permission");
+                        Spawn.getPlugin().sendMessageToPlayer(player, "messages.no-permission");
                     }
                 // reload config - /spawn reload
                 } else if (args[0].equalsIgnoreCase("reload")) {
                     if (player.isOp() || player.hasPermission("spawn.reload")) {
                         Spawn.getPlugin().reloadConfig();
 
-                        Spawn.getPlugin().sendMessage(player, "messages.config-reload");
+                        Spawn.getPlugin().sendMessageToPlayer(player, "messages.config-reload");
                     } else {
-                        Spawn.getPlugin().sendMessage(player, "messages.no-permission");
+                        Spawn.getPlugin().sendMessageToPlayer(player, "messages.no-permission");
                     }
                 // teleport another player to spawn - /spawn %player%
                 } else if (target != null) {
@@ -52,17 +51,17 @@ public class SpawnCommand implements CommandExecutor {
                         if (target.isOnline()) {
                             Spawn.getPlugin().teleportPlayer(target);
 
-                            Spawn.getPlugin().sendMessage(player, "messages.teleport-other");
+                            Spawn.getPlugin().sendMessageToPlayer(player, "messages.teleport-other");
                         }
                     } else {
-                        Spawn.getPlugin().sendMessage(player, "messages.no-permission");
+                        Spawn.getPlugin().sendMessageToPlayer(player, "messages.no-permission");
                     }
                 } else {
-                    Spawn.getPlugin().sendMessage(player, "messages.player-not-found");
+                    Spawn.getPlugin().sendMessageToPlayer(player, "messages.player-not-found");
                 }
             }
         } else {
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', Spawn.getPlugin().getConfig().getString("messages.no-player")));
+            Spawn.getPlugin().sendMessageToSender(sender, "messages.no-player");
         }
         return false;
     }
