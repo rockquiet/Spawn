@@ -80,6 +80,17 @@ public final class Spawn extends JavaPlugin {
             player.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString(message)));
         }
     }
+    public void sendPlaceholderMessageToPlayer(Player player, String message, String placeholder, String replacePlaceholder) {
+        if (getConfig().getString(message).isEmpty() || getConfig().getString(message) == null) {
+            // do not send a message to the player
+        } else if (getConfig().getString(message).contains(placeholder)){
+            String convertedMessage = getConfig().getString(message).replace(placeholder, replacePlaceholder);
+
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', convertedMessage));
+        } else {
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString(message)));
+        }
+    }
     public void sendMessageToSender(CommandSender sender, String message) {
         if (getConfig().getString(message).isEmpty() || getConfig().getString(message) == null) {
             // do not send a message to the sender

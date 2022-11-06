@@ -51,13 +51,13 @@ public class SpawnCommand implements CommandExecutor {
                         if (target.isOnline()) {
                             Spawn.getPlugin().teleportPlayer(target);
 
-                            Spawn.getPlugin().sendMessageToPlayer(player, "messages.teleport-other");
+                            Spawn.getPlugin().sendPlaceholderMessageToPlayer(player, "messages.teleport-other", "%player%", target.getName());
                         }
                     } else {
                         Spawn.getPlugin().sendMessageToPlayer(player, "messages.no-permission");
                     }
                 } else {
-                    Spawn.getPlugin().sendMessageToPlayer(player, "messages.player-not-found");
+                    Spawn.getPlugin().sendPlaceholderMessageToPlayer(player, "messages.player-not-found", "%player%", args[0]);
                 }
             }
         } else {
