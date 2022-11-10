@@ -18,7 +18,9 @@ public final class Spawn extends JavaPlugin {
     @Override
     public void onEnable() {
         plugin = this;
-        saveDefaultConfig();
+
+        getConfig().options().copyDefaults(true);
+        saveConfig();
 
         TabCompleter tc = new TabComplete();
         getCommand("spawn").setExecutor(new SpawnCommand());
