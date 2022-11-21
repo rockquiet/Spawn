@@ -11,6 +11,18 @@ options:
   # toggle if the player should be teleported to spawn only on first join
   teleport-on-first-join: false
   #
+  # TELEPORT COOLDOWN
+  # how long in SECONDS the player has to wait before teleporting to spawn again
+  # to disable cooldown set it to: 0
+  teleport-cooldown: 10
+  #
+  # TELEPORT DELAY
+  # the delay in SECONDS until the player gets teleported to spawn
+  # to disable cooldown set it to: 0
+  teleport-delay: 3
+  # toggle if the teleport should be canceled if the player moves
+  cancel-on-move: true
+  #
   # VOID TELEPORT
   # toggle if the player should be teleported to spawn if falling in void
   teleport-out-of-void: false
@@ -52,6 +64,14 @@ messages:
   teleport-other: '&aSuccessfully teleported &2%player% &ato Spawn'
   # if the player to be teleported is offline - /spawn %player%
   player-not-found: '&cPlayer &4%player% &cnot found!'
+  #
+  # if the player still has an active teleport cooldown
+  cooldown-left: '&cPlease wait &4%cooldown% &csecond(s) before teleporting again.'
+  #
+  # if the player still has an active teleport cooldown
+  delay-left: '&6You will be teleported in &e%delay% &6second(s).'
+  # delayed teleport failed because the player moved
+  teleport-canceled: '&cTeleport canceled because you moved!'
   #
   # spawn set at current position
   spawn-set: '&aSpawn set successfully'

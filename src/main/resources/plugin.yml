@@ -12,6 +12,15 @@ permissions:
   spawn.use:
     description: teleport to spawn
     default: true
+  spawn.bypass.cooldown:
+    description: bypass the teleport cooldown
+    default: op
+  spawn.bypass.delay:
+    description: bypass the teleport delay
+    default: op
+  spawn.bypass.cancel-on-move:
+    description: bypass the teleport cancel on move
+    default: op
   spawn.others:
     description: teleport another player to spawn
     default: op

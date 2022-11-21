@@ -1,5 +1,6 @@
 package me.rockquiet.spawn;
 
+import me.rockquiet.spawn.commands.CommandDelay;
 import me.rockquiet.spawn.commands.SpawnCommand;
 import me.rockquiet.spawn.commands.TabComplete;
 import me.rockquiet.spawn.events.TeleportOnJoinEvents;
@@ -29,6 +30,7 @@ public final class Spawn extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new TeleportOnJoinEvents(), this);
         Bukkit.getPluginManager().registerEvents(new TeleportOutOfVoidEvent(), this);
         Bukkit.getPluginManager().registerEvents(new TeleportOnRespawnEvent(), this);
+        Bukkit.getPluginManager().registerEvents(new CommandDelay(), this);
     }
 
     public static Spawn getPlugin() {

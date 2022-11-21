@@ -7,17 +7,38 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+
 public class SpawnCommand implements CommandExecutor {
+
+    private final CommandCooldown commandCooldown = new CommandCooldown();
+    private final CommandDelay commandDelay = new CommandDelay();
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
+            UUID playerUUID = player.getUniqueId();
 
             if (args.length == 0) {
                 // teleport to spawn - /spawn
                 if (player.isOp() || player.hasPermission("spawn.use")) {
-                    Spawn.getPlugin().teleportPlayer(player);
+                    if (player.isOp() || player.hasPermission("spawn.bypass.cooldown")) {
+                        if (player.isOp() || player.hasPermission("spawn.bypass.delay")) {
+                            Spawn.getPlugin().teleportPlayer(player);
+                        } else {
+                            commandDelay.runDelay(player);
+                        }
+                    } else {
+                        if (!commandCooldown.hasCooldown(playerUUID) || commandCooldown.isCooldownDone(playerUUID)) {
+                            commandCooldown.setCooldown(playerUUID, System.currentTimeMillis());
+
+                            commandDelay.runDelay(player);
+                        } else {
+                            Spawn.getPlugin().sendPlaceholderMessageToPlayer(player, "messages.cooldown-left", "%cooldown%", String.valueOf(commandCooldown.cooldownTime() - TimeUnit.MILLISECONDS.toSeconds(commandCooldown.getCooldown(playerUUID))));
+                        }
+                    }
                 }
             } else if (args.length == 1) {
                 Player target = Bukkit.getServer().getPlayerExact(args[0]);
