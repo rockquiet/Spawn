@@ -12,6 +12,9 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public final class Spawn extends JavaPlugin {
 
     private static Spawn plugin;
@@ -20,8 +23,7 @@ public final class Spawn extends JavaPlugin {
     public void onEnable() {
         plugin = this;
 
-        getConfig().options().copyDefaults(true);
-        saveConfig();
+        loadConfig();
 
         TabCompleter tc = new TabComplete();
         getCommand("spawn").setExecutor(new SpawnCommand());
@@ -35,6 +37,22 @@ public final class Spawn extends JavaPlugin {
 
     public static Spawn getPlugin() {
         return plugin;
+    }
+
+    public void loadConfig() {
+        getConfig().options().copyDefaults(true);
+        if (getConfig().options().getHeader().isEmpty()) {
+            final List<String> header = new ArrayList<>();
+
+            header.add(0, "---------------------------------------------------- #");
+            header.add(1, "                 Spawn by rockquiet                  #");
+            header.add(2, "---------------------------------------------------- #");
+            header.add(3, "   Wiki - https://github.com/rockquiet/Spawn/wiki    #");
+            header.add(4, "---------------------------------------------------- #");
+
+            getConfig().options().setHeader(header);
+        }
+        saveConfig();
     }
 
     public Location getSpawn() {
