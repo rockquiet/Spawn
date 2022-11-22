@@ -66,8 +66,11 @@ public final class Spawn extends JavaPlugin {
         return new Location(world, x, y, z, yaw, pitch);
     }
 
+    public boolean checkSpawnLocation() {
+        return (getConfig().getString("spawn.world") != null && getConfig().getString("spawn.x") != null && getConfig().getString("spawn.y") != null && getConfig().getString("spawn.z") != null && getConfig().getString("spawn.yaw") != null && getConfig().getString("spawn.pitch") != null);
+    }
     public void teleportPlayer(Player player) {
-        if (getConfig().getString("spawn.world") != null && getConfig().getString("spawn.x") != null && getConfig().getString("spawn.y") != null && getConfig().getString("spawn.z") != null && getConfig().getString("spawn.yaw") != null && getConfig().getString("spawn.pitch") != null) {
+        if (checkSpawnLocation()) {
             if (!getConfig().getBoolean("options.fall-damage")) {
                 player.setFallDistance(0F);
             }
@@ -116,6 +119,17 @@ public final class Spawn extends JavaPlugin {
     public void sendMessageToSender(CommandSender sender, String message) {
         if (getConfig().getString(message).isEmpty() || getConfig().getString(message) == null) {
             // do not send a message to the sender
+        } else {
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString(message)));
+        }
+    }
+    public void sendPlaceholderMessageToSender(CommandSender sender, String message, String placeholder, String replacePlaceholder) {
+        if (getConfig().getString(message).isEmpty() || getConfig().getString(message) == null) {
+            // do not send a message to the player
+        } else if (getConfig().getString(message).contains(placeholder)){
+            String convertedMessage = getConfig().getString(message).replace(placeholder, replacePlaceholder);
+
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', convertedMessage));
         } else {
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString(message)));
         }
