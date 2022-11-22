@@ -32,4 +32,5 @@ All commands, permissions and configuration options are available in the [Github
 
 Plugin jars are available in the [Releases](https://github.com/rockquiet/Spawn/releases) section, on [Modrinth](https://modrinth.com/plugin/spawn) and [Spigot](https://www.spigotmc.org/resources/106188).
 
-[![Download on Modrinth](https://raw.githubusercontent.com/modrinth/art/main/Branding/Badge/badge-dark.svg)](https://modrinth.com/plugin/spawn)
+[![modrinth](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@2/assets/cozy/available/modrinth_64h.png)](https://modrinth.com/plugin/spawn)
+[![spigot](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@2/assets/cozy/supported/spigot_64h.png)](https://www.spigotmc.org/resources/106188/)
