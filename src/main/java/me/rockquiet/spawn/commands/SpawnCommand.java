@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
@@ -17,33 +18,33 @@ public class SpawnCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (sender instanceof Player) {
+        if (args.length == 0 && sender instanceof Player) {
             Player player = (Player) sender;
             UUID playerUUID = player.getUniqueId();
-
-            if (args.length == 0) {
-                // teleport to spawn - /spawn
-                if (player.isOp() || player.hasPermission("spawn.use")) {
-                    if (player.isOp() || player.hasPermission("spawn.bypass.cooldown")) {
-                        if (player.isOp() || player.hasPermission("spawn.bypass.delay")) {
-                            Spawn.getPlugin().teleportPlayer(player);
-                        } else {
-                            commandDelay.runDelay(player);
-                        }
+            // teleport to spawn - /spawn
+            if (player.isOp() || player.hasPermission("spawn.use")) {
+                if (player.isOp() || player.hasPermission("spawn.bypass.cooldown")) {
+                    if (player.isOp() || player.hasPermission("spawn.bypass.delay")) {
+                        Spawn.getPlugin().teleportPlayer(player);
                     } else {
-                        if (!commandCooldown.hasCooldown(playerUUID) || commandCooldown.isCooldownDone(playerUUID)) {
-                            commandCooldown.setCooldown(playerUUID, System.currentTimeMillis());
+                        commandDelay.runDelay(player);
+                    }
+                } else {
+                    if (!commandCooldown.hasCooldown(playerUUID) || commandCooldown.isCooldownDone(playerUUID)) {
+                        commandCooldown.setCooldown(playerUUID, System.currentTimeMillis());
 
-                            commandDelay.runDelay(player);
-                        } else {
-                            Spawn.getPlugin().sendPlaceholderMessageToPlayer(player, "messages.cooldown-left", "%cooldown%", String.valueOf(commandCooldown.cooldownTime() - TimeUnit.MILLISECONDS.toSeconds(commandCooldown.getCooldown(playerUUID))));
-                        }
+                        commandDelay.runDelay(player);
+                    } else {
+                        Spawn.getPlugin().sendPlaceholderMessageToPlayer(player, "messages.cooldown-left", "%cooldown%", String.valueOf(commandCooldown.cooldownTime() - TimeUnit.MILLISECONDS.toSeconds(commandCooldown.getCooldown(playerUUID))));
                     }
                 }
-            } else if (args.length == 1) {
-                Player target = Bukkit.getServer().getPlayerExact(args[0]);
-                // save current position as spawn in config - /spawn set
-                if (args[0].equalsIgnoreCase("set")) {
+            }
+        } else if (args.length == 1) {
+            Player target = Bukkit.getServer().getPlayerExact(args[0]);
+            // save current position as spawn in config - /spawn set
+            if (args[0].equalsIgnoreCase("set")) {
+                if (sender instanceof Player) {
+                    Player player = (Player) sender;
                     if (player.isOp() || player.hasPermission("spawn.set")) {
                         Spawn.getPlugin().getConfig().set("spawn.world", player.getWorld().getName());
                         Spawn.getPlugin().getConfig().set("spawn.x", player.getLocation().getX());
@@ -57,8 +58,13 @@ public class SpawnCommand implements CommandExecutor {
                     } else {
                         Spawn.getPlugin().sendMessageToPlayer(player, "messages.no-permission");
                     }
-                // reload config - /spawn reload
-                } else if (args[0].equalsIgnoreCase("reload")) {
+                } else {
+                    Spawn.getPlugin().sendMessageToSender(sender, "messages.no-player");
+                }
+            // reload config - /spawn reload
+            } else if (args[0].equalsIgnoreCase("reload")) {
+                if (sender instanceof Player) {
+                    Player player = (Player) sender;
                     if (player.isOp() || player.hasPermission("spawn.reload")) {
                         Spawn.getPlugin().reloadConfig();
 
@@ -66,8 +72,15 @@ public class SpawnCommand implements CommandExecutor {
                     } else {
                         Spawn.getPlugin().sendMessageToPlayer(player, "messages.no-permission");
                     }
-                // teleport another player to spawn - /spawn %player%
-                } else if (target != null) {
+                } else if (sender instanceof ConsoleCommandSender) {
+                    Spawn.getPlugin().reloadConfig();
+
+                    Spawn.getPlugin().sendMessageToSender(sender, "messages.config-reload");
+                }
+            // teleport another player to spawn - /spawn %player%
+            } else if (target != null) {
+                if (sender instanceof Player) {
+                    Player player = (Player) sender;
                     if (player.isOp() || player.hasPermission("spawn.others")) {
                         if (target.isOnline()) {
                             Spawn.getPlugin().teleportPlayer(target);
@@ -77,9 +90,15 @@ public class SpawnCommand implements CommandExecutor {
                     } else {
                         Spawn.getPlugin().sendMessageToPlayer(player, "messages.no-permission");
                     }
-                } else {
-                    Spawn.getPlugin().sendPlaceholderMessageToPlayer(player, "messages.player-not-found", "%player%", args[0]);
+                } else if (sender instanceof ConsoleCommandSender) {
+                    if (target.isOnline()) {
+                        Spawn.getPlugin().teleportPlayer(target);
+
+                        Spawn.getPlugin().sendPlaceholderMessageToSender(sender, "messages.teleport-other", "%player%", target.getName());
+                    }
                 }
+            } else {
+                Spawn.getPlugin().sendPlaceholderMessageToSender(sender, "messages.player-not-found", "%player%", args[0]);
             }
         } else {
             Spawn.getPlugin().sendMessageToSender(sender, "messages.no-player");
