@@ -10,20 +10,24 @@ import java.util.List;
 public class ConfigManger {
 
     public void load() {
+        Spawn.getPlugin().saveDefaultConfig();
+
         Spawn.getPlugin().getConfig().options().copyDefaults(true);
         Spawn.getPlugin().saveConfig();
 
-        if (Spawn.getPlugin().getConfig().options().getHeader().isEmpty()) {
-            final List<String> header = new ArrayList<>();
+        if (!Bukkit.getVersion().contains("1.8") && !Bukkit.getVersion().contains("1.9") && !Bukkit.getVersion().contains("1.10") && !Bukkit.getVersion().contains("1.11") && !Bukkit.getVersion().contains("1.12") && !Bukkit.getVersion().contains("1.13") && !Bukkit.getVersion().contains("1.14") && !Bukkit.getVersion().contains("1.15") && !Bukkit.getVersion().contains("1.16") && !Bukkit.getVersion().contains("1.17")) {
+            if (Spawn.getPlugin().getConfig().options().getHeader().isEmpty()) {
+                final List<String> header = new ArrayList<>();
 
-            header.add(0, "---------------------------------------------------- #");
-            header.add(1, "                 Spawn by rockquiet                  #");
-            header.add(2, "---------------------------------------------------- #");
-            header.add(3, "   Wiki - https://github.com/rockquiet/Spawn/wiki    #");
-            header.add(4, "---------------------------------------------------- #");
+                header.add(0, "---------------------------------------------------- #");
+                header.add(1, "                 Spawn by rockquiet                  #");
+                header.add(2, "---------------------------------------------------- #");
+                header.add(3, "   Wiki - https://github.com/rockquiet/Spawn/wiki    #");
+                header.add(4, "---------------------------------------------------- #");
 
-            Spawn.getPlugin().getConfig().options().setHeader(header);
-            Spawn.getPlugin().saveConfig();
+                Spawn.getPlugin().getConfig().options().setHeader(header);
+                Spawn.getPlugin().saveConfig();
+            }
         }
     }
 
