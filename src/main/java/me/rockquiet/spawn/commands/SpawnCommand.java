@@ -1,6 +1,7 @@
 package me.rockquiet.spawn.commands;
 
-import me.rockquiet.spawn.Spawn;
+import me.rockquiet.spawn.ConfigManger;
+import me.rockquiet.spawn.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -13,6 +14,8 @@ import java.util.concurrent.TimeUnit;
 
 public class SpawnCommand implements CommandExecutor {
 
+    private final ConfigManger config = new ConfigManger();
+    private final Util util = new Util();
     private final CommandCooldown commandCooldown = new CommandCooldown();
     private final CommandDelay commandDelay = new CommandDelay();
 
@@ -25,7 +28,7 @@ public class SpawnCommand implements CommandExecutor {
             if (player.isOp() || player.hasPermission("spawn.use")) {
                 if (player.isOp() || player.hasPermission("spawn.bypass.cooldown")) {
                     if (player.isOp() || player.hasPermission("spawn.bypass.delay")) {
-                        Spawn.getPlugin().teleportPlayer(player);
+                        util.teleportPlayer(player);
                     } else {
                         commandDelay.runDelay(player);
                     }
@@ -35,7 +38,7 @@ public class SpawnCommand implements CommandExecutor {
 
                         commandDelay.runDelay(player);
                     } else {
-                        Spawn.getPlugin().sendPlaceholderMessageToPlayer(player, "messages.cooldown-left", "%cooldown%", String.valueOf(commandCooldown.cooldownTime() - TimeUnit.MILLISECONDS.toSeconds(commandCooldown.getCooldown(playerUUID))));
+                        util.sendPlaceholderMessageToPlayer(player, "messages.cooldown-left", "%cooldown%", String.valueOf(commandCooldown.cooldownTime() - TimeUnit.MILLISECONDS.toSeconds(commandCooldown.getCooldown(playerUUID))));
                     }
                 }
             }
@@ -46,36 +49,36 @@ public class SpawnCommand implements CommandExecutor {
                 if (sender instanceof Player) {
                     Player player = (Player) sender;
                     if (player.isOp() || player.hasPermission("spawn.set")) {
-                        Spawn.getPlugin().getConfig().set("spawn.world", player.getWorld().getName());
-                        Spawn.getPlugin().getConfig().set("spawn.x", player.getLocation().getX());
-                        Spawn.getPlugin().getConfig().set("spawn.y", player.getLocation().getY());
-                        Spawn.getPlugin().getConfig().set("spawn.z", player.getLocation().getZ());
-                        Spawn.getPlugin().getConfig().set("spawn.yaw", player.getLocation().getYaw());
-                        Spawn.getPlugin().getConfig().set("spawn.pitch", player.getLocation().getPitch());
-                        Spawn.getPlugin().saveConfig();
+                        config.set("spawn.world", player.getWorld().getName());
+                        config.set("spawn.x", player.getLocation().getX());
+                        config.set("spawn.y", player.getLocation().getY());
+                        config.set("spawn.z", player.getLocation().getZ());
+                        config.set("spawn.yaw", player.getLocation().getYaw());
+                        config.set("spawn.pitch", player.getLocation().getPitch());
+                        config.save();
 
-                        Spawn.getPlugin().sendMessageToPlayer(player, "messages.spawn-set");
+                        util.sendMessageToPlayer(player, "messages.spawn-set");
                     } else {
-                        Spawn.getPlugin().sendMessageToPlayer(player, "messages.no-permission");
+                        util.sendMessageToPlayer(player, "messages.no-permission");
                     }
                 } else {
-                    Spawn.getPlugin().sendMessageToSender(sender, "messages.no-player");
+                    util.sendMessageToSender(sender, "messages.no-player");
                 }
             // reload config - /spawn reload
             } else if (args[0].equalsIgnoreCase("reload")) {
                 if (sender instanceof Player) {
                     Player player = (Player) sender;
                     if (player.isOp() || player.hasPermission("spawn.reload")) {
-                        Spawn.getPlugin().reloadConfig();
+                        config.reload();
 
-                        Spawn.getPlugin().sendMessageToPlayer(player, "messages.config-reload");
+                        util.sendMessageToPlayer(player, "messages.config-reload");
                     } else {
-                        Spawn.getPlugin().sendMessageToPlayer(player, "messages.no-permission");
+                        util.sendMessageToPlayer(player, "messages.no-permission");
                     }
                 } else if (sender instanceof ConsoleCommandSender) {
-                    Spawn.getPlugin().reloadConfig();
+                    config.reload();
 
-                    Spawn.getPlugin().sendMessageToSender(sender, "messages.config-reload");
+                    util.sendMessageToSender(sender, "messages.config-reload");
                 }
             // teleport another player to spawn - /spawn %player%
             } else if (target != null) {
@@ -83,25 +86,35 @@ public class SpawnCommand implements CommandExecutor {
                     Player player = (Player) sender;
                     if (player.isOp() || player.hasPermission("spawn.others")) {
                         if (target.isOnline()) {
-                            Spawn.getPlugin().teleportPlayer(target);
+                            util.teleportPlayer(target);
 
-                            Spawn.getPlugin().sendPlaceholderMessageToPlayer(player, "messages.teleport-other", "%player%", target.getName());
+                            util.sendPlaceholderMessageToPlayer(player, "messages.teleport-other", "%player%", target.getName());
                         }
                     } else {
-                        Spawn.getPlugin().sendMessageToPlayer(player, "messages.no-permission");
+                        util.sendMessageToPlayer(player, "messages.no-permission");
                     }
                 } else if (sender instanceof ConsoleCommandSender) {
                     if (target.isOnline()) {
-                        Spawn.getPlugin().teleportPlayer(target);
+                        util.teleportPlayer(target);
 
-                        Spawn.getPlugin().sendPlaceholderMessageToSender(sender, "messages.teleport-other", "%player%", target.getName());
+                        util.sendPlaceholderMessageToSender(sender, "messages.teleport-other", "%player%", target.getName());
                     }
                 }
+            // target player does not exist - /spawn %player%
             } else {
-                Spawn.getPlugin().sendPlaceholderMessageToSender(sender, "messages.player-not-found", "%player%", args[0]);
+                if (sender instanceof Player) {
+                    Player player = (Player) sender;
+                    if (player.isOp() || player.hasPermission("spawn.others")) {
+                        util.sendPlaceholderMessageToPlayer(player, "messages.player-not-found", "%player%", args[0]);
+                    } else {
+                        util.sendMessageToPlayer(player, "messages.no-permission");
+                    }
+                } else if (sender instanceof ConsoleCommandSender) {
+                    util.sendPlaceholderMessageToSender(sender, "messages.player-not-found", "%player%", args[0]);
+                }
             }
         } else {
-            Spawn.getPlugin().sendMessageToSender(sender, "messages.no-player");
+            util.sendMessageToSender(sender, "messages.no-player");
         }
         return false;
     }

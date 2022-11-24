@@ -1,6 +1,6 @@
 package me.rockquiet.spawn.commands;
 
-import me.rockquiet.spawn.Spawn;
+import me.rockquiet.spawn.ConfigManger;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -8,11 +8,13 @@ import java.util.concurrent.TimeUnit;
 
 public class CommandCooldown {
 
+    private final ConfigManger config = new ConfigManger();
+
     private final HashMap<UUID, Long> cooldown = new HashMap<>();
 
     public int cooldownTime() {
-        if (Spawn.getPlugin().getConfig().getInt("options.teleport-cooldown") >= 1) {
-            return Spawn.getPlugin().getConfig().getInt("options.teleport-cooldown");
+        if (config.getInt("options.teleport-cooldown") >= 1) {
+            return config.getInt("options.teleport-cooldown");
         } else
             return 0;
     }

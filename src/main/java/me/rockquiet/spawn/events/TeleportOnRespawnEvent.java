@@ -1,6 +1,7 @@
 package me.rockquiet.spawn.events;
 
-import me.rockquiet.spawn.Spawn;
+import me.rockquiet.spawn.ConfigManger;
+import me.rockquiet.spawn.Util;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -8,30 +9,33 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 
 public class TeleportOnRespawnEvent implements Listener {
 
+    private final ConfigManger config = new ConfigManger();
+    private final Util util = new Util();
+
     @EventHandler
     public void onRespawn(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
 
-        if (Spawn.getPlugin().getConfig().getBoolean("options.teleport-on-respawn")) {
-            if (Spawn.getPlugin().getConfig().getBoolean("options.ignore-bed-spawn")) {
-                if (Spawn.getPlugin().getConfig().getString("spawn.world") != null && Spawn.getPlugin().getConfig().getString("spawn.x") != null && Spawn.getPlugin().getConfig().getString("spawn.y") != null && Spawn.getPlugin().getConfig().getString("spawn.z") != null && Spawn.getPlugin().getConfig().getString("spawn.yaw") != null && Spawn.getPlugin().getConfig().getString("spawn.pitch") != null) {
-                    event.setRespawnLocation(Spawn.getPlugin().getSpawn());
+        if (config.getBoolean("options.teleport-on-respawn")) {
+            if (config.getBoolean("options.ignore-bed-spawn")) {
+                if (util.spawnExists()) {
+                    event.setRespawnLocation(util.getSpawn());
 
-                    Spawn.getPlugin().spawnEffects(player);
+                    util.spawnEffects(player);
 
-                    Spawn.getPlugin().sendMessageToPlayer(player, "messages.teleport");
+                    util.sendMessageToPlayer(player, "messages.teleport");
                 } else {
-                    Spawn.getPlugin().sendMessageToPlayer(player, "messages.no-spawn");
+                    util.sendMessageToPlayer(player, "messages.no-spawn");
                 }
             } else if (player.getBedSpawnLocation() == null) {
-                if (Spawn.getPlugin().getConfig().getString("spawn.world") != null && Spawn.getPlugin().getConfig().getString("spawn.x") != null && Spawn.getPlugin().getConfig().getString("spawn.y") != null && Spawn.getPlugin().getConfig().getString("spawn.z") != null && Spawn.getPlugin().getConfig().getString("spawn.yaw") != null && Spawn.getPlugin().getConfig().getString("spawn.pitch") != null) {
-                    event.setRespawnLocation(Spawn.getPlugin().getSpawn());
+                if (util.spawnExists()) {
+                    event.setRespawnLocation(util.getSpawn());
 
-                    Spawn.getPlugin().spawnEffects(player);
+                    util.spawnEffects(player);
 
-                    Spawn.getPlugin().sendMessageToPlayer(player, "messages.teleport");
+                    util.sendMessageToPlayer(player, "messages.teleport");
                 } else {
-                    Spawn.getPlugin().sendMessageToPlayer(player, "messages.no-spawn");
+                    util.sendMessageToPlayer(player, "messages.no-spawn");
                 }
             }
         }
