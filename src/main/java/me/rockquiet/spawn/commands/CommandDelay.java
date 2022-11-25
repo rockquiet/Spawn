@@ -60,7 +60,9 @@ public class CommandDelay implements Listener {
         BukkitTask delayTask = delay.get(playerUUID);
 
         if (config.getBoolean("options.cancel-on-move")) {
-            if (!player.isOp() || !player.hasPermission("spawn.bypass.cancel-on-move")) {
+            if (player.isOp() || player.hasPermission("spawn.bypass.cancel-on-move")) {
+                // do absolutely nothing
+            } else {
                 if (delay.containsKey(playerUUID)) {
                     delayTask.cancel();
                     delay.remove(playerUUID);
