@@ -30,3 +30,19 @@ permissions:
   spawn.reload:
     description: reload config
     default: op
+  spawn.bypass.*:
+    default: false
+    description: grants all bypass permissions
+    children:
+      spawn.bypass.cooldown: true
+      spawn.bypass.delay: true
+      spawn.bypass.cancel-on-move: true
+  spawn.*:
+    default: false
+    description: grants all spawn permissions
+    children:
+      spawn.use: true
+      spawn.bypass.*: true
+      spawn.others: true
+      spawn.set: true
+      spawn.reload: true
