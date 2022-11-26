@@ -43,14 +43,14 @@ public class Util {
                 }
             }
         } catch (Exception e) {
-            Bukkit.getLogger().warning("The particle " + config.getString("options.particle") + " does not exist in this Minecraft version!");
+            Bukkit.getLogger().warning("[Spawn] The particle " + config.getString("options.particle") + " does not exist in this Minecraft version!");
         }
 
         // Sounds
         try {
             player.playSound(getSpawn(), Sound.valueOf(config.getString("options.sound")), config.getFloat("options.sound-volume"), config.getFloat("options.sound-pitch"));
         } catch (Exception e) {
-            Bukkit.getLogger().warning("The sound " + config.getString("options.sound") + " does not exist in this Minecraft version!");
+            Bukkit.getLogger().warning("[Spawn] The sound " + config.getString("options.sound") + " does not exist in this Minecraft version!");
         }
     }
 
