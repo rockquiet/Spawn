@@ -3,6 +3,7 @@
 # ---------------------------------------------------- #
 #    Wiki - https://github.com/rockquiet/Spawn/wiki    #
 # ---------------------------------------------------- #
+
 options:
   # toggle if the player receives fall damage on teleport
   fall-damage: false
