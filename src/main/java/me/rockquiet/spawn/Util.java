@@ -33,16 +33,25 @@ public class Util {
 
     public void spawnEffects(Player player) {
         // Particles
-        if (!Bukkit.getVersion().contains("1.8")) {
-            player.spawnParticle(Particle.valueOf(config.getString("options.particle")), getSpawn(), config.getInt("options.particle-amount"));
-        } else {
-            // workaround for 1.8
-            for (int p = 0; p < config.getInt("options.particle-amount"); p++) {
-                Bukkit.getWorld(getSpawn().getWorld().getName()).playEffect(getSpawn(), Effect.valueOf(config.getString("options.particle")), 0);
+        try {
+            if (!Bukkit.getVersion().contains("1.8")) {
+                player.spawnParticle(Particle.valueOf(config.getString("options.particle")), getSpawn(), config.getInt("options.particle-amount"));
+            } else {
+                // workaround for 1.8
+                for (int p = 0; p < config.getInt("options.particle-amount"); p++) {
+                    Bukkit.getWorld(getSpawn().getWorld().getName()).playEffect(getSpawn(), Effect.valueOf(config.getString("options.particle")), 0);
+                }
             }
+        } catch (Exception e) {
+            Bukkit.getLogger().warning("The particle " + config.getString("options.particle") + " does not exist in this Minecraft version!");
         }
+
         // Sounds
-        player.playSound(getSpawn(), Sound.valueOf(config.getString("options.sound")), config.getFloat("options.sound-volume"), config.getFloat("options.sound-pitch"));
+        try {
+            player.playSound(getSpawn(), Sound.valueOf(config.getString("options.sound")), config.getFloat("options.sound-volume"), config.getFloat("options.sound-pitch"));
+        } catch (Exception e) {
+            Bukkit.getLogger().warning("The sound " + config.getString("options.sound") + " does not exist in this Minecraft version!");
+        }
     }
 
     public void sendMessageToPlayer(Player player, String message) {
