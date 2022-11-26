@@ -16,6 +16,8 @@ Yet another Spawn plugin with many configurable options.
 
 - You can set a Spawn and teleport to it (duh)
 - Teleport to Spawn on join / only on first join
+- Teleport cooldown (can be bypassed & cooldown time is configurable)
+- Teleport delay with cancel on move (can be bypassed & delay time is configurable)
 - Teleport to Spawn on death (bed spawn-point can be ignored)
 - Teleport to Spawn if falling in void (void height is configurable)
 - Teleport another player to Spawn via command
