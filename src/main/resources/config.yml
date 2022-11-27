@@ -69,7 +69,7 @@ messages:
   # if the player still has an active teleport cooldown
   cooldown-left: '&cPlease wait &4%cooldown% &csecond(s) before teleporting again.'
   #
-  # if the player still has an active teleport cooldown
+  # time left until the player gets teleported to spawn
   delay-left: '&6You will be teleported in &e%delay% &6second(s).'
   # delayed teleport failed because the player moved
   teleport-canceled: '&cTeleport canceled because you moved!'
