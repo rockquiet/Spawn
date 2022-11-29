@@ -1,6 +1,6 @@
 package me.rockquiet.spawn.commands;
 
-import me.rockquiet.spawn.ConfigManger;
+import me.rockquiet.spawn.ConfigManager;
 import me.rockquiet.spawn.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 
 public class SpawnCommand implements CommandExecutor {
 
-    private final ConfigManger config = new ConfigManger();
+    private final ConfigManager config = new ConfigManager();
     private final Util util = new Util();
     private final CommandCooldown commandCooldown = new CommandCooldown();
     private final CommandDelay commandDelay = new CommandDelay();

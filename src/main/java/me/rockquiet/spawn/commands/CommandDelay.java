@@ -1,6 +1,6 @@
 package me.rockquiet.spawn.commands;
 
-import me.rockquiet.spawn.ConfigManger;
+import me.rockquiet.spawn.ConfigManager;
 import me.rockquiet.spawn.Spawn;
 import me.rockquiet.spawn.Util;
 import org.bukkit.entity.Player;
@@ -17,7 +17,7 @@ import java.util.UUID;
 
 public class CommandDelay implements Listener {
 
-    private final ConfigManger config = new ConfigManger();
+    private final ConfigManager config = new ConfigManager();
     private final Util util = new Util();
 
     private static final Map<UUID, BukkitTask> delay = new HashMap<>();

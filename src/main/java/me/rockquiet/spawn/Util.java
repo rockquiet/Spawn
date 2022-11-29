@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 
 public class Util {
 
-    private final ConfigManger config = new ConfigManger();
+    private final ConfigManager config = new ConfigManager();
 
     public Location getSpawn() {
         return config.getLocation(config.getWorld("spawn.world"), config.getDouble("spawn.x"), config.getDouble("spawn.y"), config.getDouble("spawn.z"), config.getFloat("spawn.yaw"), config.getFloat("spawn.pitch"));

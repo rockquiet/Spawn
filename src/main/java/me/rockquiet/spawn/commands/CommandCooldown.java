@@ -1,6 +1,6 @@
 package me.rockquiet.spawn.commands;
 
-import me.rockquiet.spawn.ConfigManger;
+import me.rockquiet.spawn.ConfigManager;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 public class CommandCooldown {
 
-    private final ConfigManger config = new ConfigManger();
+    private final ConfigManager config = new ConfigManager();
 
     private final HashMap<UUID, Long> cooldown = new HashMap<>();
 

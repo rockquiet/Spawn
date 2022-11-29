@@ -1,6 +1,6 @@
 package me.rockquiet.spawn.events;
 
-import me.rockquiet.spawn.ConfigManger;
+import me.rockquiet.spawn.ConfigManager;
 import me.rockquiet.spawn.Util;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -9,7 +9,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 public class TeleportOutOfVoidEvent implements Listener {
 
-    private final ConfigManger config = new ConfigManger();
+    private final ConfigManager config = new ConfigManager();
     private final Util util = new Util();
 
     @EventHandler

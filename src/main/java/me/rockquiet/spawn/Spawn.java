@@ -13,7 +13,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public final class Spawn extends JavaPlugin {
 
     private static Spawn plugin;
-    private final ConfigManger config = new ConfigManger();
+    private final ConfigManager config = new ConfigManager();
 
     @Override
     public void onEnable() {

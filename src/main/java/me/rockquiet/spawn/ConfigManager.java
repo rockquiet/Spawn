@@ -7,7 +7,7 @@ import org.bukkit.World;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConfigManger {
+public class ConfigManager {
 
     public void load() {
         Spawn.getPlugin().saveDefaultConfig();
