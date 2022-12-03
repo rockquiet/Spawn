@@ -8,6 +8,7 @@ import me.rockquiet.spawn.events.TeleportOnRespawnEvent;
 import me.rockquiet.spawn.events.TeleportOutOfVoidEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Spawn extends JavaPlugin {
@@ -35,7 +36,13 @@ public final class Spawn extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new TeleportOnRespawnEvent(this), this);
         Bukkit.getPluginManager().registerEvents(new CommandDelay(this), this);
 
-    public static Spawn getPlugin() {
-        return plugin;
+        final Configuration config = configManager.getFile("config.yml");
+        if (config.getBoolean("update-checks")) {
+            new UpdateChecker(this, 106188).getVersion(version -> {
+                if (!this.getDescription().getVersion().equals(version)) {
+                    getLogger().info("An update is available! Latest version: " + version);
+                }
+            });
+        }
     }
 }
