@@ -1,92 +1,191 @@
 package me.rockquiet.spawn;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.configuration.file.YamlConfiguration;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ConfigManager {
 
-    public void load() {
-        Spawn.getPlugin().saveDefaultConfig();
+    private final Spawn plugin;
 
-        Spawn.getPlugin().getConfig().options().copyDefaults(true);
-        Spawn.getPlugin().saveConfig();
+    public ConfigManager(Spawn plugin) {
+        this.plugin = plugin;
+    }
 
-        if (!Bukkit.getVersion().contains("1.8") && !Bukkit.getVersion().contains("1.9") && !Bukkit.getVersion().contains("1.10") && !Bukkit.getVersion().contains("1.11") && !Bukkit.getVersion().contains("1.12") && !Bukkit.getVersion().contains("1.13") && !Bukkit.getVersion().contains("1.14") && !Bukkit.getVersion().contains("1.15") && !Bukkit.getVersion().contains("1.16") && !Bukkit.getVersion().contains("1.17")) {
-            if (Spawn.getPlugin().getConfig().options().getHeader().isEmpty()) {
-                final List<String> header = new ArrayList<>();
+    private String getDataFolder() {
+        return (plugin.getDataFolder().toPath() + "/"); // "plugins/Spawn/"
+    }
 
-                header.add(0, "---------------------------------------------------- #");
-                header.add(1, "                 Spawn by rockquiet                  #");
-                header.add(2, "---------------------------------------------------- #");
-                header.add(3, "   Wiki - https://github.com/rockquiet/Spawn/wiki    #");
-                header.add(4, "---------------------------------------------------- #");
+    public YamlConfiguration getFile(String path) {
+        final File file = new File(getDataFolder() + path);
 
-                Spawn.getPlugin().getConfig().options().setHeader(header);
-                Spawn.getPlugin().saveConfig();
+        if (file.exists()) {
+            return YamlConfiguration.loadConfiguration(file);
+        } else {
+            return new YamlConfiguration();
+        }
+    }
+
+    public void createFile(String file) {
+        try {
+            final File newFile = new File(getDataFolder() + file);
+
+            if (!newFile.exists()) {
+                final File parentFile = newFile.getParentFile();
+                if (parentFile != null) {
+                    parentFile.mkdirs();
+                }
+
+                final InputStream inputStream = plugin.getResource(file);
+                if (inputStream != null) {
+                    Files.copy(inputStream, newFile.toPath());
+                } else {
+                    newFile.createNewFile();
+                }
+            }
+        } catch (final IOException e) {
+            plugin.getLogger().warning("Unable to create " + file);
+        }
+    }
+
+    public void saveFile(final YamlConfiguration yamlConfiguration, final String file) {
+        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
+            try {
+                yamlConfiguration.save(getDataFolder() + file);
+            } catch (final IOException e) {
+                plugin.getLogger().warning("Unable to save " + file);
+            }
+        });
+    }
+
+    public void deleteFile(String file) {
+        final File file1 = new File(getDataFolder() + file);
+
+        if (file1.exists()) {
+            try {
+                file1.delete();
+            } catch (IllegalArgumentException e) {
+                plugin.getLogger().warning("Unable to delete " + file + " - renaming it instead");
+                file1.renameTo(new File(getDataFolder() + file + "_old"));
             }
         }
     }
 
-    public void reload() {
-        Spawn.getPlugin().reloadConfig();
-    }
+    public void updateFile(String file, int fileVersion) {
+        try {
+            final File outdatedFile = new File(getDataFolder() + file);
 
-    public void save() {
-        Spawn.getPlugin().saveConfig();
-    }
+            if (outdatedFile.exists()) {
+                final YamlConfiguration outdatedFileConfig = getFile(file);
 
-    public void set(String path, Object value) {
-        Spawn.getPlugin().getConfig().set(path, value);
-    }
+                if (outdatedFileConfig.contains("file-version") && outdatedFileConfig.getInt("file-version") < fileVersion) {
+                    final HashMap<String, Object> fileKeys = new HashMap<>();
 
-    public String getString(String path) {
-        if (Spawn.getPlugin().getConfig().contains(path) && Spawn.getPlugin().getConfig().getString(path) != null) {
-            return Spawn.getPlugin().getConfig().getString(path);
-        } else {
-            return "";
+                    for (String key : outdatedFileConfig.getKeys(false)) {
+                        fileKeys.put(key, outdatedFileConfig.get(key));
+                    }
+                    fileKeys.remove("file-version");
+
+                    deleteFile(file); // delete old file
+
+                    createFile(file); // get latest file packaged in jar
+
+                    final YamlConfiguration updatedFile = getFile(file);
+
+                    for (Map.Entry<String, Object> entry : fileKeys.entrySet()) {
+                        String key = entry.getKey();
+                        Object value = entry.getValue();
+
+                        if (updatedFile.contains("config")) {
+                            updatedFile.set(key, value);
+                        // only add new keys to language files
+                        } else if (!updatedFile.contains(key)) {
+                            updatedFile.set(key, value);
+                        }
+                    }
+
+                    saveFile(updatedFile, file);
+
+                    plugin.getLogger().info("Successfully updated " + file);
+                } else if (!outdatedFileConfig.contains("file-version")) {
+
+                    // if file is config.yml from v1.4.1 or below
+                    if (outdatedFileConfig.get("options") != null && outdatedFileConfig.get("messages") != null && outdatedFileConfig.get("spawn") != null) {
+                        final HashMap<String, Object> optionsKeys = new HashMap<>();
+                        final HashMap<String, Object> messagesKeys = new HashMap<>();
+                        final HashMap<String, Object> locationKeys = new HashMap<>();
+
+                        for (String key : outdatedFileConfig.getConfigurationSection("options").getKeys(false)) {
+                            optionsKeys.put(key, outdatedFileConfig.getConfigurationSection("options").get(key));
+                        }
+                        for (String key : outdatedFileConfig.getConfigurationSection("messages").getKeys(false)) {
+                            messagesKeys.put(key, outdatedFileConfig.getConfigurationSection("messages").get(key));
+                        }
+                        for (String key : outdatedFileConfig.getConfigurationSection("spawn").getKeys(false)) {
+                            locationKeys.put(key, outdatedFileConfig.getConfigurationSection("spawn").get(key));
+                        }
+
+                        deleteFile("config.yml");
+                        deleteFile("languages/messages-custom.yml");
+                        deleteFile("location.yml");
+
+                        createFile("config.yml");
+                        final YamlConfiguration updatedConfigFile = getFile("config.yml");
+
+                        for (Map.Entry<String, Object> configEntry : optionsKeys.entrySet()) {
+                            String key = configEntry.getKey();
+                            Object value = configEntry.getValue();
+
+                            updatedConfigFile.set("language", "custom");
+                            updatedConfigFile.set(key, value);
+                        }
+
+                        saveFile(updatedConfigFile, "config.yml");
+
+
+                        createFile("languages/messages-custom.yml");
+                        final YamlConfiguration updatedMessagesFile = getFile("languages/messages-custom.yml");
+
+                        for (Map.Entry<String, Object> messagesEntry : messagesKeys.entrySet()) {
+                            String key = messagesEntry.getKey();
+                            Object value = messagesEntry.getValue();
+
+                            updatedMessagesFile.set(key, value);
+                        }
+
+                        saveFile(updatedMessagesFile, "languages/messages-custom.yml");
+
+                        createFile("location.yml");
+                        final YamlConfiguration updatedLocationFile = getFile("location.yml");
+
+                        for (Map.Entry<String, Object> locationEntry : locationKeys.entrySet()) {
+                            String key = "spawn." + locationEntry.getKey();
+                            Object value = locationEntry.getValue();
+
+                            updatedLocationFile.set(key, value);
+                        }
+
+                        saveFile(updatedLocationFile, "location.yml");
+
+                        plugin.getLogger().warning("Successfully converted old " + file);
+                        plugin.getLogger().warning("Please check if everything converted correctly!");
+                    // regenerate file
+                    } else {
+                        deleteFile(file);
+                        createFile(file);
+                    }
+                }
+            } else {
+                // file to update does not exist
+                createFile(file);
+            }
+        } catch (Exception e) {
+            plugin.getLogger().warning("Unable to update " + file);
         }
-    }
-
-    public Boolean getBoolean(String path) {
-        if (Spawn.getPlugin().getConfig().contains(path)) {
-            return Spawn.getPlugin().getConfig().getBoolean(path);
-        }
-        return null;
-    }
-
-    public Integer getInt(String path) {
-        if (Spawn.getPlugin().getConfig().contains(path)) {
-            return Spawn.getPlugin().getConfig().getInt(path);
-        }
-        return null;
-    }
-
-    public Double getDouble(String path) {
-        if (Spawn.getPlugin().getConfig().contains(path)) {
-            return Spawn.getPlugin().getConfig().getDouble(path);
-        }
-        return null;
-    }
-
-    public float getFloat(String path) {
-        if (Spawn.getPlugin().getConfig().contains(path)) {
-            return (float) Spawn.getPlugin().getConfig().getDouble(path);
-        }
-        return 0;
-    }
-
-    public World getWorld(String path) {
-        if (Spawn.getPlugin().getConfig().contains(path)) {
-            return Bukkit.getWorld(Spawn.getPlugin().getConfig().getString(path));
-        }
-        return null;
-    }
-
-    public Location getLocation(World world, Double x, Double y, Double z, Float yaw, Float pitch) {
-        return new Location(world, x, y, z, yaw, pitch);
     }
 }

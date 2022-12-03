@@ -1,6 +1,8 @@
 package me.rockquiet.spawn.commands;
 
 import me.rockquiet.spawn.ConfigManager;
+import me.rockquiet.spawn.Spawn;
+import org.bukkit.configuration.Configuration;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -8,13 +10,19 @@ import java.util.concurrent.TimeUnit;
 
 public class CommandCooldown {
 
-    private final ConfigManager config = new ConfigManager();
+    private final ConfigManager configManager;
+
+    public CommandCooldown(Spawn plugin) {
+        this.configManager = new ConfigManager(plugin);
+    }
 
     private final HashMap<UUID, Long> cooldown = new HashMap<>();
 
     public int cooldownTime() {
-        if (config.getInt("options.teleport-cooldown") >= 1) {
-            return config.getInt("options.teleport-cooldown");
+        final Configuration config = configManager.getFile("config.yml");
+
+        if (config.getInt("teleport-cooldown") >= 1) {
+            return config.getInt("teleport-cooldown");
         } else
             return 0;
     }

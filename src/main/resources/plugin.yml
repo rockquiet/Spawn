@@ -28,7 +28,7 @@ permissions:
     description: set spawn at current location
     default: op
   spawn.reload:
-    description: reload config
+    description: reload all files
     default: op
   spawn.bypass.*:
     default: false

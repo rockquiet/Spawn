@@ -3,6 +3,7 @@ package me.rockquiet.spawn.commands;
 import me.rockquiet.spawn.ConfigManager;
 import me.rockquiet.spawn.Spawn;
 import me.rockquiet.spawn.Util;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -17,14 +18,23 @@ import java.util.UUID;
 
 public class CommandDelay implements Listener {
 
-    private final ConfigManager config = new ConfigManager();
-    private final Util util = new Util();
+    private final Spawn plugin;
+    private final ConfigManager configManager;
+    private final Util util;
+
+    public CommandDelay(Spawn plugin) {
+        this.plugin = plugin;
+        this.configManager = new ConfigManager(plugin);
+        this.util = new Util(plugin);
+    }
 
     private static final Map<UUID, BukkitTask> delay = new HashMap<>();
 
     public int delayTime() {
-        if (config.getInt("options.teleport-delay") >= 1) {
-            return config.getInt("options.teleport-delay");
+        final Configuration config = configManager.getFile("config.yml");
+
+        if (config.getInt("teleport-delay") >= 1) {
+            return config.getInt("teleport-delay");
         } else
             return 0;
     }
@@ -38,7 +48,7 @@ public class CommandDelay implements Listener {
                     @Override
                     public void run() {
                         if (delayRemaining <= delayTime() && delayRemaining >= 1) { // runs until timer reached 1
-                            util.sendPlaceholderMessageToPlayer(player, "messages.delay-left", "%delay%", String.valueOf(delayRemaining));
+                            util.sendPlaceholderMessageToPlayer(player, "delay-left", "%delay%", String.valueOf(delayRemaining));
                         } else if (delayRemaining == 0) { // runs once
                             util.teleportPlayer(player);
                             delay.remove(playerUUID);
@@ -46,27 +56,29 @@ public class CommandDelay implements Listener {
                         }
                         delayRemaining--;
                     }
-                }.runTaskTimer(Spawn.getPlugin(), 0, 20));
+                }.runTaskTimer(plugin, 0, 20));
             }
         } else {
-            util.sendMessageToPlayer(player, "messages.no-spawn");
+            util.sendMessageToPlayer(player, "no-spawn");
         }
     }
 
     @EventHandler
     public void onMove(PlayerMoveEvent event) {
+        final Configuration config = configManager.getFile("config.yml");
+
         Player player = event.getPlayer();
         UUID playerUUID = player.getUniqueId();
         BukkitTask delayTask = delay.get(playerUUID);
 
-        if (config.getBoolean("options.cancel-on-move")) {
+        if (config.getBoolean("cancel-on-move")) {
             if (player.isOp() || player.hasPermission("spawn.bypass.cancel-on-move")) {
                 // do absolutely nothing
             } else {
                 if (delay.containsKey(playerUUID)) {
                     delayTask.cancel();
                     delay.remove(playerUUID);
-                    util.sendMessageToPlayer(player, "messages.teleport-canceled");
+                    util.sendMessageToPlayer(player, "teleport-canceled");
                 }
             }
         }
