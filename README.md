@@ -15,20 +15,19 @@ Yet another Spawn plugin with many configurable options.
 ## Features
 
 - You can set a Spawn and teleport to it (duh)
-- Teleport to Spawn on join / only on first join
-- Teleport cooldown (can be bypassed & cooldown time is configurable)
-- Teleport delay with cancel on move (can be bypassed & delay time is configurable)
-- Teleport to Spawn on death (bed spawn-point can be ignored)
-- Teleport to Spawn if falling in void (void height is configurable)
+- Teleport to Spawn...
+  - ...on join / only on first join
+  - ...on death (bed spawn-point can be ignored)
+  - ...if falling in void (void height is configurable)
+- Teleport cooldown & delay with cancel on move (can be bypassed)
 - Teleport another player to Spawn via command
 - Fall damage on teleport can be disabled
-- Display particles on teleport
-- Play a sound on teleport
-- All messages can be edited and disabled
+- Particles & sound on teleport
+- Everything can be edited and disabled
 
 ## Documentation
 
-All commands, permissions and configuration options are available in the [Github Wiki](https://github.com/rockquiet/Spawn/wiki).
+All commands, permissions and configuration options can be found on the [GitHub Wiki](https://github.com/rockquiet/Spawn/wiki).
 
 ## Download
 
