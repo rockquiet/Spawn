@@ -26,26 +26,16 @@ public class TeleportOnRespawnEvent implements Listener {
         Player player = event.getPlayer();
 
         if (config.getBoolean("teleport-on-respawn")) {
-            if (config.getBoolean("ignore-bed-spawn")) {
-                if (util.spawnExists()) {
+            if (util.spawnExists()) {
+                if (player.getBedSpawnLocation() == null || (config.getBoolean("ignore-bed-spawn") && event.isBedSpawn()) || (config.getBoolean("ignore-anchor-spawn") && event.isAnchorSpawn())) {
                     event.setRespawnLocation(util.getSpawn());
 
                     util.spawnEffects(player);
 
                     util.sendMessageToPlayer(player, "teleport");
-                } else {
-                    util.sendMessageToPlayer(player, "no-spawn");
                 }
-            } else if (player.getBedSpawnLocation() == null) {
-                if (util.spawnExists()) {
-                    event.setRespawnLocation(util.getSpawn());
-
-                    util.spawnEffects(player);
-
-                    util.sendMessageToPlayer(player, "teleport");
-                } else {
-                    util.sendMessageToPlayer(player, "no-spawn");
-                }
+            } else {
+                util.sendMessageToPlayer(player, "no-spawn");
             }
         }
     }
