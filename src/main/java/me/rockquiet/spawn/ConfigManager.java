@@ -101,12 +101,7 @@ public class ConfigManager {
                         String key = entry.getKey();
                         Object value = entry.getValue();
 
-                        if (updatedFile.contains("config")) {
-                            updatedFile.set(key, value);
-                        // only add new keys to language files
-                        } else if (!updatedFile.contains(key)) {
-                            updatedFile.set(key, value);
-                        }
+                        updatedFile.set(key, value);
                     }
 
                     saveFile(updatedFile, file);
@@ -126,6 +121,7 @@ public class ConfigManager {
                         for (String key : outdatedFileConfig.getConfigurationSection("messages").getKeys(false)) {
                             messagesKeys.put(key, outdatedFileConfig.getConfigurationSection("messages").get(key));
                         }
+                        messagesKeys.remove("config-reload");
                         for (String key : outdatedFileConfig.getConfigurationSection("spawn").getKeys(false)) {
                             locationKeys.put(key, outdatedFileConfig.getConfigurationSection("spawn").get(key));
                         }
@@ -146,7 +142,6 @@ public class ConfigManager {
                         }
 
                         saveFile(updatedConfigFile, "config.yml");
-
 
                         createFile("languages/messages-custom.yml");
                         final YamlConfiguration updatedMessagesFile = getFile("languages/messages-custom.yml");

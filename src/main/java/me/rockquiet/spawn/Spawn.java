@@ -16,12 +16,6 @@ public final class Spawn extends JavaPlugin {
     @Override
     public void onEnable() {
         final ConfigManager configManager = new ConfigManager(this);
-        configManager.createFile("config.yml");
-        configManager.createFile("location.yml");
-        configManager.createFile("languages/messages-en.yml");
-        configManager.createFile("languages/messages-de.yml");
-        configManager.createFile("languages/messages-custom.yml");
-
         configManager.updateFile("config.yml", 1);
         configManager.updateFile("languages/messages-en.yml", 1);
         configManager.updateFile("languages/messages-de.yml", 1);
