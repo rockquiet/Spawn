@@ -31,6 +31,14 @@ public class ConfigManager {
         }
     }
 
+    public void reloadAllFiles() {
+        getFile("config.yml");
+        getFile("location.yml");
+        getFile("languages/messages-en.yml");
+        getFile("languages/messages-de.yml");
+        getFile("languages/messages-custom.yml");
+    }
+
     public void createFile(String file) {
         try {
             final File newFile = new File(getDataFolder() + file);
@@ -108,72 +116,7 @@ public class ConfigManager {
 
                     plugin.getLogger().info("Successfully updated " + file);
                 } else if (!outdatedFileConfig.contains("file-version")) {
-
-                    // if file is config.yml from v1.4.1 or below
-                    if (outdatedFileConfig.get("options") != null && outdatedFileConfig.get("messages") != null && outdatedFileConfig.get("spawn") != null) {
-                        final HashMap<String, Object> optionsKeys = new HashMap<>();
-                        final HashMap<String, Object> messagesKeys = new HashMap<>();
-                        final HashMap<String, Object> locationKeys = new HashMap<>();
-
-                        for (String key : outdatedFileConfig.getConfigurationSection("options").getKeys(false)) {
-                            optionsKeys.put(key, outdatedFileConfig.getConfigurationSection("options").get(key));
-                        }
-                        for (String key : outdatedFileConfig.getConfigurationSection("messages").getKeys(false)) {
-                            messagesKeys.put(key, outdatedFileConfig.getConfigurationSection("messages").get(key));
-                        }
-                        messagesKeys.remove("config-reload");
-                        for (String key : outdatedFileConfig.getConfigurationSection("spawn").getKeys(false)) {
-                            locationKeys.put(key, outdatedFileConfig.getConfigurationSection("spawn").get(key));
-                        }
-
-                        deleteFile("config.yml");
-                        deleteFile("languages/messages-custom.yml");
-                        deleteFile("location.yml");
-
-                        createFile("config.yml");
-                        final YamlConfiguration updatedConfigFile = getFile("config.yml");
-
-                        for (Map.Entry<String, Object> configEntry : optionsKeys.entrySet()) {
-                            String key = configEntry.getKey();
-                            Object value = configEntry.getValue();
-
-                            updatedConfigFile.set("language", "custom");
-                            updatedConfigFile.set(key, value);
-                        }
-
-                        saveFile(updatedConfigFile, "config.yml");
-
-                        createFile("languages/messages-custom.yml");
-                        final YamlConfiguration updatedMessagesFile = getFile("languages/messages-custom.yml");
-
-                        for (Map.Entry<String, Object> messagesEntry : messagesKeys.entrySet()) {
-                            String key = messagesEntry.getKey();
-                            Object value = messagesEntry.getValue();
-
-                            updatedMessagesFile.set(key, value);
-                        }
-
-                        saveFile(updatedMessagesFile, "languages/messages-custom.yml");
-
-                        createFile("location.yml");
-                        final YamlConfiguration updatedLocationFile = getFile("location.yml");
-
-                        for (Map.Entry<String, Object> locationEntry : locationKeys.entrySet()) {
-                            String key = "spawn." + locationEntry.getKey();
-                            Object value = locationEntry.getValue();
-
-                            updatedLocationFile.set(key, value);
-                        }
-
-                        saveFile(updatedLocationFile, "location.yml");
-
-                        plugin.getLogger().warning("Successfully converted old " + file);
-                        plugin.getLogger().warning("Please check if everything converted correctly!");
-                    // regenerate file
-                    } else {
-                        deleteFile(file);
-                        createFile(file);
-                    }
+                    convertLegacyConfig(file);
                 }
             } else {
                 // file to update does not exist
@@ -181,6 +124,72 @@ public class ConfigManager {
             }
         } catch (Exception e) {
             plugin.getLogger().warning("Unable to update " + file);
+        }
+    }
+
+    // config.yml from v1.4.1 or below
+    public void convertLegacyConfig(String file) {
+        final YamlConfiguration outdatedFileConfig = getFile(file);
+
+        if (outdatedFileConfig.get("options") != null && outdatedFileConfig.get("messages") != null && outdatedFileConfig.get("spawn") != null) {
+            final HashMap<String, Object> optionsKeys = new HashMap<>();
+            final HashMap<String, Object> messagesKeys = new HashMap<>();
+            final HashMap<String, Object> locationKeys = new HashMap<>();
+
+            for (String key : outdatedFileConfig.getConfigurationSection("options").getKeys(false)) {
+                optionsKeys.put(key, outdatedFileConfig.getConfigurationSection("options").get(key));
+            }
+            for (String key : outdatedFileConfig.getConfigurationSection("messages").getKeys(false)) {
+                messagesKeys.put(key, outdatedFileConfig.getConfigurationSection("messages").get(key));
+            }
+            messagesKeys.remove("config-reload");
+            for (String key : outdatedFileConfig.getConfigurationSection("spawn").getKeys(false)) {
+                locationKeys.put(key, outdatedFileConfig.getConfigurationSection("spawn").get(key));
+            }
+
+            deleteFile("config.yml");
+            deleteFile("languages/messages-custom.yml");
+            deleteFile("location.yml");
+
+            createFile("config.yml");
+            final YamlConfiguration updatedConfigFile = getFile("config.yml");
+
+            for (Map.Entry<String, Object> configEntry : optionsKeys.entrySet()) {
+                String key = configEntry.getKey();
+                Object value = configEntry.getValue();
+
+                updatedConfigFile.set("language", "custom");
+                updatedConfigFile.set(key, value);
+            }
+
+            saveFile(updatedConfigFile, "config.yml");
+
+            createFile("languages/messages-custom.yml");
+            final YamlConfiguration updatedMessagesFile = getFile("languages/messages-custom.yml");
+
+            for (Map.Entry<String, Object> messagesEntry : messagesKeys.entrySet()) {
+                String key = messagesEntry.getKey();
+                Object value = messagesEntry.getValue();
+
+                updatedMessagesFile.set(key, value);
+            }
+
+            saveFile(updatedMessagesFile, "languages/messages-custom.yml");
+
+            createFile("location.yml");
+            final YamlConfiguration updatedLocationFile = getFile("location.yml");
+
+            for (Map.Entry<String, Object> locationEntry : locationKeys.entrySet()) {
+                String key = "spawn." + locationEntry.getKey();
+                Object value = locationEntry.getValue();
+
+                updatedLocationFile.set(key, value);
+            }
+
+            saveFile(updatedLocationFile, "location.yml");
+
+            plugin.getLogger().warning("Successfully converted old " + file);
+            plugin.getLogger().warning("Please check if everything converted correctly!");
         }
     }
 }

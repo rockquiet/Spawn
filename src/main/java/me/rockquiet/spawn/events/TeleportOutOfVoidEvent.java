@@ -25,10 +25,8 @@ public class TeleportOutOfVoidEvent implements Listener {
 
         Player player = event.getPlayer();
 
-        if (config.getBoolean("teleport-out-of-void")) {
-            if (player.getLocation().getBlockY() <= config.getInt("void-check-height")) {
-                util.teleportPlayer(player);
-            }
+        if (config.getBoolean("teleport-out-of-void") && (player.getLocation().getBlockY() <= config.getInt("void-check-height"))) {
+            util.teleportPlayer(player);
         }
     }
 }

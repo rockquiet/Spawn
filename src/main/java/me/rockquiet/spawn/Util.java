@@ -32,7 +32,7 @@ public class Util {
     public boolean spawnExists() {
         final Configuration location = configManager.getFile("location.yml");
 
-        return (location.getString("spawn.world") != null && location.getString("spawn.x") != null && location.getString("spawn.y") != null && location.getString("spawn.z") != null && !location.getString("spawn.yaw").isEmpty() && !location.getString("spawn.pitch").isEmpty());
+        return (location.getString("spawn.world") != null && location.getString("spawn.x") != null && location.getString("spawn.y") != null && location.getString("spawn.z") != null && location.getString("spawn.yaw") != null && location.getString("spawn.pitch") != null);
     }
 
     public void teleportPlayer(Player player) {
@@ -83,12 +83,16 @@ public class Util {
         return "languages/messages-" + config.getString("language") + ".yml";
     }
 
+    public boolean messageExists(String messagePath) {
+        final Configuration messages = configManager.getFile(getLanguageFile());
+
+        return (!messages.getString(messagePath).isEmpty() && messages.getString(messagePath) != null);
+    }
+
     public void sendMessageToPlayer(Player player, String messagePath) {
         final Configuration messages = configManager.getFile(getLanguageFile());
 
-        if (messages.getString(messagePath).isEmpty() || messages.getString(messagePath) == null) {
-            // do not send a message to the player
-        } else {
+        if (messageExists(messagePath)) {
             player.sendMessage(ChatColor.translateAlternateColorCodes('&', messages.getString(messagePath).replace("%prefix%", messages.getString("prefix"))));
         }
     }
@@ -96,23 +100,17 @@ public class Util {
     public void sendPlaceholderMessageToPlayer(Player player, String messagePath, String placeholder, String replacePlaceholder) {
         final Configuration messages = configManager.getFile(getLanguageFile());
 
-        if (messages.getString(messagePath).isEmpty() || messages.getString(messagePath) == null) {
-            // do not send a message to the player
-        } else if (messages.getString(messagePath).contains(placeholder)){
-            String convertedMessage = messages.getString(messagePath).replace(placeholder, replacePlaceholder);
+        if (messageExists(messagePath)) {
+            String placeholderMessage = messages.getString(messagePath).replace(placeholder, replacePlaceholder);
 
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', convertedMessage.replace("%prefix%", messages.getString("prefix"))));
-        } else {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', messages.getString(messagePath).replace("%prefix%", messages.getString("prefix"))));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', placeholderMessage.replace("%prefix%", messages.getString("prefix"))));
         }
     }
 
     public void sendMessageToSender(CommandSender sender, String messagePath) {
         final Configuration messages = configManager.getFile(getLanguageFile());
 
-        if (messages.getString(messagePath).isEmpty() || messages.getString(messagePath) == null) {
-            // do not send a message to the sender
-        } else {
+        if (messageExists(messagePath)) {
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', messages.getString(messagePath).replace("%prefix%", messages.getString("prefix"))));
         }
     }
@@ -120,14 +118,10 @@ public class Util {
     public void sendPlaceholderMessageToSender(CommandSender sender, String messagePath, String placeholder, String replacePlaceholder) {
         final Configuration messages = configManager.getFile(getLanguageFile());
 
-        if (messages.getString(messagePath).isEmpty() || messages.getString(messagePath) == null) {
-            // do not send a message to the sender
-        } else if (messages.getString(messagePath).contains(placeholder)){
-            String convertedMessage = messages.getString(messagePath).replace(placeholder, replacePlaceholder);
+        if (messageExists(messagePath)) {
+            String placeholderMessage = messages.getString(messagePath).replace(placeholder, replacePlaceholder);
 
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', convertedMessage.replace("%prefix%", messages.getString("prefix"))));
-        } else {
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', messages.getString(messagePath).replace("%prefix%", messages.getString("prefix"))));
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', placeholderMessage.replace("%prefix%", messages.getString("prefix"))));
         }
     }
 }

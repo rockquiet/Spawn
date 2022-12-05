@@ -10,7 +10,7 @@
 # currently supported languages: en (English), de (German)
 # if you want to change the messages use "custom"
 # -> If you want to help translating feel free to contribute :)
-language: "en"
+language: en
 #
 # toggle if the player receives fall damage on teleport
 fall-damage: false

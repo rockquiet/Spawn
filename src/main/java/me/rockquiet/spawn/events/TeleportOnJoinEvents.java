@@ -24,11 +24,7 @@ public class TeleportOnJoinEvents implements Listener {
         final Configuration config = configManager.getFile("config.yml");
 
         Player player = event.getPlayer();
-        if (player.hasPlayedBefore()) {
-            if (config.getBoolean("teleport-on-join")) {
-                util.teleportPlayer(player);
-            }
-        } else if (config.getBoolean("teleport-on-first-join")) {
+        if (config.getBoolean("teleport-on-join") || (!player.hasPlayedBefore() && config.getBoolean("teleport-on-first-join"))) {
             util.teleportPlayer(player);
         }
     }
