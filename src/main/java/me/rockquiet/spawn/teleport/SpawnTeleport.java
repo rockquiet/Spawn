@@ -1,19 +1,22 @@
-package me.rockquiet.spawn;
+package me.rockquiet.spawn.teleport;
 
+import me.rockquiet.spawn.Spawn;
+import me.rockquiet.spawn.configuration.ConfigManager;
+import me.rockquiet.spawn.configuration.MessageManager;
 import org.bukkit.*;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 
-public class Util {
+public class SpawnTeleport {
 
     private final Spawn plugin;
-
     private final ConfigManager configManager;
+    private final MessageManager messageManager;
 
-    public Util(Spawn plugin) {
+    public SpawnTeleport(Spawn plugin) {
         this.plugin = plugin;
         this.configManager = new ConfigManager(plugin);
+        this.messageManager = new MessageManager(plugin);
     }
 
     public Location getSpawn() {
@@ -46,9 +49,9 @@ public class Util {
 
             spawnEffects(player);
 
-            sendMessageToPlayer(player, "teleport");
+            messageManager.sendMessageToPlayer(player, "teleport");
         } else {
-            sendMessageToPlayer(player, "no-spawn");
+            messageManager.sendMessageToPlayer(player, "no-spawn");
         }
     }
 
@@ -74,54 +77,6 @@ public class Util {
             player.playSound(getSpawn(), Sound.valueOf(config.getString("sound")), (float) config.getDouble("sound-volume"), (float) config.getDouble("sound-pitch"));
         } catch (Exception e) {
             plugin.getLogger().warning("The sound " + config.getString("sound") + " does not exist in this Minecraft version!");
-        }
-    }
-
-    public String getLanguageFile() {
-        final Configuration config = configManager.getFile("config.yml");
-
-        return "languages/messages-" + config.getString("language") + ".yml";
-    }
-
-    public boolean messageExists(String messagePath) {
-        final Configuration messages = configManager.getFile(getLanguageFile());
-
-        return (!messages.getString(messagePath).isEmpty() && messages.getString(messagePath) != null);
-    }
-
-    public void sendMessageToPlayer(Player player, String messagePath) {
-        final Configuration messages = configManager.getFile(getLanguageFile());
-
-        if (messageExists(messagePath)) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', messages.getString(messagePath).replace("%prefix%", messages.getString("prefix"))));
-        }
-    }
-
-    public void sendPlaceholderMessageToPlayer(Player player, String messagePath, String placeholder, String replacePlaceholder) {
-        final Configuration messages = configManager.getFile(getLanguageFile());
-
-        if (messageExists(messagePath)) {
-            String placeholderMessage = messages.getString(messagePath).replace(placeholder, replacePlaceholder);
-
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', placeholderMessage.replace("%prefix%", messages.getString("prefix"))));
-        }
-    }
-
-    public void sendMessageToSender(CommandSender sender, String messagePath) {
-        final Configuration messages = configManager.getFile(getLanguageFile());
-
-        if (messageExists(messagePath)) {
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', messages.getString(messagePath).replace("%prefix%", messages.getString("prefix"))));
-        }
-    }
-
-    public void sendPlaceholderMessageToSender(CommandSender sender, String messagePath, String placeholder, String replacePlaceholder) {
-        final Configuration messages = configManager.getFile(getLanguageFile());
-
-        if (messageExists(messagePath)) {
-            String placeholderMessage = messages.getString(messagePath).replace(placeholder, replacePlaceholder);
-
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', placeholderMessage.replace("%prefix%", messages.getString("prefix"))));
         }
     }
 }

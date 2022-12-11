@@ -1,8 +1,9 @@
 package me.rockquiet.spawn.events;
 
-import me.rockquiet.spawn.ConfigManager;
 import me.rockquiet.spawn.Spawn;
-import me.rockquiet.spawn.Util;
+import me.rockquiet.spawn.configuration.ConfigManager;
+import me.rockquiet.spawn.configuration.MessageManager;
+import me.rockquiet.spawn.teleport.SpawnTeleport;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -12,11 +13,13 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 public class TeleportOnRespawnEvent implements Listener {
 
     private final ConfigManager configManager;
-    private final Util util;
+    private final MessageManager messageManager;
+    private final SpawnTeleport spawnTeleport;
 
     public TeleportOnRespawnEvent(Spawn plugin) {
         this.configManager = new ConfigManager(plugin);
-        this.util = new Util(plugin);
+        this.messageManager = new MessageManager(plugin);
+        this.spawnTeleport = new SpawnTeleport(plugin);
     }
 
     @EventHandler
@@ -26,16 +29,16 @@ public class TeleportOnRespawnEvent implements Listener {
         Player player = event.getPlayer();
 
         if (config.getBoolean("teleport-on-respawn")) {
-            if (util.spawnExists()) {
+            if (spawnTeleport.spawnExists()) {
                 if (player.getBedSpawnLocation() == null || (config.getBoolean("ignore-bed-spawn") && event.isBedSpawn()) || (config.getBoolean("ignore-anchor-spawn") && event.isAnchorSpawn())) {
-                    event.setRespawnLocation(util.getSpawn());
+                    event.setRespawnLocation(spawnTeleport.getSpawn());
 
-                    util.spawnEffects(player);
+                    spawnTeleport.spawnEffects(player);
 
-                    util.sendMessageToPlayer(player, "teleport");
+                    messageManager.sendMessageToPlayer(player, "teleport");
                 }
             } else {
-                util.sendMessageToPlayer(player, "no-spawn");
+                messageManager.sendMessageToPlayer(player, "no-spawn");
             }
         }
     }
