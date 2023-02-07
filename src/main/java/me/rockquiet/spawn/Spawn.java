@@ -1,5 +1,6 @@
 package me.rockquiet.spawn;
 
+import me.rockquiet.spawn.commands.CommandCooldown;
 import me.rockquiet.spawn.commands.CommandDelay;
 import me.rockquiet.spawn.commands.SpawnCommand;
 import me.rockquiet.spawn.commands.TabComplete;
@@ -9,6 +10,7 @@ import me.rockquiet.spawn.configuration.MessageManager;
 import me.rockquiet.spawn.events.TeleportOnJoinEvents;
 import me.rockquiet.spawn.events.TeleportOnRespawnEvent;
 import me.rockquiet.spawn.events.TeleportOutOfVoidEvent;
+import me.rockquiet.spawn.teleport.SpawnTeleport;
 import org.bukkit.Bukkit;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.file.YamlConfiguration;

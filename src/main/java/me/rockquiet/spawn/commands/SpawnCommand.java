@@ -32,9 +32,8 @@ public class SpawnCommand implements CommandExecutor {
         this.messageManager = messageManager;
         this.spawnTeleport = spawnTeleport;
 
-        this.spawnTeleport = new SpawnTeleport(plugin);
-        this.commandCooldown = new CommandCooldown(plugin);
-        this.commandDelay = new CommandDelay(plugin);
+        this.commandCooldown = commandCooldown;
+        this.commandDelay = commandDelay;
     }
 
     @Override
