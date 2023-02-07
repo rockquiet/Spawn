@@ -1,10 +1,10 @@
 package me.rockquiet.spawn.commands;
 
 import me.rockquiet.spawn.Spawn;
-import me.rockquiet.spawn.configuration.ConfigManager;
+import me.rockquiet.spawn.configuration.FileManager;
 import me.rockquiet.spawn.configuration.MessageManager;
 import me.rockquiet.spawn.teleport.SpawnTeleport;
-import org.bukkit.configuration.Configuration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,24 +19,30 @@ import java.util.UUID;
 
 public class CommandDelay implements Listener {
 
+    private static final Map<UUID, BukkitTask> delay = new HashMap<>();
     private final Spawn plugin;
-    private final ConfigManager configManager;
+    private final FileManager fileManager;
     private final MessageManager messageManager;
     private final SpawnTeleport spawnTeleport;
 
-    public CommandDelay(Spawn plugin) {
+    public CommandDelay(Spawn plugin,
+                        FileManager fileManager,
+                        MessageManager messageManager,
+                        SpawnTeleport spawnTeleport) {
         this.plugin = plugin;
-        this.configManager = new ConfigManager(plugin);
-        this.messageManager = new MessageManager(plugin);
-        this.spawnTeleport = new SpawnTeleport(plugin);
+        this.fileManager = fileManager;
+        this.messageManager = messageManager;
+        this.spawnTeleport = spawnTeleport;
     }
 
-    private static final Map<UUID, BukkitTask> delay = new HashMap<>();
-
     public int delayTime() {
-        final Configuration config = configManager.getFile("config.yml");
+        YamlConfiguration config = fileManager.getConfig();
 
-        return config.getInt("teleport-delay");
+        if (config.getBoolean("teleport-delay.enabled")) {
+            return config.getInt("teleport-delay.seconds");
+        } else {
+            return 0;
+        }
     }
 
     public void runDelay(Player player) {
@@ -45,6 +51,7 @@ public class CommandDelay implements Listener {
             if (!delay.containsKey(playerUUID)) {
                 delay.put(playerUUID, new BukkitRunnable() {
                     int delayRemaining = delayTime();
+
                     @Override
                     public void run() {
                         if (delayRemaining <= delayTime() && delayRemaining >= 1) { // runs until timer reached 1
@@ -65,13 +72,13 @@ public class CommandDelay implements Listener {
 
     @EventHandler
     public void onMove(PlayerMoveEvent event) {
-        final Configuration config = configManager.getFile("config.yml");
+        YamlConfiguration config = fileManager.getConfig();
 
         Player player = event.getPlayer();
         UUID playerUUID = player.getUniqueId();
         BukkitTask delayTask = delay.get(playerUUID);
 
-        if (delay.containsKey(playerUUID) && config.getBoolean("cancel-on-move") && !player.hasPermission("spawn.bypass.cancel-on-move")) {
+        if (delay.containsKey(playerUUID) && config.getBoolean("teleport-delay.cancel-on-move") && !player.hasPermission("spawn.bypass.cancel-on-move")) {
             delayTask.cancel();
             delay.remove(playerUUID);
             messageManager.sendMessageToPlayer(player, "teleport-canceled");

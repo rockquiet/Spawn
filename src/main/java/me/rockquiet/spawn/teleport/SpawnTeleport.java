@@ -1,26 +1,28 @@
 package me.rockquiet.spawn.teleport;
 
 import me.rockquiet.spawn.Spawn;
-import me.rockquiet.spawn.configuration.ConfigManager;
+import me.rockquiet.spawn.configuration.FileManager;
 import me.rockquiet.spawn.configuration.MessageManager;
 import org.bukkit.*;
-import org.bukkit.configuration.Configuration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 public class SpawnTeleport {
 
     private final Spawn plugin;
-    private final ConfigManager configManager;
+    private final FileManager fileManager;
     private final MessageManager messageManager;
 
-    public SpawnTeleport(Spawn plugin) {
+    public SpawnTeleport(Spawn plugin,
+                         FileManager fileManager,
+                         MessageManager messageManager) {
         this.plugin = plugin;
-        this.configManager = new ConfigManager(plugin);
-        this.messageManager = new MessageManager(plugin);
+        this.fileManager = fileManager;
+        this.messageManager = messageManager;
     }
 
     public Location getSpawn() {
-        final Configuration location = configManager.getFile("location.yml");
+        YamlConfiguration location = fileManager.getLocation();
 
         World world = Bukkit.getWorld(location.getString("spawn.world"));
         double x = location.getDouble("spawn.x");
@@ -33,16 +35,16 @@ public class SpawnTeleport {
     }
 
     public boolean spawnExists() {
-        final Configuration location = configManager.getFile("location.yml");
+        YamlConfiguration location = fileManager.getLocation();
 
         return (location.getString("spawn.world") != null && location.getString("spawn.x") != null && location.getString("spawn.y") != null && location.getString("spawn.z") != null && location.getString("spawn.yaw") != null && location.getString("spawn.pitch") != null);
     }
 
     public void teleportPlayer(Player player) {
-        final Configuration config = configManager.getFile("config.yml");
+        YamlConfiguration config = fileManager.getConfig();
 
         if (spawnExists()) {
-            if (!config.getBoolean("fall-damage")) {
+            if (!config.getBoolean("fall-damage.enabled")) {
                 player.setFallDistance(0F);
             }
             player.teleport(getSpawn());
@@ -56,27 +58,31 @@ public class SpawnTeleport {
     }
 
     public void spawnEffects(Player player) {
-        final Configuration config = configManager.getFile("config.yml");
+        YamlConfiguration config = fileManager.getConfig();
 
         // Particles
-        try {
-            if (!Bukkit.getVersion().contains("1.8")) {
-                player.spawnParticle(Particle.valueOf(config.getString("particle")), getSpawn(), config.getInt("particle-amount"));
-            } else {
-                // workaround for 1.8
-                for (int p = 0; p <= config.getInt("particle-amount"); p++) {
-                    Bukkit.getWorld(getSpawn().getWorld().getName()).playEffect(getSpawn(), Effect.valueOf(config.getString("particle")), 0);
+        if (config.getBoolean("particles.enabled")) {
+            try {
+                if (!Bukkit.getVersion().contains("1.8")) {
+                    player.spawnParticle(Particle.valueOf(config.getString("particles.particle")), getSpawn(), config.getInt("particles.amount"));
+                } else {
+                    // workaround for 1.8
+                    for (int p = 0; p <= config.getInt("particles.amount"); p++) {
+                        Bukkit.getWorld(getSpawn().getWorld().getName()).playEffect(getSpawn(), Effect.valueOf(config.getString("particles.particle")), 0);
+                    }
                 }
+            } catch (Exception e) {
+                plugin.getLogger().warning("The particle " + config.getString("particles.particle") + " does not exist in this Minecraft version!");
             }
-        } catch (Exception e) {
-            plugin.getLogger().warning("The particle " + config.getString("particle") + " does not exist in this Minecraft version!");
         }
 
         // Sounds
-        try {
-            player.playSound(getSpawn(), Sound.valueOf(config.getString("sound")), (float) config.getDouble("sound-volume"), (float) config.getDouble("sound-pitch"));
-        } catch (Exception e) {
-            plugin.getLogger().warning("The sound " + config.getString("sound") + " does not exist in this Minecraft version!");
+        if (config.getBoolean("sounds.enabled")) {
+            try {
+                player.playSound(getSpawn(), Sound.valueOf(config.getString("sounds.sound")), (float) config.getDouble("sounds.volume"), (float) config.getDouble("sounds.pitch"));
+            } catch (Exception e) {
+                plugin.getLogger().warning("The sound " + config.getString("sounds.sound") + " does not exist in this Minecraft version!");
+            }
         }
     }
 }

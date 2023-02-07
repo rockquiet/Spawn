@@ -1,7 +1,6 @@
 package me.rockquiet.spawn.commands;
 
-import me.rockquiet.spawn.Spawn;
-import me.rockquiet.spawn.configuration.ConfigManager;
+import me.rockquiet.spawn.configuration.FileManager;
 import me.rockquiet.spawn.configuration.MessageManager;
 import me.rockquiet.spawn.teleport.SpawnTeleport;
 import org.bukkit.Bukkit;
@@ -17,16 +16,21 @@ import java.util.concurrent.TimeUnit;
 
 public class SpawnCommand implements CommandExecutor {
 
-    private final ConfigManager configManager;
+    private final FileManager fileManager;
     private final MessageManager messageManager;
 
     private final SpawnTeleport spawnTeleport;
     private final CommandCooldown commandCooldown;
     private final CommandDelay commandDelay;
 
-    public SpawnCommand(Spawn plugin) {
-        this.configManager = new ConfigManager(plugin);
-        this.messageManager = new MessageManager(plugin);
+    public SpawnCommand(FileManager fileManager,
+                        MessageManager messageManager,
+                        SpawnTeleport spawnTeleport,
+                        CommandCooldown commandCooldown,
+                        CommandDelay commandDelay) {
+        this.fileManager = fileManager;
+        this.messageManager = messageManager;
+        this.spawnTeleport = spawnTeleport;
 
         this.spawnTeleport = new SpawnTeleport(plugin);
         this.commandCooldown = new CommandCooldown(plugin);
@@ -35,15 +39,16 @@ public class SpawnCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        final YamlConfiguration location = configManager.getFile("location.yml");
+        YamlConfiguration config = fileManager.getConfig();
+        YamlConfiguration location = fileManager.getLocation();
 
         if (args.length == 0 && sender instanceof Player) {
             Player player = (Player) sender;
             UUID playerUUID = player.getUniqueId();
             // teleport to spawn - /spawn
             if (player.hasPermission("spawn.use")) {
-                if (player.hasPermission("spawn.bypass.cooldown")) {
-                    if (player.hasPermission("spawn.bypass.delay")) {
+                if (player.hasPermission("spawn.bypass.cooldown") || !config.getBoolean("teleport-cooldown.enabled")) {
+                    if (player.hasPermission("spawn.bypass.delay") || !config.getBoolean("teleport-delay.enabled")) {
                         spawnTeleport.teleportPlayer(player);
                     } else {
                         commandDelay.runDelay(player);
@@ -70,9 +75,9 @@ public class SpawnCommand implements CommandExecutor {
                         location.set("spawn.yaw", player.getLocation().getYaw());
                         location.set("spawn.pitch", player.getLocation().getPitch());
 
-                        configManager.saveFile(location, "location.yml");
+                        fileManager.save(location, "location.yml");
 
-                        configManager.getFile("location.yml");
+                        fileManager.reloadLocation();
 
                         messageManager.sendMessageToPlayer(player, "spawn-set");
                     } else {
@@ -86,14 +91,14 @@ public class SpawnCommand implements CommandExecutor {
                 if (sender instanceof Player) {
                     Player player = (Player) sender;
                     if (player.hasPermission("spawn.reload")) {
-                        configManager.reloadAllFiles();
+                        fileManager.reloadAll();
 
                         messageManager.sendMessageToPlayer(player, "reload");
                     } else {
                         messageManager.sendMessageToPlayer(player, "no-permission");
                     }
                 } else if (sender instanceof ConsoleCommandSender) {
-                    configManager.reloadAllFiles();
+                    fileManager.reloadAll();
 
                     messageManager.sendMessageToSender(sender, "reload");
                 }

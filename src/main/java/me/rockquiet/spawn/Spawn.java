@@ -3,36 +3,47 @@ package me.rockquiet.spawn;
 import me.rockquiet.spawn.commands.CommandDelay;
 import me.rockquiet.spawn.commands.SpawnCommand;
 import me.rockquiet.spawn.commands.TabComplete;
-import me.rockquiet.spawn.configuration.ConfigManager;
+import me.rockquiet.spawn.configuration.FileManager;
+import me.rockquiet.spawn.configuration.FileUpdater;
+import me.rockquiet.spawn.configuration.MessageManager;
 import me.rockquiet.spawn.events.TeleportOnJoinEvents;
 import me.rockquiet.spawn.events.TeleportOnRespawnEvent;
 import me.rockquiet.spawn.events.TeleportOutOfVoidEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.command.TabCompleter;
-import org.bukkit.configuration.Configuration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Spawn extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        final ConfigManager configManager = new ConfigManager(this);
-        configManager.updateFile("config.yml", 1);
-        configManager.updateFile("languages/messages-en.yml", 1);
-        configManager.updateFile("languages/messages-de.yml", 1);
-        configManager.updateFile("languages/messages-custom.yml", 1);
+        FileManager fileManager = new FileManager(this);
+        FileUpdater fileUpdater = new FileUpdater(this, fileManager);
+        MessageManager messageManager = new MessageManager(fileManager);
 
+        SpawnTeleport spawnTeleport = new SpawnTeleport(this, fileManager, messageManager);
+        CommandCooldown commandCooldown = new CommandCooldown(fileManager);
+        CommandDelay commandDelay = new CommandDelay(this, fileManager, messageManager, spawnTeleport);
+
+        // create all files and update them if outdated
+        fileUpdater.updateFile("config.yml", 1);
+        fileUpdater.updateFile("messages.yml", 1);
+
+        // register commands with tabcomplete
         TabCompleter tc = new TabComplete();
-        getCommand("spawn").setExecutor(new SpawnCommand(this));
+        getCommand("spawn").setExecutor(new SpawnCommand(fileManager, messageManager, spawnTeleport, commandCooldown, commandDelay));
         getCommand("spawn").setTabCompleter(tc);
 
-        Bukkit.getPluginManager().registerEvents(new TeleportOnJoinEvents(this), this);
-        Bukkit.getPluginManager().registerEvents(new TeleportOutOfVoidEvent(this), this);
-        Bukkit.getPluginManager().registerEvents(new TeleportOnRespawnEvent(this), this);
-        Bukkit.getPluginManager().registerEvents(new CommandDelay(this), this);
+        // register events
+        Bukkit.getPluginManager().registerEvents(new TeleportOnJoinEvents(fileManager, spawnTeleport), this);
+        Bukkit.getPluginManager().registerEvents(new TeleportOutOfVoidEvent(fileManager, spawnTeleport), this);
+        Bukkit.getPluginManager().registerEvents(new TeleportOnRespawnEvent(fileManager, messageManager, spawnTeleport), this);
+        Bukkit.getPluginManager().registerEvents(new CommandDelay(this, fileManager, messageManager, spawnTeleport), this);
 
-        final Configuration config = configManager.getFile("config.yml");
-        if (config.getBoolean("update-checks")) {
+        // check for new plugin versions
+        YamlConfiguration config = fileManager.getConfig();
+        if (config.getBoolean("plugin.update-checks")) {
             new UpdateChecker(this, 106188).getVersion(version -> {
                 if (!this.getDescription().getVersion().equals(version)) {
                     getLogger().info("An update is available! Latest version: " + version);

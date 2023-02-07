@@ -5,69 +5,68 @@
 # |____/| .__/ \__,_| \_/\_/ |_| |_| |_.__/ \__, | |_|  \___/ \___|_|\_\__, |\__,_|_|\___|\__|
 #       |_|                                 |___/                         |_|
 # Wiki - https://github.com/rockquiet/Spawn/wiki
-#
-#
-# currently supported languages: en (English), de (German)
-# if you want to change the messages use "custom"
-# -> If you want to help translating feel free to contribute :)
-language: en
-#
+
+plugin:
+  # if the plugin should search for updates on server start
+  update-checks: true
+
 # toggle if the player receives fall damage on teleport
-fall-damage: false
-#
-# toggle if the player should be teleported to spawn on join
-teleport-on-join: false
-# toggle if the player should be teleported to spawn only on first join
-teleport-on-first-join: false
-#
-# TELEPORT COOLDOWN
-# how long in SECONDS the player has to wait before teleporting to spawn again
-# to disable cooldown set it to: 0
-teleport-cooldown: 10
-#
-# TELEPORT DELAY
-# the delay in SECONDS until the player gets teleported to spawn
-# to disable cooldown set it to: 0
-teleport-delay: 3
-# toggle if the teleport should be canceled if the player moves
-cancel-on-move: true
-#
-# VOID TELEPORT
-# toggle if the player should be teleported to spawn if falling in void
-teleport-out-of-void: false
-# the height at which the player gets teleported out of the void to spawn
-# Minecraft playable Altitude: -64 -> 320 [integer]
-void-check-height: -64
-#
-# DEATH TELEPORT
+fall-damage:
+  enabled: false
+
+# teleport the player to spawn on join
+teleport-on-join:
+  enabled: false
+  # teleport the player ONLY on first join
+  only-first-join: false
+
+# cooldown for /spawn command
+teleport-cooldown:
+  enabled: true
+  # how long in SECONDS the player has to wait before teleporting to spawn again
+  seconds: 10
+
+# delay until teleport for /spawn command
+teleport-delay:
+  enabled: true
+  # the delay in SECONDS until the player gets teleported to spawn
+  seconds: 3
+  # toggle if the teleport should be canceled if the player moves
+  cancel-on-move: true
+
+# toggle if the player should be teleported to spawn if falling into the void
+teleport-out-of-void:
+  enabled: false
+  # the height at which the player gets teleported out of the void to spawn
+  # Minecraft playable Altitude: -64 -> 320 [integer]
+  check-height: -64
+
 # toggle if the player should be teleported to spawn if they die
-teleport-on-respawn: false
-# toggle if the bed spawn-point should be ignored
-ignore-bed-spawn: false
-# toggle if the respawn anchor spawn-point should be ignored
-ignore-anchor-spawn: false
-#
-# PARTICLES
+teleport-on-respawn:
+  enabled: false
+  # toggle if the bed spawn-point should be ignored
+  ignore-bed-spawn: false
+  # toggle if the respawn anchor spawn-point should be ignored
+  ignore-anchor-spawn: false
+
 # spawns particles on teleport
-# all particles: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Particle.html
-# use these for 1.8: https://hub.spigotmc.org/nexus/service/local/repositories/snapshots/archive/org/spigotmc/spigot-api/1.8.8-R0.1-SNAPSHOT/spigot-api-1.8.8-R0.1-20160221.082514-43-javadoc.jar/!/org/bukkit/Effect.html
-particle: PORTAL
-# the number of particles which get used
-# to disable particles set it to: -1
-particle-amount: 40
-#
-# SOUNDS
-# plays a sound on teleport
-# sounds for Minecraft 1.8 - 1.19: https://www.andre601.ch/Spigot-Sounds/sounds/
-sound: ENTITY_ENDERMAN_TELEPORT
-# the volume of the sound
-# to disable sounds set it to: 0.0
-sound-volume: 1.0
-# the pitch of the sound
-sound-pitch: 1.0
-#
-# if the plugin should search for updates on server start
-update-checks: true
-#
+particles:
+  enabled: true
+  # all particles: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Particle.html
+  # use these for 1.8: https://hub.spigotmc.org/nexus/service/local/repositories/snapshots/archive/org/spigotmc/spigot-api/1.8.8-R0.1-SNAPSHOT/spigot-api-1.8.8-R0.1-20160221.082514-43-javadoc.jar/!/org/bukkit/Effect.html
+  particle: PORTAL
+  # the number of particles which get used
+  amount: 40
+
+# play a sound on teleport
+sounds:
+  enabled: true
+  # sounds for Minecraft 1.8 - 1.19: https://www.andre601.ch/Spigot-Sounds/sounds
+  sound: ENTITY_ENDERMAN_TELEPORT
+  # the volume of the sound
+  volume: 1.0
+  # the pitch of the sound
+  pitch: 1.0
+
 # used for auto updating this file, do not change
 file-version: 1

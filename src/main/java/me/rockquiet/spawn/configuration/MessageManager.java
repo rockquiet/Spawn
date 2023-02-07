@@ -3,19 +3,19 @@ package me.rockquiet.spawn.configuration;
 import me.rockquiet.spawn.Spawn;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.Configuration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 public class MessageManager {
 
-    private final ConfigManager configManager;
+    private final FileManager fileManager;
 
-    public MessageManager(Spawn plugin) {
-        this.configManager = new ConfigManager(plugin);
+    public MessageManager(FileManager fileManager) {
+        this.fileManager = fileManager;
     }
 
     public boolean messageExists(String messagePath) {
-        final Configuration messages = configManager.getLanguageFile();
+        YamlConfiguration messages = fileManager.getMessages();
 
         return (!messages.getString(messagePath).isEmpty() && messages.getString(messagePath) != null);
     }
