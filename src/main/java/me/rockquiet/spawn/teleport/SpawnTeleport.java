@@ -51,9 +51,9 @@ public class SpawnTeleport {
 
             spawnEffects(player);
 
-            messageManager.sendMessageToPlayer(player, "teleport");
+            messageManager.sendMessage(player, "teleport");
         } else {
-            messageManager.sendMessageToPlayer(player, "no-spawn");
+            messageManager.sendMessage(player, "no-spawn");
         }
     }
 

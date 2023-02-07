@@ -55,7 +55,7 @@ public class CommandDelay implements Listener {
                     @Override
                     public void run() {
                         if (delayRemaining <= delayTime() && delayRemaining >= 1) { // runs until timer reached 1
-                            messageManager.sendPlaceholderMessageToPlayer(player, "delay-left", "%delay%", String.valueOf(delayRemaining));
+                            messageManager.sendMessage(player, "delay-left", "%delay%", String.valueOf(delayRemaining));
                         } else if (delayRemaining == 0) { // runs once
                             spawnTeleport.teleportPlayer(player);
                             delay.remove(playerUUID);
@@ -66,7 +66,7 @@ public class CommandDelay implements Listener {
                 }.runTaskTimer(plugin, 0, 20));
             }
         } else {
-            messageManager.sendMessageToPlayer(player, "no-spawn");
+            messageManager.sendMessage(player, "no-spawn");
         }
     }
 
@@ -81,7 +81,7 @@ public class CommandDelay implements Listener {
         if (delay.containsKey(playerUUID) && config.getBoolean("teleport-delay.cancel-on-move") && !player.hasPermission("spawn.bypass.cancel-on-move")) {
             delayTask.cancel();
             delay.remove(playerUUID);
-            messageManager.sendMessageToPlayer(player, "teleport-canceled");
+            messageManager.sendMessage(player, "teleport-canceled");
         }
     }
 

@@ -58,7 +58,7 @@ public class SpawnCommand implements CommandExecutor {
 
                     commandDelay.runDelay(player);
                 } else {
-                    messageManager.sendPlaceholderMessageToPlayer(player, "cooldown-left", "%cooldown%", String.valueOf(commandCooldown.cooldownTime() - TimeUnit.MILLISECONDS.toSeconds(commandCooldown.getCooldown(playerUUID))));
+                    messageManager.sendMessage(player, "cooldown-left", "%cooldown%", String.valueOf(commandCooldown.cooldownTime() - TimeUnit.MILLISECONDS.toSeconds(commandCooldown.getCooldown(playerUUID))));
                 }
             }
         } else if (args.length == 1) {
@@ -79,60 +79,60 @@ public class SpawnCommand implements CommandExecutor {
 
                         fileManager.reloadLocation();
 
-                        messageManager.sendMessageToPlayer(player, "spawn-set");
+                        messageManager.sendMessage(player, "spawn-set");
                     } else {
-                        messageManager.sendMessageToPlayer(player, "no-permission");
+                        messageManager.sendMessage(player, "no-permission");
                     }
                 } else if (sender instanceof ConsoleCommandSender) {
-                    messageManager.sendMessageToSender(sender, "no-player");
+                    messageManager.sendMessage(sender, "no-player");
                 }
-            // reload config - /spawn reload
+                // reload config - /spawn reload
             } else if (args[0].equalsIgnoreCase("reload")) {
                 if (sender instanceof Player) {
                     Player player = (Player) sender;
                     if (player.hasPermission("spawn.reload")) {
                         fileManager.reloadAll();
 
-                        messageManager.sendMessageToPlayer(player, "reload");
+                        messageManager.sendMessage(player, "reload");
                     } else {
-                        messageManager.sendMessageToPlayer(player, "no-permission");
+                        messageManager.sendMessage(player, "no-permission");
                     }
                 } else if (sender instanceof ConsoleCommandSender) {
                     fileManager.reloadAll();
 
-                    messageManager.sendMessageToSender(sender, "reload");
+                    messageManager.sendMessage(sender, "reload");
                 }
-            // teleport another player to spawn - /spawn %player%
+                // teleport another player to spawn - /spawn %player%
             } else if (target != null && target.isOnline()) {
                 if (sender instanceof Player) {
                     Player player = (Player) sender;
                     if (player.hasPermission("spawn.others")) {
                         spawnTeleport.teleportPlayer(target);
 
-                        messageManager.sendPlaceholderMessageToPlayer(player, "teleport-other", "%player%", target.getName());
+                        messageManager.sendMessage(player, "teleport-other", "%player%", target.getName());
                     } else {
-                        messageManager.sendMessageToPlayer(player, "no-permission");
+                        messageManager.sendMessage(player, "no-permission");
                     }
                 } else if (sender instanceof ConsoleCommandSender) {
                     spawnTeleport.teleportPlayer(target);
 
-                    messageManager.sendPlaceholderMessageToSender(sender, "teleport-other", "%player%", target.getName());
+                    messageManager.sendMessage(sender, "teleport-other", "%player%", target.getName());
                 }
-            // target player does not exist - /spawn %player%
+                // target player does not exist - /spawn %player%
             } else {
                 if (sender instanceof Player) {
                     Player player = (Player) sender;
                     if (player.hasPermission("spawn.others")) {
-                        messageManager.sendPlaceholderMessageToPlayer(player, "player-not-found", "%player%", args[0]);
+                        messageManager.sendMessage(player, "player-not-found", "%player%", args[0]);
                     } else {
-                        messageManager.sendMessageToPlayer(player, "no-permission");
+                        messageManager.sendMessage(player, "no-permission");
                     }
                 } else if (sender instanceof ConsoleCommandSender) {
-                    messageManager.sendPlaceholderMessageToSender(sender, "player-not-found", "%player%", args[0]);
+                    messageManager.sendMessage(sender, "player-not-found", "%player%", args[0]);
                 }
             }
         } else {
-            messageManager.sendMessageToSender(sender, "no-player");
+            messageManager.sendMessage(sender, "no-player");
         }
         return false;
     }

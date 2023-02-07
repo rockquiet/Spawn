@@ -36,10 +36,10 @@ public class TeleportOnRespawnEvent implements Listener {
 
                     spawnTeleport.spawnEffects(player);
 
-                    messageManager.sendMessageToPlayer(player, "teleport");
+                    messageManager.sendMessage(player, "teleport");
                 }
             } else {
-                messageManager.sendMessageToPlayer(player, "no-spawn");
+                messageManager.sendMessage(player, "no-spawn");
             }
         }
     }

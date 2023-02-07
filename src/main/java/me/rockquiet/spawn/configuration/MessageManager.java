@@ -1,6 +1,5 @@
 package me.rockquiet.spawn.configuration;
 
-import me.rockquiet.spawn.Spawn;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -17,42 +16,40 @@ public class MessageManager {
     public boolean messageExists(String messagePath) {
         YamlConfiguration messages = fileManager.getMessages();
 
-        return (!messages.getString(messagePath).isEmpty() && messages.getString(messagePath) != null);
+        return (messages.getString(messagePath) != null && !messages.getString(messagePath).isEmpty());
     }
 
-    public void sendMessageToPlayer(Player player, String messagePath) {
-        final Configuration messages = configManager.getLanguageFile();
+    private String getMessage(String messagePath) {
+        YamlConfiguration messages = fileManager.getMessages();
 
+        return messages.getString(messagePath).replace("%prefix%", messages.getString("prefix"));
+    }
+
+    public void sendMessage(Player player, String messagePath) {
         if (messageExists(messagePath)) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', messages.getString(messagePath).replace("%prefix%", messages.getString("prefix"))));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', getMessage(messagePath)));
         }
     }
 
-    public void sendPlaceholderMessageToPlayer(Player player, String messagePath, String placeholder, String replacePlaceholder) {
-        final Configuration messages = configManager.getLanguageFile();
-
+    public void sendMessage(Player player, String messagePath, String placeholder, String replacePlaceholder) {
         if (messageExists(messagePath)) {
-            String placeholderMessage = messages.getString(messagePath).replace(placeholder, replacePlaceholder);
+            String placeholderMessage = getMessage(messagePath).replace(placeholder, replacePlaceholder);
 
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', placeholderMessage.replace("%prefix%", messages.getString("prefix"))));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', placeholderMessage));
         }
     }
 
-    public void sendMessageToSender(CommandSender sender, String messagePath) {
-        final Configuration messages = configManager.getLanguageFile();
-
+    public void sendMessage(CommandSender sender, String messagePath) {
         if (messageExists(messagePath)) {
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', messages.getString(messagePath).replace("%prefix%", messages.getString("prefix"))));
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', getMessage(messagePath)));
         }
     }
 
-    public void sendPlaceholderMessageToSender(CommandSender sender, String messagePath, String placeholder, String replacePlaceholder) {
-        final Configuration messages = configManager.getLanguageFile();
-
+    public void sendMessage(CommandSender sender, String messagePath, String placeholder, String replacePlaceholder) {
         if (messageExists(messagePath)) {
-            String placeholderMessage = messages.getString(messagePath).replace(placeholder, replacePlaceholder);
+            String placeholderMessage = getMessage(messagePath).replace(placeholder, replacePlaceholder);
 
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', placeholderMessage.replace("%prefix%", messages.getString("prefix"))));
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', placeholderMessage));
         }
     }
 }
