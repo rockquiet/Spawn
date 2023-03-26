@@ -31,7 +31,11 @@ public class TeleportOnRespawnEvent implements Listener {
 
         if (config.getBoolean("teleport-on-respawn.enabled")) {
             if (spawnTeleport.spawnExists()) {
-                if (player.getBedSpawnLocation() == null || (config.getBoolean("teleport-on-respawn.ignore-bed-spawn") && event.isBedSpawn()) || (config.getBoolean("teleport-on-respawn.ignore-anchor-spawn") && event.isAnchorSpawn())) {
+                if ((player.hasPermission("spawn.bypass.world-list") || spawnTeleport.isEnabledInWorld(player.getWorld()))
+                        && player.getBedSpawnLocation() == null
+                        || (config.getBoolean("teleport-on-respawn.ignore-bed-spawn") && event.isBedSpawn())
+                        || (config.getBoolean("teleport-on-respawn.ignore-anchor-spawn") && event.isAnchorSpawn())
+                ) {
                     event.setRespawnLocation(spawnTeleport.getSpawn());
 
                     spawnTeleport.spawnEffects(player);

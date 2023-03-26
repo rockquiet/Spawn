@@ -72,16 +72,18 @@ public class CommandDelay implements Listener {
 
     @EventHandler
     public void onMove(PlayerMoveEvent event) {
-        YamlConfiguration config = fileManager.getConfig();
-
         Player player = event.getPlayer();
         UUID playerUUID = player.getUniqueId();
-        BukkitTask delayTask = delay.get(playerUUID);
+        if (delay.containsKey(event.getPlayer().getUniqueId()) && (event.getFrom().getX() != event.getTo().getX() || event.getFrom().getY() != event.getTo().getY() || event.getFrom().getZ() != event.getTo().getZ())) {
+            YamlConfiguration config = fileManager.getConfig();
 
-        if (delay.containsKey(playerUUID) && config.getBoolean("teleport-delay.cancel-on-move") && !player.hasPermission("spawn.bypass.cancel-on-move")) {
-            delayTask.cancel();
-            delay.remove(playerUUID);
-            messageManager.sendMessage(player, "teleport-canceled");
+            BukkitTask delayTask = delay.get(playerUUID);
+
+            if (delay.containsKey(playerUUID) && config.getBoolean("teleport-delay.cancel-on-move") && !player.hasPermission("spawn.bypass.cancel-on-move")) {
+                delayTask.cancel();
+                delay.remove(playerUUID);
+                messageManager.sendMessage(player, "teleport-canceled");
+            }
         }
     }
 

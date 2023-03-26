@@ -29,6 +29,8 @@ reload: '%prefix% &aAll files reloaded successfully.'
 #
 # no spawn set in config - set one with /spawn set
 no-spawn: '%prefix% &cNo Spawn is set!'
+# plugin not enabled in current world
+world-disabled: '%prefix% &cYou are not allowed to use this here!'
 # no permissions for command
 no-permission: '%prefix% &cNo permissions!'
 # command cannot be used in console

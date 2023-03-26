@@ -21,12 +21,16 @@ public class TeleportOutOfVoidEvent implements Listener {
 
     @EventHandler
     public void playerInVoid(PlayerMoveEvent event) {
-        YamlConfiguration config = fileManager.getConfig();
+        if ((event.getFrom().getY() != event.getTo().getY()) && (event.getFrom().distance(event.getTo()) > 0.1)) {
+            YamlConfiguration config = fileManager.getConfig();
+            Player player = event.getPlayer();
 
-        Player player = event.getPlayer();
-
-        if (config.getBoolean("teleport-out-of-void.enabled") && (player.getLocation().getBlockY() <= config.getInt("teleport-out-of-void.check-height"))) {
-            spawnTeleport.teleportPlayer(player);
+            if ((player.hasPermission("spawn.bypass.world-list") || spawnTeleport.isEnabledInWorld(player.getWorld()))
+                    && config.getBoolean("teleport-out-of-void.enabled")
+                    && (player.getLocation().getBlockY() <= config.getInt("teleport-out-of-void.check-height"))
+            ) {
+                spawnTeleport.teleportPlayer(player);
+            }
         }
     }
 }

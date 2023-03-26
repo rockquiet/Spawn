@@ -24,7 +24,11 @@ public class TeleportOnJoinEvents implements Listener {
         YamlConfiguration config = fileManager.getConfig();
 
         Player player = event.getPlayer();
-        if ((config.getBoolean("teleport-on-join.enabled") && !config.getBoolean("teleport-on-join.only-first-join")) || (!player.hasPlayedBefore() && config.getBoolean("teleport-on-join.enabled") && config.getBoolean("teleport-on-join.only-first-join"))) {
+
+        if ((player.hasPermission("spawn.bypass.world-list") || spawnTeleport.isEnabledInWorld(player.getWorld()))
+                && (config.getBoolean("teleport-on-join.enabled") && !config.getBoolean("teleport-on-join.only-first-join"))
+                || (!player.hasPlayedBefore() && config.getBoolean("teleport-on-join.enabled") && config.getBoolean("teleport-on-join.only-first-join"))
+        ) {
             spawnTeleport.teleportPlayer(player);
         }
     }
