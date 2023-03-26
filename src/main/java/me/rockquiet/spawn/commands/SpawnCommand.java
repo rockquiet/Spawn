@@ -1,7 +1,7 @@
 package me.rockquiet.spawn.commands;
 
 import me.rockquiet.spawn.configuration.FileManager;
-import me.rockquiet.spawn.configuration.MessageManager;
+import me.rockquiet.spawn.configuration.Messages;
 import me.rockquiet.spawn.teleport.SpawnTeleport;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -17,14 +17,14 @@ import java.util.concurrent.TimeUnit;
 public class SpawnCommand implements CommandExecutor {
 
     private final FileManager fileManager;
-    private final MessageManager messageManager;
+    private final Messages messageManager;
 
     private final SpawnTeleport spawnTeleport;
     private final CommandCooldown commandCooldown;
     private final CommandDelay commandDelay;
 
     public SpawnCommand(FileManager fileManager,
-                        MessageManager messageManager,
+                        Messages messageManager,
                         SpawnTeleport spawnTeleport,
                         CommandCooldown commandCooldown,
                         CommandDelay commandDelay) {

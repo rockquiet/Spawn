@@ -2,7 +2,7 @@ package me.rockquiet.spawn.teleport;
 
 import me.rockquiet.spawn.Spawn;
 import me.rockquiet.spawn.configuration.FileManager;
-import me.rockquiet.spawn.configuration.MessageManager;
+import me.rockquiet.spawn.configuration.Messages;
 import org.bukkit.*;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -11,11 +11,11 @@ public class SpawnTeleport {
 
     private final Spawn plugin;
     private final FileManager fileManager;
-    private final MessageManager messageManager;
+    private final Messages messageManager;
 
     public SpawnTeleport(Spawn plugin,
                          FileManager fileManager,
-                         MessageManager messageManager) {
+                         Messages messageManager) {
         this.plugin = plugin;
         this.fileManager = fileManager;
         this.messageManager = messageManager;

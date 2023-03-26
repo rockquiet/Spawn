@@ -2,7 +2,7 @@ package me.rockquiet.spawn.commands;
 
 import me.rockquiet.spawn.Spawn;
 import me.rockquiet.spawn.configuration.FileManager;
-import me.rockquiet.spawn.configuration.MessageManager;
+import me.rockquiet.spawn.configuration.Messages;
 import me.rockquiet.spawn.teleport.SpawnTeleport;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -22,12 +22,12 @@ public class CommandDelay implements Listener {
     private static final Map<UUID, BukkitTask> delay = new HashMap<>();
     private final Spawn plugin;
     private final FileManager fileManager;
-    private final MessageManager messageManager;
+    private final Messages messageManager;
     private final SpawnTeleport spawnTeleport;
 
     public CommandDelay(Spawn plugin,
                         FileManager fileManager,
-                        MessageManager messageManager,
+                        Messages messageManager,
                         SpawnTeleport spawnTeleport) {
         this.plugin = plugin;
         this.fileManager = fileManager;

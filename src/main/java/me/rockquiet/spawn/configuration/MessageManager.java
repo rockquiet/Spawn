@@ -1,11 +1,13 @@
 package me.rockquiet.spawn.configuration;
 
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
-public class MessageManager {
+public class MessageManager implements Messages {
 
     private final FileManager fileManager;
 
@@ -13,43 +15,49 @@ public class MessageManager {
         this.fileManager = fileManager;
     }
 
+    @Override
     public boolean messageExists(String messagePath) {
         YamlConfiguration messages = fileManager.getMessages();
 
         return (messages.getString(messagePath) != null && !messages.getString(messagePath).isEmpty());
     }
 
-    private String getMessage(String messagePath) {
+    @Override
+    public String getMessage(String messagePath) {
         YamlConfiguration messages = fileManager.getMessages();
 
         return messages.getString(messagePath).replace("%prefix%", messages.getString("prefix"));
     }
 
+    @Override
     public void sendMessage(Player player, String messagePath) {
         if (messageExists(messagePath)) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', getMessage(messagePath)));
+            Component legacyToMiniMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(getMessage(messagePath));
+            player.sendMessage(MiniMessage.miniMessage().deserialize(MiniMessage.miniMessage().serialize(legacyToMiniMessage).replace("\\", "")));
         }
     }
 
+    @Override
     public void sendMessage(Player player, String messagePath, String placeholder, String replacePlaceholder) {
         if (messageExists(messagePath)) {
-            String placeholderMessage = getMessage(messagePath).replace(placeholder, replacePlaceholder);
-
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', placeholderMessage));
+            Component legacyToMiniMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(getMessage(messagePath).replace(placeholder, replacePlaceholder));
+            player.sendMessage(MiniMessage.miniMessage().deserialize(MiniMessage.miniMessage().serialize(legacyToMiniMessage).replace("\\", "")));
         }
     }
 
+    @Override
     public void sendMessage(CommandSender sender, String messagePath) {
         if (messageExists(messagePath)) {
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', getMessage(messagePath)));
+            Component legacyToMiniMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(getMessage(messagePath));
+            sender.sendMessage(MiniMessage.miniMessage().deserialize(MiniMessage.miniMessage().serialize(legacyToMiniMessage).replace("\\", "")));
         }
     }
 
+    @Override
     public void sendMessage(CommandSender sender, String messagePath, String placeholder, String replacePlaceholder) {
         if (messageExists(messagePath)) {
-            String placeholderMessage = getMessage(messagePath).replace(placeholder, replacePlaceholder);
-
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', placeholderMessage));
+            Component legacyToMiniMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(getMessage(messagePath).replace(placeholder, replacePlaceholder));
+            sender.sendMessage(MiniMessage.miniMessage().deserialize(MiniMessage.miniMessage().serialize(legacyToMiniMessage).replace("\\", "")));
         }
     }
 }

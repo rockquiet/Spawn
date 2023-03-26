@@ -4,9 +4,7 @@ import me.rockquiet.spawn.commands.CommandCooldown;
 import me.rockquiet.spawn.commands.CommandDelay;
 import me.rockquiet.spawn.commands.SpawnCommand;
 import me.rockquiet.spawn.commands.TabComplete;
-import me.rockquiet.spawn.configuration.FileManager;
-import me.rockquiet.spawn.configuration.FileUpdater;
-import me.rockquiet.spawn.configuration.MessageManager;
+import me.rockquiet.spawn.configuration.*;
 import me.rockquiet.spawn.events.TeleportOnJoinEvents;
 import me.rockquiet.spawn.events.TeleportOnRespawnEvent;
 import me.rockquiet.spawn.events.TeleportOutOfVoidEvent;
@@ -16,13 +14,21 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Arrays;
+
 public final class Spawn extends JavaPlugin {
 
     @Override
     public void onEnable() {
         FileManager fileManager = new FileManager(this);
         FileUpdater fileUpdater = new FileUpdater(this, fileManager);
-        MessageManager messageManager = new MessageManager(fileManager);
+
+        Messages messageManager;
+        if (Arrays.stream(Package.getPackages()).noneMatch(aPackage -> aPackage.getName().contains("io.papermc")) || Integer.parseInt(Bukkit.getBukkitVersion().split("\\.")[1]) <= 17) {
+            messageManager = new MessageManagerLegacy(fileManager);
+        } else {
+            messageManager = new MessageManager(fileManager);
+        }
 
         SpawnTeleport spawnTeleport = new SpawnTeleport(this, fileManager, messageManager);
         CommandCooldown commandCooldown = new CommandCooldown(fileManager);

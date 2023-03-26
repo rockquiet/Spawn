@@ -1,5 +1,6 @@
 # Spawn by rockquiet
-# basic formatting with '&' codes is supported
+# MiniMessage formatting is supported on 1.18.2+ Paper based Servers -> https://docs.advntr.dev/minimessage/format.html
+# Legacy formatting is supported -> https://minecraft.fandom.com/wiki/Formatting_codes
 # to disable a message set it to: ''
 #
 # remove %prefix% from a message if it should not use it
