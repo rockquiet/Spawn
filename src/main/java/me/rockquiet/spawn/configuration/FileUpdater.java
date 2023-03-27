@@ -210,15 +210,15 @@ public class FileUpdater {
 
             plugin.getLogger().warning("Successfully converted old " + file);
             plugin.getLogger().warning("Please check if everything converted correctly!");
-            plugin.getLogger().warning("The old " + file + " can found in the backup directory.");
+            plugin.getLogger().warning("The old " + file + " can be found in the backup directory.");
         } else {
             fileManager.backupAndDelete(file, "broken_config.yml");
 
             fileManager.create("config.yml");
             fileManager.create("messages.yml");
 
-            plugin.getLogger().warning(file + " was recreated due to an error!");
-            plugin.getLogger().warning("The broken " + file + " can found in the backup directory.");
+            plugin.getLogger().severe(file + " was recreated due to an error!");
+            plugin.getLogger().severe("The broken " + file + " can be found in the backup directory.");
         }
     }
 }
