@@ -21,6 +21,9 @@ permissions:
   spawn.bypass.cancel-on-move:
     description: bypass the teleport cancel on move
     default: op
+  spawn.bypass.void-teleport:
+    description: bypass the void teleport
+    default: op
   spawn.bypass.world-list:
     description: bypass the world-list
     default: op
@@ -40,6 +43,7 @@ permissions:
       spawn.bypass.cooldown: true
       spawn.bypass.delay: true
       spawn.bypass.cancel-on-move: true
+      spawn.bypass.void-teleport: true
       spawn.bypass.world-list: true
   spawn.*:
     default: false

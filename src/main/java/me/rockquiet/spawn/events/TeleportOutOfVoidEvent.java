@@ -21,9 +21,10 @@ public class TeleportOutOfVoidEvent implements Listener {
 
     @EventHandler
     public void playerInVoid(PlayerMoveEvent event) {
-        if ((event.getFrom().getY() != event.getTo().getY()) && (event.getFrom().distance(event.getTo()) > 0.1)) {
+        Player player = event.getPlayer();
+
+        if (!player.hasPermission("spawn.bypass.void-teleport") && (event.getFrom().getY() != event.getTo().getY()) && (event.getFrom().distance(event.getTo()) > 0.1)) {
             YamlConfiguration config = fileManager.getConfig();
-            Player player = event.getPlayer();
 
             if ((player.hasPermission("spawn.bypass.world-list") || spawnTeleport.isEnabledInWorld(player.getWorld()))
                     && config.getBoolean("teleport-out-of-void.enabled")
