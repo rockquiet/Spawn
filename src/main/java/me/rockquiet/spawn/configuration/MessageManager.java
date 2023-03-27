@@ -1,8 +1,6 @@
 package me.rockquiet.spawn.configuration;
 
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -29,35 +27,59 @@ public class MessageManager implements Messages {
         return messages.getString(messagePath).replace("%prefix%", messages.getString("prefix"));
     }
 
+    public String convertLegacyToMiniMessage(String string) {
+        return string
+                // color codes
+                .replace("&0", "<black>")
+                .replace("&1", "<dark_blue>")
+                .replace("&2", "<dark_green>")
+                .replace("&3", "<dark_aqua>")
+                .replace("&4", "<dark_red>")
+                .replace("&5", "<dark_purple>")
+                .replace("&6", "<gold>")
+                .replace("&7", "<gray>")
+                .replace("&8", "<dark_gray>")
+                .replace("&9", "<blue>")
+                .replace("&a", "<green>")
+                .replace("&b", "<aqua>")
+                .replace("&c", "<red>")
+                .replace("&d", "<light_purple>")
+                .replace("&e", "<yellow>")
+                .replace("&f", "<white>")
+                // formatting codes
+                .replace("&k", "<obf>")     // obfuscated
+                .replace("&l", "<b>")       // bold
+                .replace("&m", "<st>")      // strikethrough
+                .replace("&n", "<u>")       // underlined
+                .replace("&o", "<i>")       // italic
+                .replace("&r", "<reset>");
+    }
+
     @Override
     public void sendMessage(Player player, String messagePath) {
         if (messageExists(messagePath)) {
-            Component legacyToMiniMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(getMessage(messagePath));
-            player.sendMessage(MiniMessage.miniMessage().deserialize(MiniMessage.miniMessage().serialize(legacyToMiniMessage).replace("\\", "")));
+            player.sendMessage(MiniMessage.miniMessage().deserialize(convertLegacyToMiniMessage(getMessage(messagePath))));
         }
     }
 
     @Override
     public void sendMessage(Player player, String messagePath, String placeholder, String replacePlaceholder) {
         if (messageExists(messagePath)) {
-            Component legacyToMiniMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(getMessage(messagePath).replace(placeholder, replacePlaceholder));
-            player.sendMessage(MiniMessage.miniMessage().deserialize(MiniMessage.miniMessage().serialize(legacyToMiniMessage).replace("\\", "")));
+            player.sendMessage(MiniMessage.miniMessage().deserialize(convertLegacyToMiniMessage(getMessage(messagePath)).replace(placeholder, replacePlaceholder)));
         }
     }
 
     @Override
     public void sendMessage(CommandSender sender, String messagePath) {
         if (messageExists(messagePath)) {
-            Component legacyToMiniMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(getMessage(messagePath));
-            sender.sendMessage(MiniMessage.miniMessage().deserialize(MiniMessage.miniMessage().serialize(legacyToMiniMessage).replace("\\", "")));
+            sender.sendMessage(MiniMessage.miniMessage().deserialize(convertLegacyToMiniMessage(getMessage(messagePath))));
         }
     }
 
     @Override
     public void sendMessage(CommandSender sender, String messagePath, String placeholder, String replacePlaceholder) {
         if (messageExists(messagePath)) {
-            Component legacyToMiniMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(getMessage(messagePath).replace(placeholder, replacePlaceholder));
-            sender.sendMessage(MiniMessage.miniMessage().deserialize(MiniMessage.miniMessage().serialize(legacyToMiniMessage).replace("\\", "")));
+            sender.sendMessage(MiniMessage.miniMessage().deserialize(convertLegacyToMiniMessage(getMessage(messagePath)).replace(placeholder, replacePlaceholder)));
         }
     }
 }
