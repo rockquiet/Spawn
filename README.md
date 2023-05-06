@@ -35,7 +35,9 @@ the [GitHub Wiki](https://github.com/rockquiet/Spawn/wiki).
 ## Download
 
 Plugin jars are available in the [Releases](https://github.com/rockquiet/Spawn/releases) section,
-on [Modrinth](https://modrinth.com/plugin/spawn) and [Spigot](https://www.spigotmc.org/resources/106188).
+on [Modrinth](https://modrinth.com/plugin/spawn), [Spigot](https://www.spigotmc.org/resources/106188)
+and [Hangar](https://hangar.papermc.io/rockquiet/Spawn).
 
 [![modrinth](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@2/assets/cozy/available/modrinth_64h.png)](https://modrinth.com/plugin/spawn)
 [![spigot](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@2/assets/cozy/supported/spigot_64h.png)](https://www.spigotmc.org/resources/106188/)
+[![hangar](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/hangar_64h.png)](https://hangar.papermc.io/rockquiet/Spawn)
