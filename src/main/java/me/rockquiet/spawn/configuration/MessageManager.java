@@ -8,9 +8,11 @@ import org.bukkit.entity.Player;
 public class MessageManager implements Messages {
 
     private final FileManager fileManager;
+    private final MiniMessage msg;
 
     public MessageManager(FileManager fileManager) {
         this.fileManager = fileManager;
+        this.msg = MiniMessage.miniMessage();
     }
 
     @Override
@@ -58,28 +60,28 @@ public class MessageManager implements Messages {
     @Override
     public void sendMessage(Player player, String messagePath) {
         if (messageExists(messagePath)) {
-            player.sendMessage(MiniMessage.miniMessage().deserialize(convertLegacyToMiniMessage(getMessage(messagePath))));
+            player.sendMessage(msg.deserialize(convertLegacyToMiniMessage(getMessage(messagePath))));
         }
     }
 
     @Override
     public void sendMessage(Player player, String messagePath, String placeholder, String replacePlaceholder) {
         if (messageExists(messagePath)) {
-            player.sendMessage(MiniMessage.miniMessage().deserialize(convertLegacyToMiniMessage(getMessage(messagePath)).replace(placeholder, replacePlaceholder)));
+            player.sendMessage(msg.deserialize(convertLegacyToMiniMessage(getMessage(messagePath)).replace(placeholder, replacePlaceholder)));
         }
     }
 
     @Override
     public void sendMessage(CommandSender sender, String messagePath) {
         if (messageExists(messagePath)) {
-            sender.sendMessage(MiniMessage.miniMessage().deserialize(convertLegacyToMiniMessage(getMessage(messagePath))));
+            sender.sendMessage(msg.deserialize(convertLegacyToMiniMessage(getMessage(messagePath))));
         }
     }
 
     @Override
     public void sendMessage(CommandSender sender, String messagePath, String placeholder, String replacePlaceholder) {
         if (messageExists(messagePath)) {
-            sender.sendMessage(MiniMessage.miniMessage().deserialize(convertLegacyToMiniMessage(getMessage(messagePath)).replace(placeholder, replacePlaceholder)));
+            sender.sendMessage(msg.deserialize(convertLegacyToMiniMessage(getMessage(messagePath)).replace(placeholder, replacePlaceholder)));
         }
     }
 }
