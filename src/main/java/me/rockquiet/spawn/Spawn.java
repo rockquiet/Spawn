@@ -24,7 +24,8 @@ public final class Spawn extends JavaPlugin {
         FileUpdater fileUpdater = new FileUpdater(this, fileManager);
 
         Messages messageManager;
-        if (Arrays.stream(Package.getPackages()).noneMatch(aPackage -> aPackage.getName().contains("io.papermc")) || Integer.parseInt(Bukkit.getBukkitVersion().split("\\.")[1]) <= 17) {
+        String bukkitVersion = Bukkit.getBukkitVersion();
+        if (Arrays.stream(Package.getPackages()).noneMatch(aPackage -> aPackage.getName().contains("io.papermc")) || Integer.parseInt(bukkitVersion.split("\\.")[1].replace("-R0", "")) <= 18 && !bukkitVersion.contains("1.18.2")) {
             messageManager = new MessageManagerLegacy(fileManager);
         } else {
             messageManager = new MessageManager(fileManager);
