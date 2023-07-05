@@ -1,9 +1,9 @@
 package me.rockquiet.spawn.commands;
 
 import me.rockquiet.spawn.Spawn;
+import me.rockquiet.spawn.SpawnHandler;
 import me.rockquiet.spawn.configuration.FileManager;
 import me.rockquiet.spawn.configuration.Messages;
-import me.rockquiet.spawn.teleport.SpawnTeleport;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -23,16 +23,16 @@ public class CommandDelay implements Listener {
     private final Spawn plugin;
     private final FileManager fileManager;
     private final Messages messageManager;
-    private final SpawnTeleport spawnTeleport;
+    private final SpawnHandler spawnHandler;
 
     public CommandDelay(Spawn plugin,
                         FileManager fileManager,
                         Messages messageManager,
-                        SpawnTeleport spawnTeleport) {
+                        SpawnHandler spawnHandler) {
         this.plugin = plugin;
         this.fileManager = fileManager;
         this.messageManager = messageManager;
-        this.spawnTeleport = spawnTeleport;
+        this.spawnHandler = spawnHandler;
     }
 
     public int delayTime() {
@@ -46,27 +46,28 @@ public class CommandDelay implements Listener {
     }
 
     public void runDelay(Player player) {
-        UUID playerUUID = player.getUniqueId();
-        if (spawnTeleport.spawnExists()) {
-            if (!delay.containsKey(playerUUID)) {
-                delay.put(playerUUID, new BukkitRunnable() {
-                    int delayRemaining = delayTime();
-
-                    @Override
-                    public void run() {
-                        if (delayRemaining <= delayTime() && delayRemaining >= 1) { // runs until timer reached 1
-                            messageManager.sendMessage(player, "delay-left", "%delay%", String.valueOf(delayRemaining));
-                        } else if (delayRemaining == 0) { // runs once
-                            spawnTeleport.teleportPlayer(player);
-                            delay.remove(playerUUID);
-                            cancel();
-                        }
-                        delayRemaining--;
-                    }
-                }.runTaskTimer(plugin, 0, 20));
-            }
-        } else {
+        if (!spawnHandler.spawnExists()) {
             messageManager.sendMessage(player, "no-spawn");
+            return;
+        }
+
+        UUID playerUUID = player.getUniqueId();
+        if (!delay.containsKey(playerUUID)) {
+            delay.put(playerUUID, new BukkitRunnable() {
+                int delayRemaining = delayTime();
+
+                @Override
+                public void run() {
+                    if (delayRemaining <= delayTime() && delayRemaining >= 1) { // runs until timer reached 1
+                        messageManager.sendMessage(player, "delay-left", "%delay%", String.valueOf(delayRemaining));
+                    } else if (delayRemaining == 0) { // runs once
+                        spawnHandler.teleportPlayer(player);
+                        delay.remove(playerUUID);
+                        cancel();
+                    }
+                    delayRemaining--;
+                }
+            }.runTaskTimer(plugin, 0, 20));
         }
     }
 
@@ -75,7 +76,7 @@ public class CommandDelay implements Listener {
         Player player = event.getPlayer();
         UUID playerUUID = player.getUniqueId();
 
-        if (delay.containsKey(event.getPlayer().getUniqueId()) && !player.hasPermission("spawn.bypass.cancel-on-move") && (event.getFrom().getX() != event.getTo().getX() || event.getFrom().getY() != event.getTo().getY() || event.getFrom().getZ() != event.getTo().getZ())) {
+        if (delay.containsKey(playerUUID) && !player.hasPermission("spawn.bypass.cancel-on-move") && (event.getFrom().getX() != event.getTo().getX() || event.getFrom().getY() != event.getTo().getY() || event.getFrom().getZ() != event.getTo().getZ())) {
             YamlConfiguration config = fileManager.getConfig();
 
             BukkitTask delayTask = delay.get(playerUUID);

@@ -1,6 +1,5 @@
-package me.rockquiet.spawn.teleport;
+package me.rockquiet.spawn;
 
-import me.rockquiet.spawn.Spawn;
 import me.rockquiet.spawn.configuration.FileManager;
 import me.rockquiet.spawn.configuration.Messages;
 import org.bukkit.*;
@@ -9,15 +8,15 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class SpawnTeleport {
+public class SpawnHandler {
 
     private final Spawn plugin;
     private final FileManager fileManager;
     private final Messages messageManager;
 
-    public SpawnTeleport(Spawn plugin,
-                         FileManager fileManager,
-                         Messages messageManager) {
+    public SpawnHandler(Spawn plugin,
+                        FileManager fileManager,
+                        Messages messageManager) {
         this.plugin = plugin;
         this.fileManager = fileManager;
         this.messageManager = messageManager;
@@ -101,13 +100,16 @@ public class SpawnTeleport {
         if (config.getBoolean("particles.enabled")) {
             String particle = config.getString("particles.particle");
             int particleAmount = config.getInt("particles.amount");
+            Location spawnLocation = getSpawn();
             try {
                 if (!Bukkit.getVersion().contains("1.8")) {
-                    player.spawnParticle(Particle.valueOf(particle), getSpawn(), particleAmount);
+                    player.spawnParticle(Particle.valueOf(particle), spawnLocation, particleAmount);
                 } else {
                     // workaround for 1.8
+                    Effect effect = Effect.valueOf(particle);
+                    World spawnWorld = Bukkit.getWorld(spawnLocation.getWorld().getName());
                     for (int p = 0; p <= particleAmount; p++) {
-                        Bukkit.getWorld(getSpawn().getWorld().getName()).playEffect(getSpawn(), Effect.valueOf(particle), 0);
+                        spawnWorld.playEffect(spawnLocation, effect, 0);
                     }
                 }
             } catch (Exception e) {

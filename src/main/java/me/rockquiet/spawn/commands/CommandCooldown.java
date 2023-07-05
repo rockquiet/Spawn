@@ -26,23 +26,23 @@ public class CommandCooldown {
         }
     }
 
-    public void setCooldown(UUID player, long time) {
+    public void setCooldown(UUID playerUUID, long time) {
         if (time < 1) {
-            cooldown.remove(player);
+            cooldown.remove(playerUUID);
         } else {
-            cooldown.put(player, time);
+            cooldown.put(playerUUID, time);
         }
     }
 
-    public Long getCooldown(UUID player) {
-        return (System.currentTimeMillis() - cooldown.get(player));
+    public Long getCooldown(UUID playerUUID) {
+        return (System.currentTimeMillis() - cooldown.get(playerUUID));
     }
 
-    public boolean hasCooldown(UUID player) {
-        return cooldown.containsKey(player);
+    public boolean hasCooldown(UUID playerUUID) {
+        return cooldown.containsKey(playerUUID);
     }
 
-    public boolean isCooldownDone(UUID player) {
-        return TimeUnit.MILLISECONDS.toSeconds(getCooldown(player)) >= cooldownTime();
+    public boolean isCooldownDone(UUID playerUUID) {
+        return TimeUnit.MILLISECONDS.toSeconds(getCooldown(playerUUID)) >= cooldownTime();
     }
 }
