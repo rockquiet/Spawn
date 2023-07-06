@@ -22,10 +22,11 @@ public class TeleportOnJoinListener implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         YamlConfiguration config = fileManager.getConfig();
-
-        if (!config.getBoolean("teleport-on-join.enabled")) return;
-
         Player player = event.getPlayer();
+
+        if (player.hasPermission("spawn.bypass.join-teleport") || !config.getBoolean("teleport-on-join.enabled")) {
+            return;
+        }
 
         if (!player.hasPermission("spawn.bypass.world-list") && !spawnHandler.isEnabledInWorld(player.getWorld())) {
             return;
