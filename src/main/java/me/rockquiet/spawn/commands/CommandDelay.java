@@ -74,29 +74,32 @@ public class CommandDelay implements Listener {
     @EventHandler
     public void onMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
+
+        if (player.hasPermission("spawn.bypass.cancel-on-move") && (event.getFrom().distanceSquared(event.getTo()) < 0.01)) {
+            return;
+        }
+
         UUID playerUUID = player.getUniqueId();
 
-        if (delay.containsKey(playerUUID) && !player.hasPermission("spawn.bypass.cancel-on-move") && (event.getFrom().getX() != event.getTo().getX() || event.getFrom().getY() != event.getTo().getY() || event.getFrom().getZ() != event.getTo().getZ())) {
-            YamlConfiguration config = fileManager.getConfig();
+        if (!delay.containsKey(playerUUID)) {
+            return;
+        }
 
-            BukkitTask delayTask = delay.get(playerUUID);
+        YamlConfiguration config = fileManager.getConfig();
 
-            if (delay.containsKey(playerUUID) && config.getBoolean("teleport-delay.cancel-on-move")) {
-                delayTask.cancel();
-                delay.remove(playerUUID);
-                messageManager.sendMessage(player, "teleport-canceled");
-            }
+        if (config.getBoolean("teleport-delay.cancel-on-move")) {
+            delay.get(playerUUID).cancel();
+            delay.remove(playerUUID);
+            messageManager.sendMessage(player, "teleport-canceled");
         }
     }
 
     @EventHandler
     public void onLeave(PlayerQuitEvent event) {
-        Player player = event.getPlayer();
-        UUID playerUUID = player.getUniqueId();
-        BukkitTask delayTask = delay.get(playerUUID);
+        UUID playerUUID = event.getPlayer().getUniqueId();
 
         if (delay.containsKey(playerUUID)) {
-            delayTask.cancel();
+            delay.get(playerUUID).cancel();
             delay.remove(playerUUID);
         }
     }
