@@ -2,7 +2,7 @@ name: Spawn
 version: '${project.version}'
 main: me.rockquiet.spawn.Spawn
 api-version: 1.13
-authors: [ rockquiet ]
+author: rockquiet
 description: highly configurable spawn plugin
 commands:
   spawn:
