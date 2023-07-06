@@ -29,7 +29,9 @@ public class TeleportOnRespawnListener implements Listener {
 
         Player player = event.getPlayer();
 
-        if (!config.getBoolean("teleport-on-respawn.enabled")) return;
+        if (player.hasPermission("spawn.bypass.respawn-teleport") || !config.getBoolean("teleport-on-respawn.enabled")) {
+            return;
+        }
 
         if (!spawnHandler.spawnExists()) {
             messageManager.sendMessage(player, "no-spawn");
