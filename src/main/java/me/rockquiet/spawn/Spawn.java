@@ -54,12 +54,7 @@ public final class Spawn extends JavaPlugin {
         // check for new plugin versions
         YamlConfiguration config = fileManager.getConfig();
         if (config.getBoolean("plugin.update-checks")) {
-            new UpdateChecker(this, 106188).getVersion(latest -> {
-                String current = getDescription().getVersion();
-                if (!current.equals(latest)) {
-                    getLogger().info("An update is available! Latest version: " + latest + ", you are using: " + current);
-                }
-            });
+            new UpdateChecker(this);
         }
     }
 }
