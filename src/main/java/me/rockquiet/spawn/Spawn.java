@@ -8,6 +8,7 @@ import me.rockquiet.spawn.configuration.*;
 import me.rockquiet.spawn.listeners.TeleportOnJoinListener;
 import me.rockquiet.spawn.listeners.TeleportOnRespawnListener;
 import me.rockquiet.spawn.listeners.TeleportOutOfVoidListener;
+import me.rockquiet.spawn.updater.UpdateChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.file.YamlConfiguration;
