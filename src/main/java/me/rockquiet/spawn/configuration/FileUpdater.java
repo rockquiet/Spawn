@@ -1,5 +1,6 @@
 package me.rockquiet.spawn.configuration;
 
+import com.tchristofferson.configupdater.ConfigUpdater;
 import me.rockquiet.spawn.Spawn;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -22,40 +23,28 @@ public class FileUpdater {
         try {
             final File outdatedFile = new File(fileManager.getDataFolder() + file);
 
-            if (outdatedFile.exists()) {
-                final YamlConfiguration outdatedFileConfig = YamlConfiguration.loadConfiguration(outdatedFile);
-
-                if (outdatedFileConfig.contains("file-version") && outdatedFileConfig.getInt("file-version") < fileVersion) {
-                    final HashMap<String, Object> fileKeys = new HashMap<>();
-
-                    for (String key : outdatedFileConfig.getKeys(false)) {
-                        fileKeys.put(key, outdatedFileConfig.get(key));
-                    }
-                    fileKeys.remove("file-version");
-
-                    fileManager.backupAndDelete(file, file + "_old"); // delete old file
-
-                    fileManager.create(file); // get latest file packaged in jar
-
-                    final File updatedFile = new File(fileManager.getDataFolder() + file);
-                    final YamlConfiguration updatedFileConfig = YamlConfiguration.loadConfiguration(updatedFile);
-
-                    for (Map.Entry<String, Object> entry : fileKeys.entrySet()) {
-                        String key = entry.getKey();
-                        Object value = entry.getValue();
-
-                        updatedFileConfig.set(key, value);
-                    }
-
-                    fileManager.save(updatedFileConfig, file);
-
-                    plugin.getLogger().info("Successfully updated " + file);
-                } else if (!outdatedFileConfig.contains("file-version")) {
-                    convertLegacyConfig(file);
-                }
-            } else {
-                // file to update does not exist
+            if (!outdatedFile.exists()) {
                 fileManager.create(file);
+                return;
+            }
+
+            final YamlConfiguration outdatedFileConfig = YamlConfiguration.loadConfiguration(outdatedFile);
+
+            if (outdatedFileConfig.contains("file-version") && outdatedFileConfig.getInt("file-version") < fileVersion) {
+                // backup old file
+                fileManager.backup(file, file + "_" + outdatedFileConfig.getInt("file-version") + "_old", false);
+
+                // add new file entries
+                ConfigUpdater.update(plugin, file, new File(plugin.getDataFolder(), file));
+
+                // update file version value
+                final YamlConfiguration updatedFileConfig = YamlConfiguration.loadConfiguration(new File(fileManager.getDataFolder() + file));
+                updatedFileConfig.set("file-version", fileVersion);
+
+                fileManager.save(updatedFileConfig, file);
+                plugin.getLogger().info("Successfully updated " + file);
+            } else if (!outdatedFileConfig.contains("file-version")) {
+                convertLegacyConfig(file);
             }
         } catch (Exception e) {
             plugin.getLogger().warning("Unable to update " + file);
@@ -85,7 +74,7 @@ public class FileUpdater {
             }
 
             // move old config.yml into backup folder
-            fileManager.backupAndDelete(file, "old_config.yml");
+            fileManager.backup(file, "old_config.yml", true);
             // fileManager.delete("config.yml");
 
 
@@ -212,7 +201,7 @@ public class FileUpdater {
             plugin.getLogger().warning("Please check if everything converted correctly!");
             plugin.getLogger().warning("The old " + file + " can be found in the backup directory.");
         } else {
-            fileManager.backupAndDelete(file, "broken_config.yml");
+            fileManager.backup(file, "broken_config.yml", true);
 
             fileManager.create("config.yml");
             fileManager.create("messages.yml");
