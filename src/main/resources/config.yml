@@ -17,6 +17,12 @@ plugin:
   world-list:
     - ExampleEntryForWorldList
     - AnotherExampleWorld
+  # restrict the usage to specific gamemodes
+  gamemode-restricted: false
+  # SURVIVAL, ADVENTURE, CREATIVE, SPECTATOR
+  gamemode-list:
+    - Survival
+    - Adventure
 
 # toggle if the player receives fall damage on teleport
 fall-damage:
@@ -77,4 +83,4 @@ sounds:
   pitch: 1.0
 
 # used for auto updating this file, do not change
-file-version: 1
+file-version: 2

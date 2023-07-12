@@ -4,10 +4,12 @@ main: me.rockquiet.spawn.Spawn
 api-version: 1.13
 author: rockquiet
 description: highly configurable spawn plugin
+
 commands:
   spawn:
     description: teleport to spawn
     permission: spawn.use
+
 permissions:
   spawn.use:
     description: teleport to spawn
@@ -33,6 +35,9 @@ permissions:
   spawn.bypass.world-list:
     description: bypass the world-list
     default: op
+  spawn.bypass.gamemode-restriction:
+    description: bypass the gamemode-restriction
+    default: op
   spawn.others:
     description: teleport another player to spawn
     default: op
@@ -53,6 +58,7 @@ permissions:
       spawn.bypass.respawn-teleport: true
       spawn.bypass.join-teleport: true
       spawn.bypass.world-list: true
+      spawn.bypass.gamemode-restriction: true
   spawn.*:
     default: false
     description: grants all spawn permissions

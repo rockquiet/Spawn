@@ -76,6 +76,16 @@ public class SpawnHandler {
         }
     }
 
+    public boolean isAllowedGameMode(Player player) {
+        YamlConfiguration config = fileManager.getConfig();
+
+        if (player.hasPermission("spawn.bypass.gamemode-restriction") || !config.getBoolean("plugin.gamemode-restricted")) {
+            return true;
+        }
+
+        return config.getStringList("plugin.gamemode-list").stream().anyMatch(s -> s.equalsIgnoreCase(player.getGameMode().toString()));
+    }
+
     public void teleportPlayer(Player player) {
         if (spawnExists()) {
             YamlConfiguration config = fileManager.getConfig();

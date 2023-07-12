@@ -31,10 +31,12 @@ reload: '%prefix% &aAll files reloaded successfully.'
 no-spawn: '%prefix% &cNo Spawn is set!'
 # plugin not enabled in current world
 world-disabled: '%prefix% &cYou are not allowed to use this here!'
+# player is not in allowed gamemode
+gamemode-restriced: '%prefix% &cYou are not allowed to use this while in &4%gamemode%&c!'
 # no permissions for command
 no-permission: '%prefix% &cNo permissions!'
 # command cannot be used in console
 no-player: '%prefix% &cCommand can only be used by players!'
 #
 # used for auto updating this file, do not change
-file-version: 1
+file-version: 2

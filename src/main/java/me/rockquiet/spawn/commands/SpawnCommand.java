@@ -50,6 +50,7 @@ public class SpawnCommand implements CommandExecutor {
 
             if (hasNoPerms(player, "spawn.use")) return false; // stop if player does not have the permission
             if (isWorldDisabled(player)) return false; // stop if plugin is disabled in current world
+            if (isProhibitedGameMode(player)) return false; // stop if the player is in wrong gamemode
 
             if (player.hasPermission("spawn.bypass.cooldown") || !config.getBoolean("teleport-cooldown.enabled")) {
                 if (player.hasPermission("spawn.bypass.delay") || !config.getBoolean("teleport-delay.enabled")) {
@@ -95,6 +96,14 @@ public class SpawnCommand implements CommandExecutor {
 
             Player target = Bukkit.getServer().getPlayerExact(args[0]);
             if (target != null && target.isOnline()) {
+                // if the player teleports themselves with this command, check their gamemode
+                if (sender instanceof Player) {
+                    Player player = (Player) sender;
+                    if (player.equals(target) && isProhibitedGameMode(player)) {
+                        return false; // stop if the player is in wrong gamemode
+                    }
+                }
+
                 spawnHandler.teleportPlayer(target);
                 messageManager.sendMessage(sender, "teleport-other", "%player%", target.getName());
             } else {
@@ -124,6 +133,14 @@ public class SpawnCommand implements CommandExecutor {
     private boolean isWorldDisabled(Player player) {
         if (!player.hasPermission("spawn.bypass.world-list") && !spawnHandler.isEnabledInWorld(player.getWorld())) {
             messageManager.sendMessage(player, "world-disabled");
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isProhibitedGameMode(Player player) {
+        if (!spawnHandler.isAllowedGameMode(player)) {
+            messageManager.sendMessage(player, "gamemode-restriced", "%gamemode%", player.getGameMode().toString());
             return true;
         }
         return false;
