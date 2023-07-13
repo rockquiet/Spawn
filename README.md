@@ -23,6 +23,7 @@ Yet another Spawn plugin with many configurable options.
 - Fall damage on teleport can be disabled
 - Particles & sound on teleport
 - Whitelist/Blacklist worlds to restrict the plugin's functionality
+- Restrict the usage to specific game modes
 - [MiniMessage](https://docs.advntr.dev/minimessage/format.html) (only 1.18.2+ Paper based servers)
   and [Legacy Formatting](https://minecraft.fandom.com/wiki/Formatting_codes) is supported
 - Everything can be edited and disabled
