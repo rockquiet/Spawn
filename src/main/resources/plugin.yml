@@ -3,7 +3,7 @@ version: '${project.version}'
 main: me.rockquiet.spawn.Spawn
 api-version: 1.13
 author: rockquiet
-description: highly configurable spawn plugin
+description: Highly configurable spawn plugin. Teleport to a custom spawnpoint by command or on specific events.
 
 commands:
   spawn:

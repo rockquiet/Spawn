@@ -11,7 +11,8 @@
 
     <name>Spawn</name>
 
-    <description>highly configurable spawn plugin</description>
+    <description>Highly configurable spawn plugin. Teleport to a custom spawnpoint by command or on specific events.
+    </description>
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
