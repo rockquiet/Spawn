@@ -114,8 +114,8 @@ public class FileManager {
 
         if (file1.exists()) {
             try {
-                file1.delete();
-            } catch (IllegalArgumentException e) {
+                Files.delete(file1.toPath());
+            } catch (IllegalArgumentException | IOException e) {
                 plugin.getLogger().warning("Unable to delete " + file + " - renaming it instead");
                 file1.renameTo(new File(getDataFolder() + file + "_old"));
             }

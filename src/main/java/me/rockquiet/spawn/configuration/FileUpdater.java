@@ -75,8 +75,6 @@ public class FileUpdater {
 
             // move old config.yml into backup folder
             fileManager.backup(file, "old_config.yml", true);
-            // fileManager.delete("config.yml");
-
 
             fileManager.create("config.yml"); // get latest file packaged in jar
             YamlConfiguration updatedConfigFile = fileManager.getConfig();
