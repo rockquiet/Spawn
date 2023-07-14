@@ -140,7 +140,7 @@ public class SpawnCommand implements CommandExecutor {
 
     private boolean isProhibitedGameMode(Player player) {
         if (!spawnHandler.isAllowedGameMode(player)) {
-            messageManager.sendMessage(player, "gamemode-restriced", "%gamemode%", player.getGameMode().toString());
+            messageManager.sendMessage(player, "gamemode-restricted", "%gamemode%", player.getGameMode().toString());
             return true;
         }
         return false;

@@ -31,8 +31,8 @@ reload: '%prefix% &aAll files reloaded successfully.'
 no-spawn: '%prefix% &cNo Spawn is set!'
 # plugin not enabled in current world
 world-disabled: '%prefix% &cYou are not allowed to use this here!'
-# player is not in allowed gamemode
-gamemode-restriced: '%prefix% &cYou are not allowed to use this while in &4%gamemode%&c!'
+# player is not in allowed game mode
+gamemode-restricted: '%prefix% &cYou are not allowed to use this while in &4%gamemode%&c!'
 # no permissions for command
 no-permission: '%prefix% &cNo permissions!'
 # command cannot be used in console
