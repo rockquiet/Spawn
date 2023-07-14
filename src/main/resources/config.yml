@@ -24,6 +24,10 @@ plugin:
     - Survival
     - Adventure
 
+# use the player's current head rotation instead of the defined one on teleport
+use-player-head-rotation:
+  enabled: false
+
 # toggle if the player receives fall damage on teleport
 fall-damage:
   enabled: false

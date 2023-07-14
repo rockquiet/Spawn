@@ -93,7 +93,13 @@ public class SpawnHandler {
             if (!config.getBoolean("fall-damage.enabled")) {
                 player.setFallDistance(0F);
             }
-            player.teleport(getSpawn());
+
+            Location spawnLocation = getSpawn();
+            if (config.getBoolean("use-player-head-rotation.enabled")) {
+                spawnLocation.setDirection(player.getLocation().getDirection());
+            }
+
+            player.teleport(spawnLocation);
 
             spawnEffects(player);
 
