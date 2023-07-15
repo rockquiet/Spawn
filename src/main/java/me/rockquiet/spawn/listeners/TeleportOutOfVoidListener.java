@@ -23,7 +23,7 @@ public class TeleportOutOfVoidListener implements Listener {
     public void playerInVoid(PlayerMoveEvent event) {
         Player player = event.getPlayer();
 
-        if (player.hasPermission("spawn.bypass.void-teleport") && (event.getFrom().distanceSquared(event.getTo()) < 0.01)) {
+        if (player.hasPermission("spawn.bypass.void-teleport") || event.getFrom().getY() == event.getTo().getY() || (event.getFrom().distanceSquared(event.getTo()) < 0.01)) {
             return;
         }
 

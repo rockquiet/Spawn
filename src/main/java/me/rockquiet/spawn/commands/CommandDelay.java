@@ -75,7 +75,7 @@ public class CommandDelay implements Listener {
     public void onMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
 
-        if (player.hasPermission("spawn.bypass.cancel-on-move") && (event.getFrom().distanceSquared(event.getTo()) < 0.01)) {
+        if (player.hasPermission("spawn.bypass.cancel-on-move") || (event.getFrom().distanceSquared(event.getTo()) < 0.01)) {
             return;
         }
 
