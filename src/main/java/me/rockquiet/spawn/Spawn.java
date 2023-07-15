@@ -8,6 +8,7 @@ import me.rockquiet.spawn.configuration.*;
 import me.rockquiet.spawn.listeners.TeleportOnJoinListener;
 import me.rockquiet.spawn.listeners.TeleportOnRespawnListener;
 import me.rockquiet.spawn.listeners.TeleportOutOfVoidListener;
+import me.rockquiet.spawn.updater.UpdateChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -36,8 +37,8 @@ public final class Spawn extends JavaPlugin {
 
         // create all files and update them if outdated
         FileUpdater fileUpdater = new FileUpdater(this, fileManager);
-        fileUpdater.updateFile("config.yml", 1);
-        fileUpdater.updateFile("messages.yml", 1);
+        fileUpdater.updateFile("config.yml", 2);
+        fileUpdater.updateFile("messages.yml", 2);
 
         // register commands with tabcomplete
         TabCompleter tc = new TabComplete();

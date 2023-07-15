@@ -1,7 +1,8 @@
-package me.rockquiet.spawn;
+package me.rockquiet.spawn.updater;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import me.rockquiet.spawn.Spawn;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -36,16 +37,13 @@ public class UpdateChecker {
 
                 JsonObject jsonResponse = new Gson().fromJson(response.toString(), JsonObject.class);
 
-                String latest = jsonResponse.get("tag_name").getAsString().replaceFirst("^v", "");
-                String current = plugin.getDescription().getVersion();
+                Version latest = Version.parse(jsonResponse.get("tag_name").getAsString().replaceFirst("^v", ""));
+                Version current = Version.parse(plugin.getDescription().getVersion());
+                int compare = latest.compareTo(current);
 
-                // convert version strings to number; 1.4.1 = 141
-                int latestAsNumber = Integer.parseInt(latest.replace(".", ""));
-                int currentAsNumber = Integer.parseInt(current.replace(".", ""));
-
-                if (latestAsNumber > currentAsNumber) {
+                if (compare > 0) {
                     plugin.getLogger().info("An update is available! Latest version: " + latest + ", you are using: " + current);
-                } else {
+                } else if (compare < 0) {
                     plugin.getLogger().warning("You are running a newer version of the plugin than released. If you are using a development build, please report any bugs on the project's GitHub.");
                 }
             } catch (IOException e) {

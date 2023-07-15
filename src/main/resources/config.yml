@@ -17,6 +17,16 @@ plugin:
   world-list:
     - ExampleEntryForWorldList
     - AnotherExampleWorld
+  # restrict the usage to specific game modes (only for players teleporting themselves)
+  gamemode-restricted: false
+  # SURVIVAL, ADVENTURE, CREATIVE, SPECTATOR
+  gamemode-list:
+    - Survival
+    - Adventure
+
+# use the player's current head rotation instead of the defined one on teleport
+use-player-head-rotation:
+  enabled: false
 
 # toggle if the player receives fall damage on teleport
 fall-damage:
@@ -69,7 +79,8 @@ particles:
 # play a sound on teleport
 sounds:
   enabled: true
-  # sounds for Minecraft 1.8 - 1.19: https://www.andre601.ch/Spigot-Sounds/sounds
+  # all sounds: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html
+  # sounds for Minecraft 1.8 - 1.20: https://www.andre601.ch/Spigot-Sounds/sounds
   sound: ENTITY_ENDERMAN_TELEPORT
   # the volume of the sound
   volume: 1.0
@@ -77,4 +88,4 @@ sounds:
   pitch: 1.0
 
 # used for auto updating this file, do not change
-file-version: 1
+file-version: 2

@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 public class FileManager {
 
@@ -113,15 +114,15 @@ public class FileManager {
 
         if (file1.exists()) {
             try {
-                file1.delete();
-            } catch (IllegalArgumentException e) {
+                Files.delete(file1.toPath());
+            } catch (IllegalArgumentException | IOException e) {
                 plugin.getLogger().warning("Unable to delete " + file + " - renaming it instead");
                 file1.renameTo(new File(getDataFolder() + file + "_old"));
             }
         }
     }
 
-    public void backupAndDelete(String file, String backupFile) {
+    public void backup(String file, String backupFile, boolean deleteOldFile) {
         final File file1 = new File(getDataFolder() + file);
 
         try {
@@ -129,10 +130,10 @@ public class FileManager {
                 Files.createDirectory(Paths.get(getDataFolder() + "/backup"));
             }
 
-            if (new File(getDataFolder() + "backup/" + backupFile).exists()) {
+            if (new File(getDataFolder() + "backup/" + backupFile).exists() && (deleteOldFile)) {
                 delete(backupFile);
             }
-            file1.renameTo(new File(getDataFolder() + "backup/" + backupFile));
+            Files.copy(file1.toPath(), Paths.get(getDataFolder() + "backup/" + backupFile), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             plugin.getLogger().warning("Unable to backup " + file);
         }

@@ -76,6 +76,16 @@ public class SpawnHandler {
         }
     }
 
+    public boolean isAllowedGameMode(Player player) {
+        YamlConfiguration config = fileManager.getConfig();
+
+        if (player.hasPermission("spawn.bypass.gamemode-restriction") || !config.getBoolean("plugin.gamemode-restricted")) {
+            return true;
+        }
+
+        return config.getStringList("plugin.gamemode-list").stream().anyMatch(s -> s.equalsIgnoreCase(player.getGameMode().toString()));
+    }
+
     public void teleportPlayer(Player player) {
         if (spawnExists()) {
             YamlConfiguration config = fileManager.getConfig();
@@ -83,7 +93,13 @@ public class SpawnHandler {
             if (!config.getBoolean("fall-damage.enabled")) {
                 player.setFallDistance(0F);
             }
-            player.teleport(getSpawn());
+
+            Location spawnLocation = getSpawn();
+            if (config.getBoolean("use-player-head-rotation.enabled")) {
+                spawnLocation.setDirection(player.getLocation().getDirection());
+            }
+
+            player.teleport(spawnLocation);
 
             spawnEffects(player);
 
@@ -98,22 +114,36 @@ public class SpawnHandler {
 
         // Particles
         if (config.getBoolean("particles.enabled")) {
-            String particle = config.getString("particles.particle");
+            String particleName = config.getString("particles.particle");
             int particleAmount = config.getInt("particles.amount");
             Location spawnLocation = getSpawn();
             try {
                 if (!Bukkit.getVersion().contains("1.8")) {
-                    player.spawnParticle(Particle.valueOf(particle), spawnLocation, particleAmount);
+                    Particle particle = Particle.valueOf(particleName);
+                    // display particles for player that teleported
+                    player.spawnParticle(particle, spawnLocation, particleAmount);
+                    // display particles for other players
+                    player.getNearbyEntities(16, 16, 16).stream()
+                            .filter(entity -> entity instanceof Player && ((Player) entity).canSee(player))
+                            .forEach(entity -> ((Player) entity).spawnParticle(particle, spawnLocation, particleAmount));
                 } else {
                     // workaround for 1.8
-                    Effect effect = Effect.valueOf(particle);
-                    World spawnWorld = Bukkit.getWorld(spawnLocation.getWorld().getName());
+                    Effect effect = Effect.valueOf(particleName);
+                    // display particles for player that teleported
                     for (int p = 0; p <= particleAmount; p++) {
-                        spawnWorld.playEffect(spawnLocation, effect, 0);
+                        player.playEffect(spawnLocation, effect, 0);
                     }
+                    // display particles for other players
+                    player.getNearbyEntities(16, 16, 16).stream()
+                            .filter(entity -> entity instanceof Player && ((Player) entity).canSee(player))
+                            .forEach(entity -> {
+                                for (int p = 0; p <= particleAmount; p++) {
+                                    ((Player) entity).playEffect(spawnLocation, effect, 0);
+                                }
+                            });
                 }
             } catch (Exception e) {
-                plugin.getLogger().warning("The particle " + particle + " does not exist in this Minecraft version!");
+                plugin.getLogger().warning("The particle " + particleName + " does not exist in this Minecraft version!");
             }
         }
 
