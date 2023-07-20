@@ -52,19 +52,22 @@ public class SpawnCommand implements CommandExecutor {
             if (isWorldDisabled(player)) return false; // stop if plugin is disabled in current world
             if (isProhibitedGameMode(player)) return false; // stop if the player is in wrong gamemode
 
-            if (player.hasPermission("spawn.bypass.cooldown") || !config.getBoolean("teleport-cooldown.enabled")) {
-                if (player.hasPermission("spawn.bypass.delay") || !config.getBoolean("teleport-delay.enabled")) {
-                    spawnHandler.teleportPlayer(player);
+            if (!player.hasPermission("spawn.bypass.cooldown") && config.getBoolean("teleport-cooldown.enabled")) {
+                if (!commandCooldown.hasCooldown(playerUUID) || commandCooldown.isCooldownDone(playerUUID)) {
+                    commandCooldown.setCooldown(playerUUID, System.currentTimeMillis());
                 } else {
-                    commandDelay.runDelay(player);
+                    // stop if player has active cooldown
+                    messageManager.sendMessage(player, "cooldown-left", "%cooldown%", String.valueOf(commandCooldown.cooldownTime() - TimeUnit.MILLISECONDS.toSeconds(commandCooldown.getCooldown(playerUUID))));
+                    return true;
                 }
-            } else if (!commandCooldown.hasCooldown(playerUUID) || commandCooldown.isCooldownDone(playerUUID)) {
-                commandCooldown.setCooldown(playerUUID, System.currentTimeMillis());
-
-                commandDelay.runDelay(player);
-            } else {
-                messageManager.sendMessage(player, "cooldown-left", "%cooldown%", String.valueOf(commandCooldown.cooldownTime() - TimeUnit.MILLISECONDS.toSeconds(commandCooldown.getCooldown(playerUUID))));
             }
+
+            if (!player.hasPermission("spawn.bypass.delay") && config.getBoolean("teleport-delay.enabled")) {
+                commandDelay.runDelay(player);
+                return true;
+            }
+
+            spawnHandler.teleportPlayer(player);
         }
 
         // subcommands
