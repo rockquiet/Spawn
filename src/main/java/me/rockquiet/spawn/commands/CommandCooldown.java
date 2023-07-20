@@ -35,7 +35,7 @@ public class CommandCooldown {
     }
 
     public Long getCooldown(UUID playerUUID) {
-        return (System.currentTimeMillis() - cooldown.get(playerUUID));
+        return System.currentTimeMillis() - cooldown.get(playerUUID);
     }
 
     public boolean hasCooldown(UUID playerUUID) {
@@ -43,6 +43,9 @@ public class CommandCooldown {
     }
 
     public boolean isCooldownDone(UUID playerUUID) {
+        if (!hasCooldown(playerUUID)) {
+            return true;
+        }
         return TimeUnit.MILLISECONDS.toSeconds(getCooldown(playerUUID)) >= cooldownTime();
     }
 }
