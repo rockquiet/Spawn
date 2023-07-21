@@ -2,12 +2,15 @@ package me.rockquiet.spawn.commands;
 
 import me.rockquiet.spawn.configuration.FileManager;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-public class CommandCooldown {
+public class CommandCooldown implements Listener {
 
     private final FileManager fileManager;
     private final HashMap<UUID, Long> cooldown = new HashMap<>();
@@ -34,7 +37,7 @@ public class CommandCooldown {
         }
     }
 
-    public Long getCooldown(UUID playerUUID) {
+    public long getCooldown(UUID playerUUID) {
         return System.currentTimeMillis() - cooldown.get(playerUUID);
     }
 
@@ -47,5 +50,14 @@ public class CommandCooldown {
             return true;
         }
         return TimeUnit.MILLISECONDS.toSeconds(getCooldown(playerUUID)) >= cooldownTime();
+    }
+
+    @EventHandler
+    public void onLeave(PlayerQuitEvent event) {
+        UUID playerUUID = event.getPlayer().getUniqueId();
+
+        if (hasCooldown(playerUUID)) {
+            cooldown.remove(playerUUID);
+        }
     }
 }
