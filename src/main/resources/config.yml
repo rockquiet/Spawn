@@ -51,6 +51,9 @@ teleport-delay:
   seconds: 3
   # toggle if the teleport should be canceled if the player moves
   cancel-on-move: true
+  # toggle if the player should get the blindness effect during delay
+  # the effect will not work properly if a short delay time is used
+  blindness: false
 
 # toggle if the player should be teleported to spawn if falling into the void
 teleport-out-of-void:
@@ -88,4 +91,4 @@ sounds:
   pitch: 1.0
 
 # used for auto updating this file, do not change
-file-version: 2
+file-version: 3

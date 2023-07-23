@@ -4,12 +4,15 @@ import me.rockquiet.spawn.Spawn;
 import me.rockquiet.spawn.SpawnHandler;
 import me.rockquiet.spawn.configuration.FileManager;
 import me.rockquiet.spawn.configuration.Messages;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -52,22 +55,40 @@ public class CommandDelay implements Listener {
         }
 
         UUID playerUUID = player.getUniqueId();
-        if (!delay.containsKey(playerUUID)) {
-            delay.put(playerUUID, new BukkitRunnable() {
-                int delayRemaining = delayTime();
+        if (delay.containsKey(playerUUID)) {
+            return;
+        }
 
-                @Override
-                public void run() {
-                    if (delayRemaining <= delayTime() && delayRemaining >= 1) { // runs until timer reached 1
-                        messageManager.sendMessage(player, "delay-left", "%delay%", String.valueOf(delayRemaining));
-                    } else if (delayRemaining == 0) { // runs once
-                        spawnHandler.teleportPlayer(player);
-                        delay.remove(playerUUID);
-                        cancel();
-                    }
-                    delayRemaining--;
+        int delayTime = delayTime();
+
+        if (delayTime > 0 && !player.hasPotionEffect(PotionEffectType.BLINDNESS) && fileManager.getConfig().getBoolean("teleport-delay.blindness")) {
+            player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, (delayTime + 1) * 20, 0, false, false));
+        }
+
+        delay.put(playerUUID, new BukkitRunnable() {
+            int delayRemaining = delayTime;
+
+            @Override
+            public void run() {
+                if (delayRemaining <= delayTime && delayRemaining >= 1) { // runs until timer reaches 1
+                    messageManager.sendMessage(player, "delay-left", "%delay%", String.valueOf(delayRemaining));
+                } else if (delayRemaining == 0) { // runs once
+                    spawnHandler.teleportPlayer(player);
+                    delay.remove(playerUUID);
+                    cancel();
                 }
-            }.runTaskTimer(plugin, 0, 20));
+                delayRemaining--;
+            }
+        }.runTaskTimer(plugin, 0, 20));
+    }
+
+    private void clearBlindness(Player player) {
+        if (player.hasPotionEffect(PotionEffectType.BLINDNESS) && fileManager.getConfig().getBoolean("teleport-delay.blindness")) {
+            // remove the blindness effect only if the duration is equal to or less than the configured delay time (1.10.x +)
+            if (Integer.parseInt(Bukkit.getBukkitVersion().split("\\.")[1].replace("-R0", "")) >= 10 && player.getPotionEffect(PotionEffectType.BLINDNESS).getDuration() > (delayTime() + 1) * 20) {
+                return;
+            }
+            player.removePotionEffect(PotionEffectType.BLINDNESS);
         }
     }
 
@@ -90,17 +111,25 @@ public class CommandDelay implements Listener {
         if (config.getBoolean("teleport-delay.cancel-on-move")) {
             delay.get(playerUUID).cancel();
             delay.remove(playerUUID);
+
+            clearBlindness(player);
+
             messageManager.sendMessage(player, "teleport-canceled");
         }
     }
 
     @EventHandler
     public void onLeave(PlayerQuitEvent event) {
-        UUID playerUUID = event.getPlayer().getUniqueId();
+        Player player = event.getPlayer();
+        UUID playerUUID = player.getUniqueId();
 
-        if (delay.containsKey(playerUUID)) {
-            delay.get(playerUUID).cancel();
-            delay.remove(playerUUID);
+        if (!delay.containsKey(playerUUID)) {
+            return;
         }
+
+        delay.get(playerUUID).cancel();
+        delay.remove(playerUUID);
+
+        clearBlindness(player);
     }
 }

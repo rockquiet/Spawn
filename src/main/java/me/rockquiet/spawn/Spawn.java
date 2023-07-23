@@ -37,7 +37,7 @@ public final class Spawn extends JavaPlugin {
 
         // create all files and update them if outdated
         FileUpdater fileUpdater = new FileUpdater(this, fileManager);
-        fileUpdater.updateFile("config.yml", 2);
+        fileUpdater.updateFile("config.yml", 3);
         fileUpdater.updateFile("messages.yml", 2);
 
         // register commands with tabcomplete
@@ -50,7 +50,8 @@ public final class Spawn extends JavaPlugin {
         pluginManager.registerEvents(new TeleportOnJoinListener(fileManager, spawnHandler), this);
         pluginManager.registerEvents(new TeleportOutOfVoidListener(fileManager, spawnHandler), this);
         pluginManager.registerEvents(new TeleportOnRespawnListener(fileManager, messageManager, spawnHandler), this);
-        pluginManager.registerEvents(new CommandDelay(this, fileManager, messageManager, spawnHandler), this);
+        pluginManager.registerEvents(commandCooldown, this);
+        pluginManager.registerEvents(commandDelay, this);
 
         // check for new plugin versions
         YamlConfiguration config = fileManager.getConfig();
