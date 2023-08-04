@@ -34,11 +34,6 @@ public class TeleportOnRespawnListener implements Listener {
             return;
         }
 
-        if (!spawnHandler.spawnExists()) {
-            messageManager.sendMessage(player, "no-spawn");
-            return;
-        }
-
         if (!player.hasPermission("spawn.bypass.world-list") && !spawnHandler.isEnabledInWorld(player.getWorld())) {
             return;
         }
@@ -48,6 +43,11 @@ public class TeleportOnRespawnListener implements Listener {
         }
 
         if ((Integer.parseInt(Bukkit.getBukkitVersion().split("\\.")[1].replace("-R0", "")) >= 16) && event.isAnchorSpawn() && !config.getBoolean("teleport-on-respawn.ignore-anchor-spawn")) {
+            return;
+        }
+
+        if (!spawnHandler.spawnExists()) {
+            messageManager.sendMessage(player, "no-spawn");
             return;
         }
 

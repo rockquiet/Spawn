@@ -13,7 +13,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 public class SpawnCommand implements CommandExecutor {
 
@@ -52,17 +51,17 @@ public class SpawnCommand implements CommandExecutor {
             if (isWorldDisabled(player)) return false; // stop if plugin is disabled in current world
             if (isProhibitedGameMode(player)) return false; // stop if the player is in wrong gamemode
 
-            if (!player.hasPermission("spawn.bypass.cooldown") && config.getBoolean("teleport-cooldown.enabled")) {
-                if (!commandCooldown.hasCooldown(playerUUID) || commandCooldown.isCooldownDone(playerUUID)) {
-                    commandCooldown.setCooldown(playerUUID, System.currentTimeMillis());
+            if (!player.hasPermission("spawn.bypass.cooldown") && config.getBoolean("teleport-cooldown.enabled") && commandCooldown.cooldownTime() > 0) {
+                if (commandCooldown.isCooldownDone(playerUUID)) {
+                    commandCooldown.setCooldown(playerUUID);
                 } else {
                     // stop if player has active cooldown
-                    messageManager.sendMessage(player, "cooldown-left", "%cooldown%", String.valueOf(commandCooldown.cooldownTime() - TimeUnit.MILLISECONDS.toSeconds(commandCooldown.getCooldown(playerUUID))));
+                    messageManager.sendMessage(player, "cooldown-left", "%cooldown%", String.valueOf(commandCooldown.getRemainingCooldown(playerUUID)));
                     return true;
                 }
             }
 
-            if (!player.hasPermission("spawn.bypass.delay") && config.getBoolean("teleport-delay.enabled")) {
+            if (!player.hasPermission("spawn.bypass.delay") && config.getBoolean("teleport-delay.enabled") && commandDelay.delayTime() > 0) {
                 commandDelay.runDelay(player);
                 return true;
             }
