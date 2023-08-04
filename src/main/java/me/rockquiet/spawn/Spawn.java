@@ -10,9 +10,9 @@ import me.rockquiet.spawn.listeners.TeleportOnRespawnListener;
 import me.rockquiet.spawn.listeners.TeleportOnWorldChangeListener;
 import me.rockquiet.spawn.listeners.TeleportOutOfVoidListener;
 import me.rockquiet.spawn.updater.UpdateChecker;
+import me.rockquiet.spawn.utils.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.command.TabCompleter;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -55,9 +55,14 @@ public final class Spawn extends JavaPlugin {
         pluginManager.registerEvents(commandCooldown, this);
         pluginManager.registerEvents(commandDelay, this);
 
+        boolean updateChecks = fileManager.getConfig().getBoolean("plugin.update-checks");
+
+        // bstats
+        Metrics metrics = new Metrics(this, 19297);
+        metrics.addCustomChart(new Metrics.SimplePie("update_checks", () -> String.valueOf(updateChecks)));
+
         // check for new plugin versions
-        YamlConfiguration config = fileManager.getConfig();
-        if (config.getBoolean("plugin.update-checks")) {
+        if (updateChecks) {
             new UpdateChecker(this);
         }
     }
