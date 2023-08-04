@@ -5,6 +5,7 @@ import me.rockquiet.spawn.configuration.Messages;
 import org.bukkit.*;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.List;
 
@@ -99,7 +100,7 @@ public class SpawnHandler {
                 spawnLocation.setDirection(player.getLocation().getDirection());
             }
 
-            player.teleport(spawnLocation);
+            player.teleport(spawnLocation, PlayerTeleportEvent.TeleportCause.PLUGIN);
 
             spawnEffects(player);
 
