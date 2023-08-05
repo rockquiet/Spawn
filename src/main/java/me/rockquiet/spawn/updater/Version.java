@@ -16,12 +16,12 @@ public class Version {
         if (version == null) throw new IllegalArgumentException("Version string cannot be null");
         if (version.isEmpty()) throw new IllegalArgumentException("Version string cannot be empty");
 
+        // remove commonly used "v" at start of version number
+        version = version.replaceFirst("^[Vv]", "");
+
         if (!version.matches("\\d+(\\.\\d+)*")) {
             throw new IllegalArgumentException("Version string has an invalid format");
         }
-
-        // remove commonly used "v" at start of version number
-        version = version.replaceFirst("^[Vv]", "");
 
         String[] versionSegments = version.split("\\.");
         int length = versionSegments.length;
