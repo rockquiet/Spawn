@@ -6,9 +6,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 public class CommandCooldown implements Listener {
 
@@ -29,16 +29,16 @@ public class CommandCooldown implements Listener {
         }
     }
 
-    public void setCooldown(UUID playerUUID, long time) {
-        if (time < 1) {
-            cooldown.remove(playerUUID);
-        } else {
-            cooldown.put(playerUUID, time);
-        }
+    public void setCooldown(UUID playerUUID) {
+        cooldown.put(playerUUID, Instant.now().getEpochSecond());
     }
 
     public long getCooldown(UUID playerUUID) {
-        return System.currentTimeMillis() - cooldown.get(playerUUID);
+        return Instant.now().getEpochSecond() - cooldown.get(playerUUID);
+    }
+
+    public long getRemainingCooldown(UUID playerUUID) {
+        return cooldownTime() - getCooldown(playerUUID);
     }
 
     public boolean hasCooldown(UUID playerUUID) {
@@ -49,7 +49,7 @@ public class CommandCooldown implements Listener {
         if (!hasCooldown(playerUUID)) {
             return true;
         }
-        return TimeUnit.MILLISECONDS.toSeconds(getCooldown(playerUUID)) >= cooldownTime();
+        return getCooldown(playerUUID) >= cooldownTime();
     }
 
     @EventHandler

@@ -60,8 +60,9 @@ public class CommandDelay implements Listener {
         }
 
         int delayTime = delayTime();
+        if (delayTime <= 0) return;
 
-        if (delayTime > 0 && !player.hasPotionEffect(PotionEffectType.BLINDNESS) && fileManager.getConfig().getBoolean("teleport-delay.blindness")) {
+        if (!player.hasPotionEffect(PotionEffectType.BLINDNESS) && fileManager.getConfig().getBoolean("teleport-delay.blindness")) {
             player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, (delayTime + 1) * 20, 0, false, false));
         }
 
@@ -106,9 +107,7 @@ public class CommandDelay implements Listener {
             return;
         }
 
-        YamlConfiguration config = fileManager.getConfig();
-
-        if (config.getBoolean("teleport-delay.cancel-on-move")) {
+        if (fileManager.getConfig().getBoolean("teleport-delay.cancel-on-move")) {
             delay.get(playerUUID).cancel();
             delay.remove(playerUUID);
 
@@ -123,13 +122,11 @@ public class CommandDelay implements Listener {
         Player player = event.getPlayer();
         UUID playerUUID = player.getUniqueId();
 
-        if (!delay.containsKey(playerUUID)) {
-            return;
+        if (delay.containsKey(playerUUID)) {
+            delay.get(playerUUID).cancel();
+            delay.remove(playerUUID);
+
+            clearBlindness(player);
         }
-
-        delay.get(playerUUID).cancel();
-        delay.remove(playerUUID);
-
-        clearBlindness(player);
     }
 }

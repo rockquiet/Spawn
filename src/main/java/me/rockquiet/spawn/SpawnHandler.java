@@ -5,6 +5,7 @@ import me.rockquiet.spawn.configuration.Messages;
 import org.bukkit.*;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.List;
 
@@ -99,7 +100,7 @@ public class SpawnHandler {
                 spawnLocation.setDirection(player.getLocation().getDirection());
             }
 
-            player.teleport(spawnLocation);
+            player.teleport(spawnLocation, PlayerTeleportEvent.TeleportCause.PLUGIN);
 
             spawnEffects(player);
 
@@ -129,15 +130,17 @@ public class SpawnHandler {
                 } else {
                     // workaround for 1.8
                     Effect effect = Effect.valueOf(particleName);
+                    // you probably do not want to accidentally crash your server
+                    int particleAmountLegacy = (particleAmount > 2000 ? 40 : particleAmount);
                     // display particles for player that teleported
-                    for (int p = 0; p <= particleAmount; p++) {
+                    for (int p = 0; p <= particleAmountLegacy; p++) {
                         player.playEffect(spawnLocation, effect, 0);
                     }
                     // display particles for other players
                     player.getNearbyEntities(16, 16, 16).stream()
                             .filter(entity -> entity instanceof Player && ((Player) entity).canSee(player))
                             .forEach(entity -> {
-                                for (int p = 0; p <= particleAmount; p++) {
+                                for (int p = 0; p <= particleAmountLegacy; p++) {
                                     ((Player) entity).playEffect(spawnLocation, effect, 0);
                                 }
                             });

@@ -70,6 +70,13 @@ teleport-on-respawn:
   # toggle if the respawn anchor spawn-point should be ignored
   ignore-anchor-spawn: false
 
+# toggle if the player should be teleported to spawn if they enter a world other than the spawn world
+teleport-on-world-change:
+  enabled: false
+  # toggle if the world should also be checked on join
+  # this can interfere with teleport on join
+  check-on-join: false
+
 # spawns particles on teleport
 particles:
   enabled: true
@@ -91,4 +98,4 @@ sounds:
   pitch: 1.0
 
 # used for auto updating this file, do not change
-file-version: 3
+file-version: 4

@@ -18,6 +18,7 @@ Yet another Spawn plugin with many configurable options.
     - ...on join / only on first join
     - ...on death (bed / respawn anchor spawn-point can be ignored)
     - ...if falling in void (void height is configurable)
+    - ...on world change
 - Teleport cooldown & delay with cancel on move (can be bypassed)
 - Teleport another player to Spawn via command
 - Fall damage on teleport can be disabled

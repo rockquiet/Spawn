@@ -32,6 +32,9 @@ permissions:
   spawn.bypass.join-teleport:
     description: bypass the join teleport
     default: op
+  spawn.bypass.world-change:
+    description: bypass the world change teleport
+    default: op
   spawn.bypass.world-list:
     description: bypass the world-list
     default: op
@@ -57,6 +60,7 @@ permissions:
       spawn.bypass.void-teleport: true
       spawn.bypass.respawn-teleport: true
       spawn.bypass.join-teleport: true
+      spawn.bypass.world-change: true
       spawn.bypass.world-list: true
       spawn.bypass.gamemode-restriction: true
   spawn.*:
