@@ -37,7 +37,7 @@ public class UpdateChecker {
 
                 JsonObject jsonResponse = new Gson().fromJson(response.toString(), JsonObject.class);
 
-                Version latest = Version.parse(jsonResponse.get("tag_name").getAsString().replaceFirst("^v", ""));
+                Version latest = Version.parse(jsonResponse.get("tag_name").getAsString());
                 Version current = Version.parse(plugin.getDescription().getVersion());
                 int compare = latest.compareTo(current);
 
