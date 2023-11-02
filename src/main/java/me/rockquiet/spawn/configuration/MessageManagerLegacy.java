@@ -24,7 +24,7 @@ public class MessageManagerLegacy implements Messages {
     public String getMessage(String messagePath) {
         YamlConfiguration messages = fileManager.getMessages();
 
-        return messages.getString(messagePath).replace("%prefix%", messages.getString("prefix"));
+        return messages.getString(messagePath).replace("%prefix%", (messages.getString("prefix") != null ? messages.getString("prefix") : ""));
     }
 
     @Override
