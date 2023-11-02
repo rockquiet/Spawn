@@ -65,7 +65,7 @@ permissions:
       spawn.bypass.gamemode-restriction: true
   spawn.*:
     default: false
-    description: grants all spawn permissions
+    description: grants all permissions of the plugin
     children:
       spawn.use: true
       spawn.bypass.*: true
