@@ -1,42 +1,42 @@
 # Spawn by rockquiet
 # MiniMessage formatting is supported on 1.18.2+ Paper based servers -> https://docs.advntr.dev/minimessage/format.html
-# Legacy formatting is supported -> https://minecraft.fandom.com/wiki/Formatting_codes
+# Legacy formatting is supported -> https://minecraft.wiki/w/Formatting_codes
 # to disable a message set it to: ''
-#
+
 # remove %prefix% from a message if it should not use it
 prefix: '&7[&2Spawn&7]&r'
-#
+
 # successful teleport to spawn
 teleport: '%prefix% &aTeleported to Spawn.'
 # successfully teleported another player to spawn - /spawn %player%
 teleport-other: '%prefix% &aSuccessfully teleported &2%player% &ato Spawn.'
 # if the player to be teleported is offline - /spawn %player%
 player-not-found: '%prefix% &cPlayer &4%player% &cnot found!'
-#
-# if the player still has an active teleport cooldown
+
+# when the player wants to teleport but has an active teleport cooldown
 cooldown-left: '%prefix% &cPlease wait &4%cooldown% &csecond(s) before teleporting again.'
-#
+
 # time left until the player gets teleported to spawn
 delay-left: '%prefix% &6You will be teleported in &e%delay% &6second(s).'
 # delayed teleport failed because the player moved
 teleport-canceled: '%prefix% &cTeleport canceled because you moved!'
-#
+
 # spawn set at current position
 spawn-set: '%prefix% &aSpawn set successfully.'
-#
+
 # all files reloaded
 reload: '%prefix% &aAll files reloaded successfully.'
-#
+
 # no spawn set in config - set one with /spawn set
 no-spawn: '%prefix% &cNo Spawn is set!'
-# plugin not enabled in current world
+# plugin is disabled in current world
 world-disabled: '%prefix% &cYou are not allowed to use this here!'
 # player is not in allowed game mode
 gamemode-restricted: '%prefix% &cYou are not allowed to use this while in &4%gamemode%&c!'
-# no permissions for command
+# player does not have permission to execute the command
 no-permission: '%prefix% &cNo permissions!'
 # command cannot be used in console
 no-player: '%prefix% &cCommand can only be used by players!'
-#
+
 # used for auto updating this file, do not change
-file-version: 2
+file-version: 3

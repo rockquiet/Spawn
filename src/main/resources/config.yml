@@ -8,8 +8,9 @@
 
 plugin:
   # if the plugin should search for updates on server start
+  # this will only send a message to the console, not to an admin joining the server
   update-checks: true
-  # a list of worlds on which the plugin should or should not work
+  # a list of worlds where the plugin should or should not work
   # DISABLED: world-list is not used
   # BLACKLIST: the plugin will not work in worlds listed below
   # WHITELIST: the plugin will only work in worlds listed below
@@ -19,7 +20,7 @@ plugin:
     - AnotherExampleWorld
   # restrict the usage to specific game modes (only for players teleporting themselves)
   gamemode-restricted: false
-  # SURVIVAL, ADVENTURE, CREATIVE, SPECTATOR
+  # possible values: SURVIVAL, ADVENTURE, CREATIVE, SPECTATOR
   gamemode-list:
     - Survival
     - Adventure
@@ -28,7 +29,7 @@ plugin:
 use-player-head-rotation:
   enabled: false
 
-# toggle if the player receives fall damage on teleport
+# toggle if the player takes fall damage on teleport
 fall-damage:
   enabled: false
 
@@ -55,7 +56,7 @@ teleport-delay:
   # the effect will not work properly if a short delay time is used
   blindness: false
 
-# toggle if the player should be teleported to spawn if falling into the void
+# toggle if the player should be teleported to spawn if they fall into the void
 teleport-out-of-void:
   enabled: false
   # the height at which the player gets teleported out of the void to spawn
@@ -90,7 +91,7 @@ particles:
 sounds:
   enabled: true
   # all sounds: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html
-  # sounds for Minecraft 1.8 - 1.20: https://www.andre601.ch/Spigot-Sounds/sounds
+  # sounds for Minecraft 1.8 - 1.20: https://docs.andre601.ch/Spigot-Sounds/sounds/
   sound: ENTITY_ENDERMAN_TELEPORT
   # the volume of the sound
   volume: 1.0
@@ -98,4 +99,4 @@ sounds:
   pitch: 1.0
 
 # used for auto updating this file, do not change
-file-version: 4
+file-version: 5

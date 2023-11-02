@@ -38,8 +38,8 @@ public final class Spawn extends JavaPlugin {
 
         // create all files and update them if outdated
         FileUpdater fileUpdater = new FileUpdater(this, fileManager);
-        fileUpdater.updateFile("config.yml", 4);
-        fileUpdater.updateFile("messages.yml", 2);
+        fileUpdater.updateFile("config.yml", 5);
+        fileUpdater.updateFile("messages.yml", 3);
 
         // register commands with tabcomplete
         TabCompleter tc = new TabComplete();
