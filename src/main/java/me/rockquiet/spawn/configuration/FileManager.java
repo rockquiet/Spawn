@@ -117,7 +117,11 @@ public class FileManager {
                 Files.delete(file1.toPath());
             } catch (IllegalArgumentException | IOException e) {
                 plugin.getLogger().warning("Unable to delete " + file + " - renaming it instead");
-                file1.renameTo(new File(getDataFolder() + file + "_old"));
+                if (file1.renameTo(new File(getDataFolder() + file + "_old"))) {
+                    plugin.getLogger().info("Successfully renamed " + file + " to " + file + "_old");
+                } else {
+                    plugin.getLogger().warning("Unable to rename " + file);
+                }
             }
         }
     }
