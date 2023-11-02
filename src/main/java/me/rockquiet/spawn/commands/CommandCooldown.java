@@ -19,7 +19,7 @@ public class CommandCooldown implements Listener {
         this.fileManager = fileManager;
     }
 
-    public int cooldownTime() {
+    public int getCooldownTime() {
         YamlConfiguration config = fileManager.getConfig();
 
         if (config.getBoolean("teleport-cooldown.enabled")) {
@@ -38,7 +38,7 @@ public class CommandCooldown implements Listener {
     }
 
     public long getRemainingCooldown(UUID playerUUID) {
-        return cooldownTime() - getCooldown(playerUUID);
+        return getCooldownTime() - getCooldown(playerUUID);
     }
 
     public boolean hasCooldown(UUID playerUUID) {
@@ -49,7 +49,7 @@ public class CommandCooldown implements Listener {
         if (!hasCooldown(playerUUID)) {
             return true;
         }
-        return getCooldown(playerUUID) >= cooldownTime();
+        return getCooldown(playerUUID) >= getCooldownTime();
     }
 
     @EventHandler

@@ -19,7 +19,7 @@ public class MessageManager implements Messages {
     public boolean messageExists(String messagePath) {
         YamlConfiguration messages = fileManager.getMessages();
 
-        return (messages.getString(messagePath) != null && !messages.getString(messagePath).isEmpty());
+        return messages.getString(messagePath) != null && !messages.getString(messagePath).isEmpty();
     }
 
     @Override

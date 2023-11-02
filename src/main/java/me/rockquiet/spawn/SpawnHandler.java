@@ -102,7 +102,8 @@ public class SpawnHandler {
 
             player.teleport(spawnLocation, PlayerTeleportEvent.TeleportCause.PLUGIN);
 
-            spawnEffects(player);
+            spawnParticles(player);
+            playSound(player);
 
             messageManager.sendMessage(player, "teleport");
         } else {
@@ -110,10 +111,9 @@ public class SpawnHandler {
         }
     }
 
-    public void spawnEffects(Player player) {
+    public void spawnParticles(Player player) {
         YamlConfiguration config = fileManager.getConfig();
 
-        // Particles
         if (config.getBoolean("particles.enabled")) {
             String particleName = config.getString("particles.particle");
             int particleAmount = config.getInt("particles.amount");
@@ -149,8 +149,11 @@ public class SpawnHandler {
                 plugin.getLogger().warning("The particle " + particleName + " does not exist in this Minecraft version!");
             }
         }
+    }
 
-        // Sound
+    public void playSound(Player player) {
+        YamlConfiguration config = fileManager.getConfig();
+
         if (config.getBoolean("sounds.enabled")) {
             String sound = config.getString("sounds.sound");
             try {

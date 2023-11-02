@@ -27,7 +27,6 @@ public class TeleportOnRespawnListener implements Listener {
     @EventHandler
     public void onRespawn(PlayerRespawnEvent event) {
         YamlConfiguration config = fileManager.getConfig();
-
         Player player = event.getPlayer();
 
         if (player.hasPermission("spawn.bypass.respawn-teleport") || !config.getBoolean("teleport-on-respawn.enabled")) {
@@ -53,7 +52,8 @@ public class TeleportOnRespawnListener implements Listener {
 
         event.setRespawnLocation(spawnHandler.getSpawn());
 
-        spawnHandler.spawnEffects(player);
+        spawnHandler.spawnParticles(player);
+        spawnHandler.playSound(player);
 
         messageManager.sendMessage(player, "teleport");
     }

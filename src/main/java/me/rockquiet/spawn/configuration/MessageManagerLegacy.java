@@ -17,7 +17,7 @@ public class MessageManagerLegacy implements Messages {
     public boolean messageExists(String messagePath) {
         YamlConfiguration messages = fileManager.getMessages();
 
-        return (messages.getString(messagePath) != null && !messages.getString(messagePath).isEmpty());
+        return messages.getString(messagePath) != null && !messages.getString(messagePath).isEmpty();
     }
 
     @Override
@@ -27,6 +27,7 @@ public class MessageManagerLegacy implements Messages {
         return messages.getString(messagePath).replace("%prefix%", (messages.getString("prefix") != null ? messages.getString("prefix") : ""));
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void sendMessage(Player player, String messagePath) {
         if (messageExists(messagePath)) {
@@ -34,6 +35,7 @@ public class MessageManagerLegacy implements Messages {
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void sendMessage(Player player, String messagePath, String placeholder, String replacePlaceholder) {
         if (messageExists(messagePath)) {
@@ -41,6 +43,7 @@ public class MessageManagerLegacy implements Messages {
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void sendMessage(CommandSender sender, String messagePath) {
         if (messageExists(messagePath)) {
@@ -48,6 +51,7 @@ public class MessageManagerLegacy implements Messages {
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void sendMessage(CommandSender sender, String messagePath, String placeholder, String replacePlaceholder) {
         if (messageExists(messagePath)) {

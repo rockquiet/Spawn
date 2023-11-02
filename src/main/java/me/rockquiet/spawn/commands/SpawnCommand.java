@@ -51,7 +51,7 @@ public class SpawnCommand implements CommandExecutor {
             if (isWorldDisabled(player)) return false; // stop if plugin is disabled in current world
             if (isProhibitedGameMode(player)) return false; // stop if the player is in wrong gamemode
 
-            if (!player.hasPermission("spawn.bypass.cooldown") && config.getBoolean("teleport-cooldown.enabled") && commandCooldown.cooldownTime() > 0) {
+            if (!player.hasPermission("spawn.bypass.cooldown") && config.getBoolean("teleport-cooldown.enabled") && commandCooldown.getCooldownTime() > 0) {
                 if (commandCooldown.isCooldownDone(playerUUID)) {
                     commandCooldown.setCooldown(playerUUID);
                 } else {
@@ -61,7 +61,7 @@ public class SpawnCommand implements CommandExecutor {
                 }
             }
 
-            if (!player.hasPermission("spawn.bypass.delay") && config.getBoolean("teleport-delay.enabled") && commandDelay.delayTime() > 0) {
+            if (!player.hasPermission("spawn.bypass.delay") && config.getBoolean("teleport-delay.enabled") && commandDelay.getDelayTime() > 0) {
                 commandDelay.runDelay(player);
                 return true;
             }
