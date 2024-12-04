@@ -37,19 +37,15 @@ public class Version {
     // 0    ->  version = version2
     // -1   ->  version is older than version2
     public int compareTo(Version version2) {
-        if (version2 == null) {
-            return 1;
-        }
+        if (version2 == null) return 1;
 
-        if (major == version2.major && minor == version2.minor && patch == version2.patch) {
-            return 0;
-        }
+        int compareMajor = Integer.compare(major, version2.major);
+        if (compareMajor != 0) return compareMajor;
 
-        if ((major != version2.major && major > version2.major) || (minor != version2.minor && minor > version2.minor) || (patch != version2.patch && patch > version2.patch)) {
-            return 1;
-        } else {
-            return -1;
-        }
+        int compareMinor = Integer.compare(minor, version2.minor);
+        if (compareMinor != 0) return compareMinor;
+
+        return Integer.compare(patch, version2.patch);
     }
 
     public String toString() {

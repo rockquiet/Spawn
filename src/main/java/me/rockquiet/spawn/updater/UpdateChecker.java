@@ -15,8 +15,8 @@ public class UpdateChecker {
     public UpdateChecker(Spawn plugin) {
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
             try {
-                URL obj = new URL("https://api.github.com/repos/rockquiet/spawn/releases/latest");
-                HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+                URL url = new URL("https://api.github.com/repos/rockquiet/spawn/releases/latest");
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
                 con.setRequestMethod("GET");
                 con.setRequestProperty("User-Agent", "Mozilla/5.0");
 
@@ -26,19 +26,21 @@ public class UpdateChecker {
                 }
 
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                JsonObject jsonResponse = new Gson().fromJson(bufferedReader, JsonObject.class);
 
-                String line;
-                StringBuilder response = new StringBuilder();
-                while ((line = bufferedReader.readLine()) != null) {
-                    response.append(line);
-                }
                 bufferedReader.close();
                 con.disconnect();
 
-                JsonObject jsonResponse = new Gson().fromJson(response.toString(), JsonObject.class);
-
                 Version latest = Version.parse(jsonResponse.get("tag_name").getAsString());
-                Version current = Version.parse(plugin.getDescription().getVersion());
+
+                String pluginVersion = plugin.getDescription().getVersion();
+                if (pluginVersion.contains("SNAPSHOT")) {
+                    plugin.getLogger().info("You are running a development build, please report any bugs on the project's GitHub.");
+                    plugin.getLogger().info("Latest release version: " + latest + ", you are using: " + pluginVersion);
+                    return;
+                }
+
+                Version current = Version.parse(pluginVersion);
                 int compare = latest.compareTo(current);
 
                 if (compare > 0) {
