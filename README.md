@@ -6,7 +6,7 @@
 [![GitHub Downloads](https://img.shields.io/github/downloads/rockquiet/joinprotection/total?style=flat-square&logo=github&labelColor=3A3025&color=407F35)](https://github.com/rockquiet/Spawn/releases)
 
 [![GitHub release (with filter)](https://img.shields.io/github/v/release/rockquiet/spawn?style=for-the-badge&labelColor=3A3025&color=407F35)](https://github.com/rockquiet/Spawn/releases)
-![Minecraft Versions](https://img.shields.io/badge/minecraft-1.8_--_1.21.1-407F35?style=for-the-badge&logoColor=407F35&labelColor=3A3025&color=407F35)
+![Minecraft Versions](https://img.shields.io/badge/minecraft-1.8_--_1.21.4-407F35?style=for-the-badge&logoColor=407F35&labelColor=3A3025&color=407F35)
 ![Java](https://img.shields.io/badge/java-8+-407F35?style=for-the-badge&logoColor=407F35&labelColor=3A3025&color=407F35)
 
 # Spawn
@@ -53,7 +53,7 @@ and [Hangar](https://hangar.papermc.io/rockquiet/Spawn).
 ## Metrics
 
 This plugin uses bStats to collect some (non-identifying) data about the servers it runs on.
-You can opt-out by editing the `config.yml` in the `/plugins/bStats` folder located in your server directory.
+You can opt out by editing the `config.yml` in the `/plugins/bStats` folder located in your server directory.
 (More information [here](https://bstats.org/getting-started))
 
 [<img alt="bstats" src="https://bstats.org/signatures/bukkit/SpawnWasTaken.svg">](https://bstats.org/plugin/bukkit/SpawnWasTaken)
