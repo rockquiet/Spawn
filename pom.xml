@@ -44,6 +44,10 @@
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <relocations>
                                 <relocation>
+                                    <pattern>org.bstats</pattern>
+                                    <shadedPattern>${relocation.prefix}.org.bstats</shadedPattern>
+                                </relocation>
+                                <relocation>
                                     <pattern>com.tchristofferson.configupdater</pattern>
                                     <shadedPattern>${relocation.prefix}.com.tchristofferson.configupdater
                                     </shadedPattern>
@@ -79,6 +83,12 @@
             <artifactId>paper-api</artifactId>
             <version>1.20.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.bstats</groupId>
+            <artifactId>bstats-bukkit</artifactId>
+            <version>3.1.0</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.tchristofferson</groupId>

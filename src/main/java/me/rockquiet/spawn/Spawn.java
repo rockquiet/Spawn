@@ -10,7 +10,8 @@ import me.rockquiet.spawn.listeners.TeleportOnRespawnListener;
 import me.rockquiet.spawn.listeners.TeleportOnWorldChangeListener;
 import me.rockquiet.spawn.listeners.TeleportOutOfVoidListener;
 import me.rockquiet.spawn.updater.UpdateChecker;
-import me.rockquiet.spawn.utils.Metrics;
+import org.bstats.bukkit.Metrics;
+import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.plugin.PluginManager;
@@ -59,7 +60,7 @@ public final class Spawn extends JavaPlugin {
 
         // bstats
         Metrics metrics = new Metrics(this, 19297);
-        metrics.addCustomChart(new Metrics.SimplePie("update_checks", () -> String.valueOf(updateChecks)));
+        metrics.addCustomChart(new SimplePie("update_checks", () -> String.valueOf(updateChecks)));
 
         // check for new plugin versions
         if (updateChecks) {
