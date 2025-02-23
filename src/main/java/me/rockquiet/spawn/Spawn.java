@@ -21,6 +21,17 @@ import java.util.Arrays;
 
 public final class Spawn extends JavaPlugin {
 
+    public final static boolean isFolia = classExist("io.papermc.paper.threadedregions.RegionizedServerInitEvent");
+
+    private static boolean classExist(String className) {
+		try {
+			Class.forName(className);
+			return true;
+		} catch (ClassNotFoundException e) {
+			return false;
+		}
+	}
+    
     @Override
     public void onEnable() {
         FileManager fileManager = new FileManager(this);
