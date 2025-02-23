@@ -100,7 +100,10 @@ public class SpawnHandler {
                 spawnLocation.setDirection(player.getLocation().getDirection());
             }
 
-            player.teleport(spawnLocation, PlayerTeleportEvent.TeleportCause.PLUGIN);
+            if(Spawn.isFolia)
+                player.teleportAsync(spawnLocation, PlayerTeleportEvent.TeleportCause.PLUGIN);
+            else
+                player.teleport(spawnLocation, PlayerTeleportEvent.TeleportCause.PLUGIN);
 
             spawnParticles(player);
             playSound(player);
