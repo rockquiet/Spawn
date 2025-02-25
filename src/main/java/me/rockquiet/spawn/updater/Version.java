@@ -28,8 +28,8 @@ public class Version {
 
         return new Version(
                 Integer.parseInt(versionSegments[0]),
-                (length < 2 ? 0 : Integer.parseInt(versionSegments[1])),
-                (length < 3 ? 0 : Integer.parseInt(versionSegments[2]))
+                length < 2 ? 0 : Integer.parseInt(versionSegments[1]),
+                length < 3 ? 0 : Integer.parseInt(versionSegments[2])
         );
     }
 
@@ -48,6 +48,7 @@ public class Version {
         return Integer.compare(patch, version2.patch);
     }
 
+    @Override
     public String toString() {
         return major + "." + minor + "." + patch;
     }

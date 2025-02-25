@@ -92,6 +92,7 @@ public class FileManager {
                 final InputStream inputStream = plugin.getResource(file);
                 if (inputStream != null) {
                     Files.copy(inputStream, newFile.toPath());
+                    inputStream.close();
                 } else {
                     newFile.createNewFile();
                 }

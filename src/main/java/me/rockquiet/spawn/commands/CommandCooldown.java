@@ -12,8 +12,8 @@ import java.util.UUID;
 
 public class CommandCooldown implements Listener {
 
-    private final FileManager fileManager;
     private final HashMap<UUID, Long> cooldown = new HashMap<>();
+    private final FileManager fileManager;
 
     public CommandCooldown(FileManager fileManager) {
         this.fileManager = fileManager;
@@ -54,10 +54,6 @@ public class CommandCooldown implements Listener {
 
     @EventHandler
     public void onLeave(PlayerQuitEvent event) {
-        UUID playerUUID = event.getPlayer().getUniqueId();
-
-        if (hasCooldown(playerUUID)) {
-            cooldown.remove(playerUUID);
-        }
+        cooldown.remove(event.getPlayer().getUniqueId());
     }
 }

@@ -13,7 +13,6 @@ import me.rockquiet.spawn.updater.UpdateChecker;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -43,9 +42,8 @@ public final class Spawn extends JavaPlugin {
         fileUpdater.updateFile("messages.yml", 3);
 
         // register commands with tabcomplete
-        TabCompleter tc = new TabComplete();
         getCommand("spawn").setExecutor(new SpawnCommand(fileManager, messageManager, spawnHandler, commandCooldown, commandDelay));
-        getCommand("spawn").setTabCompleter(tc);
+        getCommand("spawn").setTabCompleter(new TabComplete());
 
         // register events
         PluginManager pluginManager = Bukkit.getPluginManager();
