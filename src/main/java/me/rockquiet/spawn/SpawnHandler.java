@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.List;
+import java.util.Locale;
 
 public class SpawnHandler {
 
@@ -62,16 +63,17 @@ public class SpawnHandler {
                 && location.getString("spawn.pitch") != null);
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean isEnabledInWorld(World world) {
         YamlConfiguration config = fileManager.getConfig();
         List<String> worldList = config.getStringList("plugin.world-list");
         String worldName = world.getName();
 
-        switch (config.getString("plugin.list-type").toLowerCase()) {
+        switch (config.getString("plugin.list-type").toLowerCase(Locale.ROOT)) {
             case "whitelist":
-                return worldList.stream().anyMatch(s -> s.equals(worldName));
+                return worldList.contains(worldName);
             case "blacklist":
-                return worldList.stream().noneMatch(s -> s.equals(worldName));
+                return !worldList.contains(worldName);
             default:
                 return true;
         }
