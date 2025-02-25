@@ -42,18 +42,18 @@ teleport-on-join:
 # cooldown for /spawn command
 teleport-cooldown:
   enabled: true
-  # how long in SECONDS the player has to wait before teleporting to spawn again
+  # time in SECONDS before teleportation is allowed again.
   seconds: 10
 
 # delay until teleport for /spawn command
 teleport-delay:
   enabled: true
-  # the delay in SECONDS until the player gets teleported to spawn
+  # time in SECONDS until the player gets teleported to spawn
   seconds: 3
   # toggle if the teleport should be canceled if the player moves
   cancel-on-move: true
   # toggle if the player should get the blindness effect during delay
-  # the effect will not work properly if a short delay time is used
+  # Note: this may not work properly with very short delay times.
   blindness: false
 
 # toggle if the player should be teleported to spawn if they fall into the void
@@ -81,17 +81,18 @@ teleport-on-world-change:
 # spawns particles on teleport
 particles:
   enabled: true
-  # all particles: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Particle.html
-  # use these for 1.8: https://hub.spigotmc.org/nexus/service/local/repositories/snapshots/archive/org/spigotmc/spigot-api/1.8.8-R0.1-SNAPSHOT/spigot-api-1.8.8-R0.1-20160221.082514-43-javadoc.jar/!/org/bukkit/Effect.html
+  # particles for latest Minecraft version: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Particle.html
+  # particles for Minecraft 1.8: https://helpch.at/docs/1.8.8/org/bukkit/Effect.html
   particle: PORTAL
-  # the number of particles which get used
+  # the number of particles to spawn
   amount: 40
 
 # play a sound on teleport
 sounds:
   enabled: true
-  # all sounds: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html
-  # sounds for Minecraft 1.8 - 1.20: https://docs.andre601.ch/Spigot-Sounds/sounds/
+  # sounds for latest Minecraft version: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html
+  # sounds for Minecraft 1.9 - 1.21: https://docs.andre601.ch/Spigot-Sounds
+  # sounds for Minecraft 1.8: https://helpch.at/docs/1.8.8/org/bukkit/Sound.html
   sound: ENTITY_ENDERMAN_TELEPORT
   # the volume of the sound
   volume: 1.0
@@ -99,4 +100,4 @@ sounds:
   pitch: 1.0
 
 # used for auto updating this file, do not change
-file-version: 5
+file-version: 6
