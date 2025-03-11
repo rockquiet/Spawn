@@ -20,7 +20,7 @@ public class CommandCooldown implements Listener {
     }
 
     public int getCooldownTime() {
-        YamlConfiguration config = fileManager.getConfig();
+        YamlConfiguration config = fileManager.getYamlConfig();
 
         if (config.getBoolean("teleport-cooldown.enabled")) {
             return config.getInt("teleport-cooldown.seconds");

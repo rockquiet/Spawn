@@ -1,5 +1,6 @@
 package me.rockquiet.spawn;
 
+import me.rockquiet.spawn.configuration.ConfigFile;
 import me.rockquiet.spawn.configuration.FileManager;
 import me.rockquiet.spawn.configuration.Messages;
 import org.bukkit.*;
@@ -25,7 +26,7 @@ public class SpawnHandler {
     }
 
     public Location getSpawn() {
-        YamlConfiguration location = fileManager.getLocation();
+        final YamlConfiguration location = fileManager.getYamlLocation();
 
         return new Location(
                 Bukkit.getWorld(location.getString("spawn.world")),
@@ -38,22 +39,22 @@ public class SpawnHandler {
     }
 
     public void setSpawn(Location newSpawnLocation) {
-        YamlConfiguration location = fileManager.getLocation();
+        final ConfigFile location = fileManager.getLocation();
+        final YamlConfiguration locationYaml = location.get();
 
-        location.set("spawn.world", newSpawnLocation.getWorld().getName());
-        location.set("spawn.x", newSpawnLocation.getX());
-        location.set("spawn.y", newSpawnLocation.getY());
-        location.set("spawn.z", newSpawnLocation.getZ());
-        location.set("spawn.yaw", newSpawnLocation.getYaw());
-        location.set("spawn.pitch", newSpawnLocation.getPitch());
+        locationYaml.set("spawn.world", newSpawnLocation.getWorld().getName());
+        locationYaml.set("spawn.x", newSpawnLocation.getX());
+        locationYaml.set("spawn.y", newSpawnLocation.getY());
+        locationYaml.set("spawn.z", newSpawnLocation.getZ());
+        locationYaml.set("spawn.yaw", newSpawnLocation.getYaw());
+        locationYaml.set("spawn.pitch", newSpawnLocation.getPitch());
 
-        fileManager.save(location, "location.yml");
-
-        fileManager.reloadLocation();
+        location.save();
+        location.reload();
     }
 
     public boolean spawnExists() {
-        YamlConfiguration location = fileManager.getLocation();
+        YamlConfiguration location = fileManager.getYamlLocation();
 
         return (location.getString("spawn.world") != null
                 && location.getString("spawn.x") != null
@@ -65,7 +66,7 @@ public class SpawnHandler {
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean isEnabledInWorld(World world) {
-        YamlConfiguration config = fileManager.getConfig();
+        YamlConfiguration config = fileManager.getYamlConfig();
         List<String> worldList = config.getStringList("plugin.world-list");
         String worldName = world.getName();
 
@@ -80,7 +81,7 @@ public class SpawnHandler {
     }
 
     public boolean isAllowedGameMode(Player player) {
-        YamlConfiguration config = fileManager.getConfig();
+        YamlConfiguration config = fileManager.getYamlConfig();
 
         if (player.hasPermission("spawn.bypass.gamemode-restriction") || !config.getBoolean("plugin.gamemode-restricted")) {
             return true;
@@ -91,7 +92,7 @@ public class SpawnHandler {
 
     public void teleportPlayer(Player player) {
         if (spawnExists()) {
-            YamlConfiguration config = fileManager.getConfig();
+            YamlConfiguration config = fileManager.getYamlConfig();
 
             if (!config.getBoolean("fall-damage.enabled")) {
                 player.setFallDistance(0F);
@@ -114,7 +115,7 @@ public class SpawnHandler {
     }
 
     public void spawnParticles(Player player) {
-        YamlConfiguration config = fileManager.getConfig();
+        YamlConfiguration config = fileManager.getYamlConfig();
 
         if (config.getBoolean("particles.enabled")) {
             String particleName = config.getString("particles.particle");
@@ -154,7 +155,7 @@ public class SpawnHandler {
     }
 
     public void playSound(Player player) {
-        YamlConfiguration config = fileManager.getConfig();
+        YamlConfiguration config = fileManager.getYamlConfig();
 
         if (config.getBoolean("sounds.enabled")) {
             String sound = config.getString("sounds.sound");

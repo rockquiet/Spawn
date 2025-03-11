@@ -21,7 +21,7 @@ public class TeleportOnJoinListener implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-        YamlConfiguration config = fileManager.getConfig();
+        YamlConfiguration config = fileManager.getYamlConfig();
         Player player = event.getPlayer();
 
         if (player.hasPermission("spawn.bypass.join-teleport") || !config.getBoolean("teleport-on-join.enabled")) {

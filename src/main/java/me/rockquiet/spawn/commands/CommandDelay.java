@@ -39,7 +39,7 @@ public class CommandDelay implements Listener {
     }
 
     public int getDelayTime() {
-        YamlConfiguration config = fileManager.getConfig();
+        YamlConfiguration config = fileManager.getYamlConfig();
 
         if (config.getBoolean("teleport-delay.enabled")) {
             return config.getInt("teleport-delay.seconds");
@@ -62,7 +62,7 @@ public class CommandDelay implements Listener {
         int delayTime = getDelayTime();
         if (delayTime <= 0) return;
 
-        if (!player.hasPotionEffect(PotionEffectType.BLINDNESS) && fileManager.getConfig().getBoolean("teleport-delay.blindness")) {
+        if (!player.hasPotionEffect(PotionEffectType.BLINDNESS) && fileManager.getYamlConfig().getBoolean("teleport-delay.blindness")) {
             player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, (delayTime + 1) * 20, 0, false, false));
         }
 
@@ -84,7 +84,7 @@ public class CommandDelay implements Listener {
     }
 
     private void clearBlindness(Player player) {
-        if (player.hasPotionEffect(PotionEffectType.BLINDNESS) && fileManager.getConfig().getBoolean("teleport-delay.blindness")) {
+        if (player.hasPotionEffect(PotionEffectType.BLINDNESS) && fileManager.getYamlConfig().getBoolean("teleport-delay.blindness")) {
             // remove the blindness effect only if the duration is equal to or less than the configured delay time (1.10.x +)
             if (Integer.parseInt(Bukkit.getBukkitVersion().split("\\.")[1].replace("-R0", "")) >= 10 && player.getPotionEffect(PotionEffectType.BLINDNESS).getDuration() > (getDelayTime() + 1) * 20) {
                 return;
@@ -107,7 +107,7 @@ public class CommandDelay implements Listener {
             return;
         }
 
-        if (fileManager.getConfig().getBoolean("teleport-delay.cancel-on-move")) {
+        if (fileManager.getYamlConfig().getBoolean("teleport-delay.cancel-on-move")) {
             delay.get(playerUUID).cancel();
             delay.remove(playerUUID);
 

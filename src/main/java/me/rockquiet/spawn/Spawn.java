@@ -4,7 +4,10 @@ import me.rockquiet.spawn.commands.CommandCooldown;
 import me.rockquiet.spawn.commands.CommandDelay;
 import me.rockquiet.spawn.commands.SpawnCommand;
 import me.rockquiet.spawn.commands.TabComplete;
-import me.rockquiet.spawn.configuration.*;
+import me.rockquiet.spawn.configuration.FileManager;
+import me.rockquiet.spawn.configuration.MessageManager;
+import me.rockquiet.spawn.configuration.MessageManagerLegacy;
+import me.rockquiet.spawn.configuration.Messages;
 import me.rockquiet.spawn.listeners.TeleportOnJoinListener;
 import me.rockquiet.spawn.listeners.TeleportOnRespawnListener;
 import me.rockquiet.spawn.listeners.TeleportOnWorldChangeListener;
@@ -22,6 +25,7 @@ public final class Spawn extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        // create all files and update them if outdated
         FileManager fileManager = new FileManager(this);
 
         Messages messageManager;
@@ -36,11 +40,6 @@ public final class Spawn extends JavaPlugin {
         CommandCooldown commandCooldown = new CommandCooldown(fileManager);
         CommandDelay commandDelay = new CommandDelay(this, fileManager, messageManager, spawnHandler);
 
-        // create all files and update them if outdated
-        FileUpdater fileUpdater = new FileUpdater(this, fileManager);
-        fileUpdater.updateFile("config.yml", 6);
-        fileUpdater.updateFile("messages.yml", 3);
-
         // register commands with tabcomplete
         getCommand("spawn").setExecutor(new SpawnCommand(fileManager, messageManager, spawnHandler, commandCooldown, commandDelay));
         getCommand("spawn").setTabCompleter(new TabComplete());
@@ -54,7 +53,7 @@ public final class Spawn extends JavaPlugin {
         pluginManager.registerEvents(commandCooldown, this);
         pluginManager.registerEvents(commandDelay, this);
 
-        boolean updateChecks = fileManager.getConfig().getBoolean("plugin.update-checks");
+        boolean updateChecks = fileManager.getYamlConfig().getBoolean("plugin.update-checks");
 
         // bstats
         Metrics metrics = new Metrics(this, 19297);

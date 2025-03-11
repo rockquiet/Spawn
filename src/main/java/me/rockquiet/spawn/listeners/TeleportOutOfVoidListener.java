@@ -31,7 +31,7 @@ public class TeleportOutOfVoidListener implements Listener {
             return;
         }
 
-        YamlConfiguration config = fileManager.getConfig();
+        YamlConfiguration config = fileManager.getYamlConfig();
 
         if (config.getBoolean("teleport-out-of-void.enabled") && (player.getLocation().getBlockY() <= config.getInt("teleport-out-of-void.check-height"))) {
             spawnHandler.teleportPlayer(player);

@@ -15,14 +15,14 @@ public class MessageManagerLegacy implements Messages {
 
     @Override
     public boolean messageExists(String messagePath) {
-        YamlConfiguration messages = fileManager.getMessages();
+        YamlConfiguration messages = fileManager.getYamlMessages();
 
         return messages.getString(messagePath) != null && !messages.getString(messagePath).isEmpty();
     }
 
     @Override
     public String getMessage(String messagePath) {
-        YamlConfiguration messages = fileManager.getMessages();
+        YamlConfiguration messages = fileManager.getYamlMessages();
 
         return messages.getString(messagePath).replace("%prefix%", (messages.getString("prefix") != null ? messages.getString("prefix") : ""));
     }

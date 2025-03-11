@@ -31,7 +31,7 @@ public class TeleportOnWorldChangeListener implements Listener {
     }
 
     private void onWorldChange(Player player, boolean isJoining) {
-        YamlConfiguration config = fileManager.getConfig();
+        YamlConfiguration config = fileManager.getYamlConfig();
 
         if (player.hasPermission("spawn.bypass.world-change") || !config.getBoolean("teleport-on-world-change.enabled")) {
             return;

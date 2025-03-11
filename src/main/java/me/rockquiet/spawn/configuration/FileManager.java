@@ -3,144 +3,56 @@ package me.rockquiet.spawn.configuration;
 import me.rockquiet.spawn.Spawn;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.Path;
 
 public class FileManager {
 
-    private final Spawn plugin;
-
-    private YamlConfiguration config;
-    private File configFile;
-    private YamlConfiguration location;
-    private File locationFile;
-    private YamlConfiguration messages;
-    private File messagesFile;
+    private final ConfigFile config;
+    private final ConfigFile messages;
+    private final ConfigFile location;
 
     public FileManager(Spawn plugin) {
-        this.plugin = plugin;
-    }
+        final Path dataFolderPath = plugin.getDataFolder().toPath();
 
-    public String getDataFolder() {
-        return (plugin.getDataFolder().toPath() + "/"); // "plugins/Spawn/"
-    }
+        config = new ConfigFile(plugin, dataFolderPath, "config");
+        messages = new ConfigFile(plugin, dataFolderPath, "messages");
+        location = new ConfigFile(plugin, dataFolderPath, "location");
 
-    public YamlConfiguration getConfig() {
-        if (config == null) {
-            reloadConfig();
+        if (LegacyConfigUpgrade.isLegacyConfig(config)) {
+            new LegacyConfigUpgrade(plugin, this).start();
+        } else {
+            config.update(6);
         }
+        messages.update(3);
+    }
+
+    public ConfigFile getConfig() {
         return config;
     }
 
-    public YamlConfiguration getLocation() {
-        if (location == null) {
-            reloadLocation();
-        }
-        return location;
+    public YamlConfiguration getYamlConfig() {
+        return config.get();
     }
 
-    public YamlConfiguration getMessages() {
-        if (messages == null) {
-            reloadMessages();
-        }
+    public ConfigFile getMessages() {
         return messages;
     }
 
-    public void reloadConfig() {
-        if (configFile == null) {
-            create("config.yml");
-            configFile = new File(getDataFolder() + "config.yml");
-        }
-        config = YamlConfiguration.loadConfiguration(configFile);
+    public YamlConfiguration getYamlMessages() {
+        return messages.get();
     }
 
-    public void reloadLocation() {
-        if (locationFile == null) {
-            locationFile = new File(getDataFolder() + "location.yml");
-        }
-        location = YamlConfiguration.loadConfiguration(locationFile);
+    public ConfigFile getLocation() {
+        return location;
     }
 
-    public void reloadMessages() {
-        if (messagesFile == null) {
-            create("messages.yml");
-            messagesFile = new File(getDataFolder() + "messages.yml");
-        }
-        messages = YamlConfiguration.loadConfiguration(messagesFile);
+    public YamlConfiguration getYamlLocation() {
+        return location.get();
     }
 
     public void reloadAll() {
-        reloadConfig();
-        reloadLocation();
-        reloadMessages();
-    }
-
-    public void create(String file) {
-        try {
-            final File newFile = new File(getDataFolder() + file);
-
-            if (!newFile.exists()) {
-                final File parentFile = newFile.getParentFile();
-                if (parentFile != null) {
-                    parentFile.mkdirs();
-                }
-
-                final InputStream inputStream = plugin.getResource(file);
-                if (inputStream != null) {
-                    Files.copy(inputStream, newFile.toPath());
-                    inputStream.close();
-                } else {
-                    newFile.createNewFile();
-                }
-            }
-        } catch (final IOException e) {
-            plugin.getLogger().severe("Unable to create " + file);
-        }
-    }
-
-    public void save(final YamlConfiguration yamlConfiguration, final String file) {
-        try {
-            yamlConfiguration.save(getDataFolder() + file);
-        } catch (final IOException e) {
-            plugin.getLogger().severe("Unable to save " + file);
-        }
-    }
-
-    public void delete(String file) {
-        final File file1 = new File(getDataFolder() + file);
-
-        if (file1.exists()) {
-            try {
-                Files.delete(file1.toPath());
-            } catch (IllegalArgumentException | IOException e) {
-                plugin.getLogger().warning("Unable to delete " + file + " - renaming it instead");
-                if (file1.renameTo(new File(getDataFolder() + file + "_old"))) {
-                    plugin.getLogger().info("Successfully renamed " + file + " to " + file + "_old");
-                } else {
-                    plugin.getLogger().warning("Unable to rename " + file);
-                }
-            }
-        }
-    }
-
-    public void backup(String file, String backupFile, boolean deleteOldFile) {
-        final File file1 = new File(getDataFolder() + file);
-
-        try {
-            if (!Files.exists(Paths.get(getDataFolder() + "/backup"))) {
-                Files.createDirectory(Paths.get(getDataFolder() + "/backup"));
-            }
-
-            if (new File(getDataFolder() + "backup/" + backupFile).exists() && (deleteOldFile)) {
-                delete(backupFile);
-            }
-            Files.copy(file1.toPath(), Paths.get(getDataFolder() + "backup/" + backupFile), StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            plugin.getLogger().warning("Unable to backup " + file);
-        }
+        config.reload();
+        messages.reload();
+        location.reload();
     }
 }
