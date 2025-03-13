@@ -2,9 +2,9 @@ package me.rockquiet.spawn.updater;
 
 public class Version {
 
-    public final int major;
-    public final int minor;
-    public final int patch;
+    private final int major;
+    private final int minor;
+    private final int patch;
 
     public Version(int major, int minor, int patch) {
         this.major = major;
@@ -19,18 +19,42 @@ public class Version {
         // remove commonly used "v" at start of version number
         version = version.replaceFirst("^[Vv]", "");
 
-        if (!version.matches("\\d+(\\.\\d+)*")) {
-            throw new IllegalArgumentException("Version string has an invalid format");
+        // remove suffixes like "-SNAPSHOT"
+        if (version.contains("-") && !version.startsWith("-")) {
+            final int suffixIndex = version.indexOf('-');
+            if (suffixIndex != -1) {
+                version = version.substring(0, suffixIndex);
+            }
         }
 
         String[] versionSegments = version.split("\\.");
         int length = versionSegments.length;
 
         return new Version(
-                Integer.parseInt(versionSegments[0]),
-                length < 2 ? 0 : Integer.parseInt(versionSegments[1]),
-                length < 3 ? 0 : Integer.parseInt(versionSegments[2])
+                parseInt(versionSegments[0]),
+                length < 2 ? 0 : parseInt(versionSegments[1]),
+                length < 3 ? 0 : parseInt(versionSegments[2])
         );
+    }
+
+    private static int parseInt(String s) {
+        try {
+            return Integer.parseInt(s);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
+    public int getMajor() {
+        return major;
+    }
+
+    public int getMinor() {
+        return minor;
+    }
+
+    public int getPatch() {
+        return patch;
     }
 
     // 1    ->  version is newer than version2
