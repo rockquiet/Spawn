@@ -1,9 +1,9 @@
 package me.rockquiet.spawn.listeners;
 
+import me.rockquiet.spawn.Spawn;
 import me.rockquiet.spawn.SpawnHandler;
 import me.rockquiet.spawn.configuration.FileManager;
 import me.rockquiet.spawn.configuration.Messages;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -41,7 +41,7 @@ public class TeleportOnRespawnListener implements Listener {
             return;
         }
 
-        if ((Integer.parseInt(Bukkit.getBukkitVersion().split("\\.")[1].replace("-R0", "")) >= 16) && event.isAnchorSpawn() && !config.getBoolean("teleport-on-respawn.ignore-anchor-spawn")) {
+        if (Spawn.getServerVersion().getMinor() >= 16 && event.isAnchorSpawn() && !config.getBoolean("teleport-on-respawn.ignore-anchor-spawn")) {
             return;
         }
 

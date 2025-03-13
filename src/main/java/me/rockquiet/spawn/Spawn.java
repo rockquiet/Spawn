@@ -13,6 +13,7 @@ import me.rockquiet.spawn.listeners.TeleportOnRespawnListener;
 import me.rockquiet.spawn.listeners.TeleportOnWorldChangeListener;
 import me.rockquiet.spawn.listeners.TeleportOutOfVoidListener;
 import me.rockquiet.spawn.updater.UpdateChecker;
+import me.rockquiet.spawn.updater.Version;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
@@ -23,14 +24,19 @@ import java.util.Arrays;
 
 public final class Spawn extends JavaPlugin {
 
+    private static final Version SERVER_VERSION = Version.parse(Bukkit.getBukkitVersion());
+
+    public static Version getServerVersion() {
+        return SERVER_VERSION;
+    }
+
     @Override
     public void onEnable() {
         // create all files and update them if outdated
         FileManager fileManager = new FileManager(this);
 
         Messages messageManager;
-        String bukkitVersion = Bukkit.getBukkitVersion();
-        if (Arrays.stream(Package.getPackages()).noneMatch(aPackage -> aPackage.getName().contains("io.papermc")) || Integer.parseInt(bukkitVersion.split("\\.")[1].replace("-R0", "")) <= 18 && !bukkitVersion.contains("1.18.2")) {
+        if (Arrays.stream(Package.getPackages()).noneMatch(aPackage -> aPackage.getName().contains("io.papermc")) || SERVER_VERSION.getMinor() <= 18 && !SERVER_VERSION.equals(new Version(1, 18, 2))) {
             messageManager = new MessageManagerLegacy(fileManager);
         } else {
             messageManager = new MessageManager(fileManager);
