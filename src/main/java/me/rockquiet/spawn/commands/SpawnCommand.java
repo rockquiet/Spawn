@@ -1,5 +1,6 @@
 package me.rockquiet.spawn.commands;
 
+import me.rockquiet.spawn.Spawn;
 import me.rockquiet.spawn.SpawnHandler;
 import me.rockquiet.spawn.configuration.FileManager;
 import me.rockquiet.spawn.configuration.Messages;
@@ -12,108 +13,123 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Locale;
 import java.util.UUID;
 
 public class SpawnCommand implements CommandExecutor {
 
     private final FileManager fileManager;
     private final Messages messageManager;
-
     private final SpawnHandler spawnHandler;
+
     private final CommandCooldown commandCooldown;
     private final CommandDelay commandDelay;
 
-    public SpawnCommand(FileManager fileManager,
-                        Messages messageManager,
-                        SpawnHandler spawnHandler,
-                        CommandCooldown commandCooldown,
-                        CommandDelay commandDelay) {
+    public SpawnCommand(Spawn plugin, FileManager fileManager, Messages messageManager, SpawnHandler spawnHandler) {
         this.fileManager = fileManager;
         this.messageManager = messageManager;
         this.spawnHandler = spawnHandler;
 
-        this.commandCooldown = commandCooldown;
-        this.commandDelay = commandDelay;
+        this.commandCooldown = new CommandCooldown(plugin, fileManager);
+        this.commandDelay = new CommandDelay(plugin, fileManager, messageManager, spawnHandler);
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args) {
-        YamlConfiguration config = fileManager.getYamlConfig();
-
         // teleport to spawn - /spawn
         if (args.length == 0) {
-            if (isConsole(sender)) return false; // stop if sender is console
-
-            Player player = (Player) sender;
-            UUID playerUUID = player.getUniqueId();
-
-            if (hasNoPerms(player, "spawn.use")) return false; // stop if player does not have the permission
-            if (isWorldDisabled(player)) return false; // stop if plugin is disabled in current world
-            if (isProhibitedGameMode(player)) return false; // stop if the player is in wrong gamemode
-
-            if (!player.hasPermission("spawn.bypass.cooldown") && config.getBoolean("teleport-cooldown.enabled") && commandCooldown.getCooldownTime() > 0) {
-                if (commandCooldown.isCooldownDone(playerUUID)) {
-                    commandCooldown.setCooldown(playerUUID);
-                } else {
-                    // stop if player has active cooldown
-                    messageManager.sendMessage(player, "cooldown-left", "%cooldown%", String.valueOf(commandCooldown.getRemainingCooldown(playerUUID)));
-                    return true;
-                }
-            }
-
-            if (!player.hasPermission("spawn.bypass.delay") && config.getBoolean("teleport-delay.enabled") && commandDelay.getDelayTime() > 0) {
-                commandDelay.runDelay(player);
-                return true;
-            }
-
-            spawnHandler.teleportPlayer(player);
+            return spawn(sender);
         }
 
         // subcommands
         if (args.length == 1) {
-            // save current position as spawn in config - /spawn set
-            if (args[0].equalsIgnoreCase("set")) {
-                if (isConsole(sender)) return false; // stop if sender is console
-
-                Player player = (Player) sender;
-                if (hasNoPerms(player, "spawn.set")) return false; // stop if player does not have the permission
-                if (isWorldDisabled(player)) return false; // stop if plugin is disabled in current world
-
-                spawnHandler.setSpawn(player.getLocation());
-                messageManager.sendMessage(player, "spawn-set");
-                return true;
-            }
-
-            // reload all files - /spawn reload
-            if (args[0].equalsIgnoreCase("reload")) {
-                if (hasNoPerms(sender, "spawn.reload")) return false; // stop if player does not have the permission
-
-                fileManager.reloadAll();
-                messageManager.sendMessage(sender, "reload");
-                return true;
-            }
-
-            // teleport another player to spawn - /spawn %player%
-            if (hasNoPerms(sender, "spawn.others")) return false; // stop if player does not have the permission
-
-            Player target = Bukkit.getServer().getPlayerExact(args[0]);
-            if (target != null && target.isOnline()) {
-                // if the player teleports themselves with this command, check their gamemode
-                if (sender instanceof Player) {
-                    Player player = (Player) sender;
-                    if (player.equals(target) && isProhibitedGameMode(player)) {
-                        return false; // stop if the player is in wrong gamemode
+            switch (args[0].toLowerCase(Locale.ROOT)) {
+                case "set":
+                    // save current position as spawn in config - /spawn set
+                    return setSpawn(sender);
+                case "reload":
+                    // reload all files - /spawn reload
+                    return reload(sender);
+                default:
+                    // teleport another player to spawn - /spawn %player%
+                    if (!args[0].isEmpty()) {
+                        return spawnOther(sender, args);
                     }
-                }
-
-                spawnHandler.teleportPlayer(target);
-                messageManager.sendMessage(sender, "teleport-other", "%player%", target.getName());
-            } else {
-                messageManager.sendMessage(sender, "player-not-found", "%player%", args[0]);
             }
-            return true;
         }
+
         return false;
+    }
+
+    private boolean spawn(CommandSender sender) {
+        if (isConsole(sender)) return false;
+        YamlConfiguration config = fileManager.getYamlConfig();
+
+        Player player = (Player) sender;
+        UUID playerUUID = player.getUniqueId();
+
+        if (hasNoPerms(player, "spawn.use")) return false;
+        if (isWorldDisabled(player)) return false;
+        if (isProhibitedGameMode(player)) return false;
+
+        if (!player.hasPermission("spawn.bypass.cooldown") && config.getBoolean("teleport-cooldown.enabled") && commandCooldown.getCooldownTime() > 0) {
+            if (commandCooldown.isCooldownDone(playerUUID)) {
+                commandCooldown.setCooldown(playerUUID);
+            } else {
+                // stop if player has active cooldown
+                messageManager.sendMessage(player, "cooldown-left", "%cooldown%", String.valueOf(commandCooldown.getRemainingCooldown(playerUUID)));
+                return false;
+            }
+        }
+
+        if (!player.hasPermission("spawn.bypass.delay") && config.getBoolean("teleport-delay.enabled") && commandDelay.getDelayTime() > 0) {
+            commandDelay.runDelay(player);
+        } else {
+            spawnHandler.teleportPlayer(player);
+        }
+        return true;
+    }
+
+    private boolean spawnOther(CommandSender sender, String[] args) {
+        if (hasNoPerms(sender, "spawn.others")) return false;
+
+        final Player target = Bukkit.getServer().getPlayerExact(args[0]);
+        if (target == null || !target.isOnline()) {
+            messageManager.sendMessage(sender, "player-not-found", "%player%", args[0]);
+            return false;
+        }
+
+        // if the player teleports themselves with this command, check their gamemode
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            if (player.equals(target) && isProhibitedGameMode(player)) {
+                return false;
+            }
+        }
+
+        spawnHandler.teleportPlayer(target);
+        messageManager.sendMessage(sender, "teleport-other", "%player%", target.getName());
+        return true;
+    }
+
+    private boolean setSpawn(CommandSender sender) {
+        if (isConsole(sender)) return false;
+
+        final Player player = (Player) sender;
+        if (hasNoPerms(player, "spawn.set")) return false;
+        if (isWorldDisabled(player)) return false;
+
+        spawnHandler.setSpawn(player.getLocation());
+        messageManager.sendMessage(player, "spawn-set");
+        return true;
+    }
+
+    private boolean reload(CommandSender sender) {
+        if (hasNoPerms(sender, "spawn.reload")) return false;
+
+        fileManager.reloadAll();
+        messageManager.sendMessage(sender, "reload");
+        return true;
     }
 
     private boolean isConsole(CommandSender sender) {

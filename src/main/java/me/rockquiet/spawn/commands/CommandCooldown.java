@@ -1,6 +1,8 @@
 package me.rockquiet.spawn.commands;
 
+import me.rockquiet.spawn.Spawn;
 import me.rockquiet.spawn.configuration.FileManager;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,8 +17,10 @@ public class CommandCooldown implements Listener {
     private final HashMap<UUID, Long> cooldown = new HashMap<>();
     private final FileManager fileManager;
 
-    public CommandCooldown(FileManager fileManager) {
+    public CommandCooldown(Spawn plugin, FileManager fileManager) {
         this.fileManager = fileManager;
+
+        Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
     public int getCooldownTime() {
@@ -41,12 +45,8 @@ public class CommandCooldown implements Listener {
         return getCooldownTime() - getCooldown(playerUUID);
     }
 
-    public boolean hasCooldown(UUID playerUUID) {
-        return cooldown.containsKey(playerUUID);
-    }
-
     public boolean isCooldownDone(UUID playerUUID) {
-        if (!hasCooldown(playerUUID)) {
+        if (!cooldown.containsKey(playerUUID)) {
             return true;
         }
         return getCooldown(playerUUID) >= getCooldownTime();

@@ -16,10 +16,13 @@ public class TabComplete implements TabCompleter {
 
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String @NotNull [] args) {
-        final List<String> results = new ArrayList<>();
-        final List<String> completions = new ArrayList<>();
+        if (!cmd.getLabel().equalsIgnoreCase("spawn")) {
+            return Collections.emptyList();
+        }
 
-        if (args.length == 1 && cmd.getLabel().equalsIgnoreCase("spawn")) {
+        final List<String> results = new ArrayList<>();
+
+        if (args.length == 1) {
             if (sender.hasPermission("spawn.others")) {
                 for (Player p : Bukkit.getOnlinePlayers()) {
                     results.add(p.getName());
@@ -33,10 +36,11 @@ public class TabComplete implements TabCompleter {
                 results.add("reload");
             }
         }
+
+        final List<String> completions = new ArrayList<>();
         StringUtil.copyPartialMatches(args[0], results, completions);
         Collections.sort(completions);
-        results.clear();
-        results.addAll(completions);
-        return results;
+
+        return completions;
     }
 }

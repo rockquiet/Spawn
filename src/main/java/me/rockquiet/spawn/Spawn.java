@@ -1,7 +1,5 @@
 package me.rockquiet.spawn;
 
-import me.rockquiet.spawn.commands.CommandCooldown;
-import me.rockquiet.spawn.commands.CommandDelay;
 import me.rockquiet.spawn.commands.SpawnCommand;
 import me.rockquiet.spawn.commands.TabComplete;
 import me.rockquiet.spawn.configuration.FileManager;
@@ -43,11 +41,9 @@ public final class Spawn extends JavaPlugin {
         }
 
         SpawnHandler spawnHandler = new SpawnHandler(this, fileManager, messageManager);
-        CommandCooldown commandCooldown = new CommandCooldown(fileManager);
-        CommandDelay commandDelay = new CommandDelay(this, fileManager, messageManager, spawnHandler);
 
         // register commands with tabcomplete
-        getCommand("spawn").setExecutor(new SpawnCommand(fileManager, messageManager, spawnHandler, commandCooldown, commandDelay));
+        getCommand("spawn").setExecutor(new SpawnCommand(this, fileManager, messageManager, spawnHandler));
         getCommand("spawn").setTabCompleter(new TabComplete());
 
         // register events
@@ -56,8 +52,6 @@ public final class Spawn extends JavaPlugin {
         pluginManager.registerEvents(new TeleportOutOfVoidListener(fileManager, spawnHandler), this);
         pluginManager.registerEvents(new TeleportOnRespawnListener(fileManager, messageManager, spawnHandler), this);
         pluginManager.registerEvents(new TeleportOnWorldChangeListener(fileManager, spawnHandler), this);
-        pluginManager.registerEvents(commandCooldown, this);
-        pluginManager.registerEvents(commandDelay, this);
 
         boolean updateChecks = fileManager.getYamlConfig().getBoolean("plugin.update-checks");
 

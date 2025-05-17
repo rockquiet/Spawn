@@ -22,7 +22,8 @@ import java.util.UUID;
 
 public class CommandDelay implements Listener {
 
-    private static final Map<UUID, BukkitTask> delay = new HashMap<>();
+    private final Map<UUID, BukkitTask> delay = new HashMap<>();
+
     private final Spawn plugin;
     private final FileManager fileManager;
     private final Messages messageManager;
@@ -36,6 +37,8 @@ public class CommandDelay implements Listener {
         this.fileManager = fileManager;
         this.messageManager = messageManager;
         this.spawnHandler = spawnHandler;
+
+        Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
     public int getDelayTime() {
@@ -84,11 +87,12 @@ public class CommandDelay implements Listener {
     }
 
     private void clearBlindness(Player player) {
-        if (player.hasPotionEffect(PotionEffectType.BLINDNESS) && fileManager.getYamlConfig().getBoolean("teleport-delay.blindness")) {
-            // remove the blindness effect only if the duration is equal to or less than the configured delay time (1.10.x +)
-            if (Spawn.getServerVersion().getMinor() >= 10 && player.getPotionEffect(PotionEffectType.BLINDNESS).getDuration() > (getDelayTime() + 1) * 20) {
-                return;
-            }
+        if (!player.hasPotionEffect(PotionEffectType.BLINDNESS) || !fileManager.getYamlConfig().getBoolean("teleport-delay.blindness")) {
+            return;
+        }
+
+        // remove the blindness effect only if the duration is equal to or less than the configured delay time (1.10.x +)
+        if (Spawn.getServerVersion().getMinor() >= 10 && player.getPotionEffect(PotionEffectType.BLINDNESS).getDuration() <= (getDelayTime() + 1) * 20) {
             player.removePotionEffect(PotionEffectType.BLINDNESS);
         }
     }
