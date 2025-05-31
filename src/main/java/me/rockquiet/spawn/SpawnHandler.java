@@ -152,7 +152,7 @@ public class SpawnHandler {
             String particleName = config.getString("particles.particle");
             int particleAmount = config.getInt("particles.amount");
             try {
-                if (!Bukkit.getVersion().contains("1.8")) {
+                if (Spawn.getServerVersion().getMinor() > 8) {
                     Particle particle = Particle.valueOf(particleName);
                     // display particles for player that teleported
                     player.spawnParticle(particle, spawnLocation, particleAmount);
