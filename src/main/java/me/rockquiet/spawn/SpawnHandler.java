@@ -167,14 +167,14 @@ public class SpawnHandler {
                     int particleAmountLegacy = (particleAmount > 2000 ? 40 : particleAmount);
                     // display particles for player that teleported
                     for (int p = 0; p <= particleAmountLegacy; p++) {
-                        player.playEffect(spawnLocation, effect, 0);
+                        player.playEffect(spawnLocation, effect, null);
                     }
                     // display particles for other players
                     player.getNearbyEntities(16, 16, 16).stream()
                             .filter(entity -> entity instanceof Player && ((Player) entity).canSee(player))
                             .forEach(entity -> {
                                 for (int p = 0; p <= particleAmountLegacy; p++) {
-                                    ((Player) entity).playEffect(spawnLocation, effect, 0);
+                                    ((Player) entity).playEffect(spawnLocation, effect, null);
                                 }
                             });
                 }
