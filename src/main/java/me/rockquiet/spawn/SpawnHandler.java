@@ -13,62 +13,91 @@ import java.util.Locale;
 
 public class SpawnHandler {
 
+    private static final String WORLD_KEY = "spawn.world";
+    private static final String X_KEY = "spawn.x";
+    private static final String Y_KEY = "spawn.y";
+    private static final String Z_KEY = "spawn.z";
+    private static final String YAW_KEY = "spawn.yaw";
+    private static final String PITCH_KEY = "spawn.pitch";
+
     private final Spawn plugin;
     private final FileManager fileManager;
     private final Messages messageManager;
 
-    public SpawnHandler(Spawn plugin,
-                        FileManager fileManager,
-                        Messages messageManager) {
+    private Location spawnLocation;
+
+    public SpawnHandler(Spawn plugin, FileManager fileManager, Messages messageManager) {
         this.plugin = plugin;
         this.fileManager = fileManager;
         this.messageManager = messageManager;
+
+        this.spawnLocation = loadSpawn();
     }
 
     public Location getSpawn() {
-        final YamlConfiguration location = fileManager.getYamlLocation();
-
-        return new Location(
-                Bukkit.getWorld(location.getString("spawn.world")),
-                location.getDouble("spawn.x"),
-                location.getDouble("spawn.y"),
-                location.getDouble("spawn.z"),
-                (float) location.getDouble("spawn.yaw"),
-                (float) location.getDouble("spawn.pitch")
-        );
+        return spawnLocation;
     }
 
-    public void setSpawn(Location newSpawnLocation) {
+    public void setSpawn(Location newSpawnLocation, boolean saveToFile) {
+        spawnLocation = newSpawnLocation;
+        if (saveToFile) {
+            saveSpawn(newSpawnLocation);
+        }
+    }
+
+    private void saveSpawn(Location newSpawnLocation) {
         final ConfigFile location = fileManager.getLocation();
         final YamlConfiguration locationYaml = location.get();
 
-        locationYaml.set("spawn.world", newSpawnLocation.getWorld().getName());
-        locationYaml.set("spawn.x", newSpawnLocation.getX());
-        locationYaml.set("spawn.y", newSpawnLocation.getY());
-        locationYaml.set("spawn.z", newSpawnLocation.getZ());
-        locationYaml.set("spawn.yaw", newSpawnLocation.getYaw());
-        locationYaml.set("spawn.pitch", newSpawnLocation.getPitch());
+        locationYaml.set(WORLD_KEY, newSpawnLocation.getWorld().getName());
+        locationYaml.set(X_KEY, newSpawnLocation.getX());
+        locationYaml.set(Y_KEY, newSpawnLocation.getY());
+        locationYaml.set(Z_KEY, newSpawnLocation.getZ());
+        locationYaml.set(YAW_KEY, newSpawnLocation.getYaw());
+        locationYaml.set(PITCH_KEY, newSpawnLocation.getPitch());
 
         location.save();
         location.reload();
     }
 
-    public boolean spawnExists() {
-        YamlConfiguration location = fileManager.getYamlLocation();
+    public Location loadSpawn() {
+        final YamlConfiguration location = fileManager.getYamlLocation();
 
-        return (location.getString("spawn.world") != null
-                && location.getString("spawn.x") != null
-                && location.getString("spawn.y") != null
-                && location.getString("spawn.z") != null
-                && location.getString("spawn.yaw") != null
-                && location.getString("spawn.pitch") != null);
+        if (!isLocationConfigValid()) {
+            return null;
+        }
+
+        return new Location(
+                Bukkit.getWorld(location.getString(WORLD_KEY)),
+                location.getDouble(X_KEY),
+                location.getDouble(Y_KEY),
+                location.getDouble(Z_KEY),
+                (float) location.getDouble(YAW_KEY),
+                (float) location.getDouble(PITCH_KEY)
+        );
+    }
+
+    private boolean isLocationConfigValid() {
+        final YamlConfiguration location = fileManager.getYamlLocation();
+
+        return location.getString(WORLD_KEY) != null
+                && location.get(X_KEY) != null
+                && location.get(Y_KEY) != null
+                && location.get(Z_KEY) != null
+                && location.get(YAW_KEY) != null
+                && location.get(PITCH_KEY) != null;
+    }
+
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    public boolean spawnExists() {
+        return spawnLocation != null || isLocationConfigValid();
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean isEnabledInWorld(World world) {
-        YamlConfiguration config = fileManager.getYamlConfig();
-        List<String> worldList = config.getStringList("plugin.world-list");
-        String worldName = world.getName();
+        final YamlConfiguration config = fileManager.getYamlConfig();
+        final List<String> worldList = config.getStringList("plugin.world-list");
+        final String worldName = world.getName();
 
         switch (config.getString("plugin.list-type").toLowerCase(Locale.ROOT)) {
             case "whitelist":
@@ -81,7 +110,7 @@ public class SpawnHandler {
     }
 
     public boolean isAllowedGameMode(Player player) {
-        YamlConfiguration config = fileManager.getYamlConfig();
+        final YamlConfiguration config = fileManager.getYamlConfig();
 
         if (player.hasPermission("spawn.bypass.gamemode-restriction") || !config.getBoolean("plugin.gamemode-restricted")) {
             return true;
@@ -91,36 +120,37 @@ public class SpawnHandler {
     }
 
     public void teleportPlayer(Player player) {
-        if (spawnExists()) {
-            YamlConfiguration config = fileManager.getYamlConfig();
-
-            if (!config.getBoolean("fall-damage.enabled")) {
-                player.setFallDistance(0F);
-            }
-
-            Location spawnLocation = getSpawn();
-            if (config.getBoolean("use-player-head-rotation.enabled")) {
-                spawnLocation.setDirection(player.getLocation().getDirection());
-            }
-
-            player.teleport(spawnLocation, PlayerTeleportEvent.TeleportCause.PLUGIN);
-
-            spawnParticles(player);
-            playSound(player);
-
-            messageManager.sendMessage(player, "teleport");
-        } else {
+        if (!spawnExists()) {
             messageManager.sendMessage(player, "no-spawn");
+            return;
         }
+
+        final YamlConfiguration config = fileManager.getYamlConfig();
+
+        if (!config.getBoolean("fall-damage.enabled")) {
+            player.setFallDistance(0F);
+        }
+
+        if (config.getBoolean("use-player-head-rotation.enabled")) {
+            Location location = spawnLocation.clone();
+            location.setDirection(player.getLocation().getDirection());
+            player.teleport(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
+        } else {
+            player.teleport(spawnLocation, PlayerTeleportEvent.TeleportCause.PLUGIN);
+        }
+
+        spawnParticles(player);
+        playSound(player);
+
+        messageManager.sendMessage(player, "teleport");
     }
 
     public void spawnParticles(Player player) {
-        YamlConfiguration config = fileManager.getYamlConfig();
+        final YamlConfiguration config = fileManager.getYamlConfig();
 
         if (config.getBoolean("particles.enabled")) {
             String particleName = config.getString("particles.particle");
             int particleAmount = config.getInt("particles.amount");
-            Location spawnLocation = getSpawn();
             try {
                 if (!Bukkit.getVersion().contains("1.8")) {
                     Particle particle = Particle.valueOf(particleName);
@@ -155,7 +185,7 @@ public class SpawnHandler {
     }
 
     public void playSound(Player player) {
-        YamlConfiguration config = fileManager.getYamlConfig();
+        final YamlConfiguration config = fileManager.getYamlConfig();
 
         if (config.getBoolean("sounds.enabled")) {
             String sound = config.getString("sounds.sound");

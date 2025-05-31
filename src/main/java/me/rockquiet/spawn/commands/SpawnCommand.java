@@ -119,7 +119,7 @@ public class SpawnCommand implements CommandExecutor {
         if (hasNoPerms(player, "spawn.set")) return false;
         if (isWorldDisabled(player)) return false;
 
-        spawnHandler.setSpawn(player.getLocation());
+        spawnHandler.setSpawn(player.getLocation(), true);
         messageManager.sendMessage(player, "spawn-set");
         return true;
     }
@@ -128,6 +128,7 @@ public class SpawnCommand implements CommandExecutor {
         if (hasNoPerms(sender, "spawn.reload")) return false;
 
         fileManager.reloadAll();
+        spawnHandler.setSpawn(spawnHandler.loadSpawn(), false);
         messageManager.sendMessage(sender, "reload");
         return true;
     }
