@@ -164,7 +164,7 @@ public class SpawnHandler {
                     // workaround for 1.8
                     Effect effect = Effect.valueOf(particleName);
                     // you probably do not want to accidentally crash your server
-                    int particleAmountLegacy = (particleAmount > 2000 ? 40 : particleAmount);
+                    int particleAmountLegacy = Math.min(particleAmount, 2000);
                     // display particles for player that teleported
                     for (int p = 0; p <= particleAmountLegacy; p++) {
                         player.playEffect(spawnLocation, effect, null);
