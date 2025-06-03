@@ -61,12 +61,11 @@ public class SpawnHandler {
     }
 
     public Location loadSpawn() {
-        final YamlConfiguration location = fileManager.getYamlLocation();
-
         if (!isLocationConfigValid()) {
             return null;
         }
 
+        final YamlConfiguration location = fileManager.getYamlLocation();
         return new Location(
                 Bukkit.getWorld(location.getString(WORLD_KEY)),
                 location.getDouble(X_KEY),
