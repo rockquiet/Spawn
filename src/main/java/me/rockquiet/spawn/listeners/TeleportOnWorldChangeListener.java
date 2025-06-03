@@ -41,7 +41,7 @@ public class TeleportOnWorldChangeListener implements Listener {
             return;
         }
 
-        if (player.getWorld() == spawnHandler.getSpawn().getWorld()) {
+        if (player.getWorld().equals(spawnHandler.getSpawn().getWorld())) {
             return;
         }
 
