@@ -23,7 +23,7 @@ public class FileManager {
         } else {
             config.update(6);
         }
-        messages.update(3);
+        messages.update(5);
     }
 
     public ConfigFile getConfig() {

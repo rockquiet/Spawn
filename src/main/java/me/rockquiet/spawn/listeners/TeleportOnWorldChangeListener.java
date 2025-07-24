@@ -2,6 +2,7 @@ package me.rockquiet.spawn.listeners;
 
 import me.rockquiet.spawn.SpawnHandler;
 import me.rockquiet.spawn.configuration.FileManager;
+import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -41,7 +42,9 @@ public class TeleportOnWorldChangeListener implements Listener {
             return;
         }
 
-        if (player.getWorld().equals(spawnHandler.getSpawn().getWorld())) {
+        // Check if player's current world has a spawn point (world-specific or default)
+        Location currentWorldSpawn = spawnHandler.getSpawn(player.getWorld());
+        if (currentWorldSpawn != null && player.getWorld().equals(currentWorldSpawn.getWorld())) {
             return;
         }
 

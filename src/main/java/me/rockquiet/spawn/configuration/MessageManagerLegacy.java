@@ -58,4 +58,16 @@ public class MessageManagerLegacy implements Messages {
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', getMessage(messagePath)).replace(placeholder, replacePlaceholder));
         }
     }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public void sendMessage(CommandSender sender, String messagePath, String[] placeholders, String[] replacements) {
+        if (messageExists(messagePath) && placeholders.length == replacements.length) {
+            String message = getMessage(messagePath);
+            for (int i = 0; i < placeholders.length; i++) {
+                message = message.replace(placeholders[i], replacements[i]);
+            }
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
+        }
+    }
 }

@@ -16,4 +16,7 @@ public interface Messages {
     void sendMessage(CommandSender sender, String messagePath);
 
     void sendMessage(CommandSender sender, String messagePath, String placeholder, String replacePlaceholder);
+
+    // Method for multiple placeholder replacements
+    void sendMessage(CommandSender sender, String messagePath, String[] placeholders, String[] replacements);
 }

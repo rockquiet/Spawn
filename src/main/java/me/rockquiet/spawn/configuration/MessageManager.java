@@ -84,4 +84,15 @@ public class MessageManager implements Messages {
             sender.sendMessage(msg.deserialize(convertLegacyToMiniMessage(getMessage(messagePath)).replace(placeholder, replacePlaceholder)));
         }
     }
+
+    @Override
+    public void sendMessage(CommandSender sender, String messagePath, String[] placeholders, String[] replacements) {
+        if (messageExists(messagePath) && placeholders.length == replacements.length) {
+            String message = convertLegacyToMiniMessage(getMessage(messagePath));
+            for (int i = 0; i < placeholders.length; i++) {
+                message = message.replace(placeholders[i], replacements[i]);
+            }
+            sender.sendMessage(msg.deserialize(message));
+        }
+    }
 }

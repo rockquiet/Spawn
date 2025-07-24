@@ -8,8 +8,12 @@ prefix: '&7[&2Spawn&7]&r'
 
 # successful teleport to spawn
 teleport: '%prefix% &aTeleported to Spawn.'
+# successful teleport to world-specific spawn
+teleport-world: '%prefix% &aTeleported to &2%world% &aSpawn.'
 # successfully teleported another player to spawn - /spawn %player%
 teleport-other: '%prefix% &aSuccessfully teleported &2%player% &ato Spawn.'
+# successfully teleported another player to world-specific spawn - /spawn %player% %world%
+teleport-other-world: '%prefix% &aSuccessfully teleported &2%player% &ato &2%world% &aSpawn.'
 # if the player to be teleported is offline - /spawn %player%
 player-not-found: '%prefix% &cPlayer &4%player% &cnot found!'
 
@@ -23,12 +27,18 @@ teleport-canceled: '%prefix% &cTeleport canceled because you moved!'
 
 # spawn set at current position
 spawn-set: '%prefix% &aSpawn set successfully.'
+# world-specific spawn set at current position
+spawn-set-world: '%prefix% &aSpawn for world &2%world% &aset successfully.'
 
 # all files reloaded
 reload: '%prefix% &aAll files reloaded successfully.'
 
 # no spawn set in config - set one with /spawn set
 no-spawn: '%prefix% &cNo Spawn is set!'
+# world not found
+world-not-found: '%prefix% &cWorld &4%world% &cnot found!'
+# player tries to set spawn in world they are not currently in
+wrong-world: '%prefix% &cYou can only set spawn points in the world you are currently in!'
 # plugin is disabled in current world
 world-disabled: '%prefix% &cYou are not allowed to use this here!'
 # player is not in allowed game mode
@@ -39,4 +49,4 @@ no-permission: '%prefix% &cNo permissions!'
 no-player: '%prefix% &cCommand can only be used by players!'
 
 # used for auto updating this file, do not change
-file-version: 3
+file-version: 5

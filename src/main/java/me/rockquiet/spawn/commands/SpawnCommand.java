@@ -5,6 +5,7 @@ import me.rockquiet.spawn.SpawnHandler;
 import me.rockquiet.spawn.configuration.FileManager;
 import me.rockquiet.spawn.configuration.Messages;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -41,7 +42,7 @@ public class SpawnCommand implements CommandExecutor {
             return spawn(sender);
         }
 
-        // subcommands
+        // subcommands and player names
         if (args.length == 1) {
             switch (args[0].toLowerCase(Locale.ROOT)) {
                 case "set":
@@ -53,8 +54,19 @@ public class SpawnCommand implements CommandExecutor {
                 default:
                     // teleport another player to spawn - /spawn %player%
                     if (!args[0].isEmpty()) {
-                        return spawnOther(sender, args);
+                        return spawnOther(sender, args[0], null);
                     }
+            }
+        }
+
+        // two arguments - either /spawn set %world% or /spawn %player% %world%
+        if (args.length == 2) {
+            if (args[0].equalsIgnoreCase("set")) {
+                // save current position as spawn for specific world - /spawn set %world%
+                return setSpawnWorld(sender, args[1]);
+            } else {
+                // teleport another player to world spawn - /spawn %player% %world%
+                return spawnOther(sender, args[0], args[1]);
             }
         }
 
@@ -90,12 +102,12 @@ public class SpawnCommand implements CommandExecutor {
         return true;
     }
 
-    private boolean spawnOther(CommandSender sender, String[] args) {
+    private boolean spawnOther(CommandSender sender, String playerName, String worldName) {
         if (hasNoPerms(sender, "spawn.others")) return false;
 
-        final Player target = Bukkit.getServer().getPlayerExact(args[0]);
+        final Player target = Bukkit.getServer().getPlayerExact(playerName);
         if (target == null || !target.isOnline()) {
-            messageManager.sendMessage(sender, "player-not-found", "%player%", args[0]);
+            messageManager.sendMessage(sender, "player-not-found", "%player%", playerName);
             return false;
         }
 
@@ -107,8 +119,35 @@ public class SpawnCommand implements CommandExecutor {
             }
         }
 
-        spawnHandler.teleportPlayer(target);
-        messageManager.sendMessage(sender, "teleport-other", "%player%", target.getName());
+        // Handle world-specific teleportation
+        if (worldName != null && !worldName.isEmpty()) {
+            World targetWorld = Bukkit.getWorld(worldName);
+            if (targetWorld == null) {
+                messageManager.sendMessage(sender, "world-not-found", "%world%", worldName);
+                return false;
+            }
+            
+            if (!spawnHandler.spawnExists(targetWorld)) {
+                messageManager.sendMessage(sender, "no-spawn");
+                return false;
+            }
+            
+            spawnHandler.teleportPlayer(target, targetWorld);
+            // Fix: Send message with both placeholders using the new method
+            messageManager.sendMessage(sender, "teleport-other-world", 
+                    new String[]{"%player%", "%world%"}, 
+                    new String[]{target.getName(), targetWorld.getName()});
+        } else {
+            // Standard teleportation
+            if (!spawnHandler.spawnExists(target.getWorld())) {
+                messageManager.sendMessage(sender, "no-spawn");
+                return false;
+            }
+            
+            spawnHandler.teleportPlayer(target);
+            messageManager.sendMessage(sender, "teleport-other", "%player%", target.getName());
+        }
+        
         return true;
     }
 
@@ -121,6 +160,31 @@ public class SpawnCommand implements CommandExecutor {
 
         spawnHandler.setSpawn(player.getLocation(), true);
         messageManager.sendMessage(player, "spawn-set");
+        return true;
+    }
+
+    private boolean setSpawnWorld(CommandSender sender, String worldName) {
+        if (isConsole(sender)) return false;
+
+        final Player player = (Player) sender;
+        if (hasNoPerms(player, "spawn.set")) return false;
+        if (isWorldDisabled(player)) return false;
+
+        World targetWorld = Bukkit.getWorld(worldName);
+        if (targetWorld == null) {
+            messageManager.sendMessage(player, "world-not-found", "%world%", worldName);
+            return false;
+        }
+
+        // Fix: Only allow setting spawn in the world the player is currently in
+        if (!player.getWorld().equals(targetWorld)) {
+            messageManager.sendMessage(player, "wrong-world", "%world%", targetWorld.getName());
+            return false;
+        }
+
+        // Set spawn for the specified world using player's current location
+        spawnHandler.setSpawn(targetWorld, player.getLocation(), true);
+        messageManager.sendMessage(player, "spawn-set-world", "%world%", targetWorld.getName());
         return true;
     }
 
