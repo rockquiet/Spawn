@@ -6,7 +6,7 @@
 
     <groupId>me.rockquiet</groupId>
     <artifactId>Spawn</artifactId>
-    <version>2.4.2-SNAPSHOT</version>
+    <version>2.4.2</version>
     <packaging>jar</packaging>
 
     <name>Spawn</name>
