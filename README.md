@@ -6,7 +6,7 @@
 [![GitHub Downloads](https://img.shields.io/github/downloads/rockquiet/joinprotection/total?style=flat-square&logo=github&labelColor=3A3025&color=407F35)](https://github.com/rockquiet/Spawn/releases)
 
 [![GitHub release (with filter)](https://img.shields.io/github/v/release/rockquiet/spawn?style=for-the-badge&labelColor=3A3025&color=407F35)](https://github.com/rockquiet/Spawn/releases)
-![Minecraft Versions](https://img.shields.io/badge/minecraft-1.8_--_1.21.5-407F35?style=for-the-badge&logoColor=407F35&labelColor=3A3025&color=407F35)
+![Minecraft Versions](https://img.shields.io/badge/minecraft-1.8_--_1.21.8-407F35?style=for-the-badge&logoColor=407F35&labelColor=3A3025&color=407F35)
 ![Java](https://img.shields.io/badge/java-8+-407F35?style=for-the-badge&logoColor=407F35&labelColor=3A3025&color=407F35)
 
 # Spawn
