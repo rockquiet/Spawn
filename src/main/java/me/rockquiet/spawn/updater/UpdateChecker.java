@@ -13,7 +13,7 @@ import java.net.URL;
 public class UpdateChecker {
 
     public UpdateChecker(Spawn plugin) {
-        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
+        plugin.getScheduler().runAsync(() -> {
             try {
                 URL url = new URL("https://api.github.com/repos/rockquiet/spawn/releases/latest");
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();

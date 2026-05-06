@@ -4,6 +4,8 @@ import me.rockquiet.spawn.Spawn;
 import me.rockquiet.spawn.SpawnHandler;
 import me.rockquiet.spawn.configuration.FileManager;
 import me.rockquiet.spawn.configuration.Messages;
+import me.rockquiet.spawn.scheduler.PlatformRunnable;
+import me.rockquiet.spawn.scheduler.PlatformTask;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -13,8 +15,6 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,7 +22,7 @@ import java.util.UUID;
 
 public class CommandDelay implements Listener {
 
-    private final Map<UUID, BukkitTask> delay = new HashMap<>();
+    private final Map<UUID, PlatformTask> delay = new HashMap<>();
 
     private final Spawn plugin;
     private final FileManager fileManager;
@@ -69,7 +69,7 @@ public class CommandDelay implements Listener {
             player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, (delayTime + 1) * 20, 0, false, false));
         }
 
-        delay.put(playerUUID, new BukkitRunnable() {
+        delay.put(playerUUID, new PlatformRunnable() {
             int delayRemaining = delayTime;
 
             @Override
@@ -83,7 +83,7 @@ public class CommandDelay implements Listener {
                 }
                 delayRemaining--;
             }
-        }.runTaskTimer(plugin, 0, 20));
+        }.runTaskTimer(plugin, player, 0, 20));
     }
 
     private void clearBlindness(Player player) {

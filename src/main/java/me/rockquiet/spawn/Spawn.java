@@ -10,6 +10,7 @@ import me.rockquiet.spawn.listeners.TeleportOnJoinListener;
 import me.rockquiet.spawn.listeners.TeleportOnRespawnListener;
 import me.rockquiet.spawn.listeners.TeleportOnWorldChangeListener;
 import me.rockquiet.spawn.listeners.TeleportOutOfVoidListener;
+import me.rockquiet.spawn.scheduler.PlatformScheduler;
 import me.rockquiet.spawn.updater.UpdateChecker;
 import me.rockquiet.spawn.updater.Version;
 import org.bstats.bukkit.Metrics;
@@ -23,6 +24,9 @@ import java.util.Arrays;
 public final class Spawn extends JavaPlugin {
 
     private static final Version SERVER_VERSION = Version.parse(Bukkit.getBukkitVersion());
+    private PlatformScheduler scheduler;
+
+    private boolean isPaper;
 
     public static Version getServerVersion() {
         return SERVER_VERSION;
@@ -30,11 +34,16 @@ public final class Spawn extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        if (Arrays.stream(Package.getPackages()).anyMatch(aPackage -> aPackage.getName().contains("io.papermc"))) {
+            isPaper = true;
+        }
+        this.scheduler = PlatformScheduler.createPlatformScheduler(this);
+
         // create all files and update them if outdated
         FileManager fileManager = new FileManager(this);
 
         Messages messageManager;
-        if (Arrays.stream(Package.getPackages()).noneMatch(aPackage -> aPackage.getName().contains("io.papermc")) || SERVER_VERSION.getMinor() <= 18 && !SERVER_VERSION.equals(new Version(1, 18, 2))) {
+        if (!isPaper || SERVER_VERSION.getMinor() <= 18 && !SERVER_VERSION.equals(new Version(1, 18, 2))) {
             messageManager = new MessageManagerLegacy(fileManager);
         } else {
             messageManager = new MessageManager(fileManager);
@@ -63,5 +72,13 @@ public final class Spawn extends JavaPlugin {
         if (updateChecks) {
             new UpdateChecker(this);
         }
+    }
+
+    public PlatformScheduler getScheduler() {
+        return scheduler;
+    }
+
+    public boolean isPaper() {
+        return isPaper;
     }
 }

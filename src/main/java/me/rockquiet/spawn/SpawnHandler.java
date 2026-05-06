@@ -133,15 +133,23 @@ public class SpawnHandler {
         if (config.getBoolean("use-player-head-rotation.enabled")) {
             Location location = spawnLocation.clone();
             location.setDirection(player.getLocation().getDirection());
-            player.teleport(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
+            teleport(player, location);
         } else {
-            player.teleport(spawnLocation, PlayerTeleportEvent.TeleportCause.PLUGIN);
+            teleport(player, spawnLocation);
         }
 
         spawnParticles(player);
         playSound(player);
 
         messageManager.sendMessage(player, "teleport");
+    }
+
+    private void teleport(Player player, Location location) {
+        if (plugin.isPaper()) {
+            player.teleportAsync(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
+        } else {
+            player.teleport(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
+        }
     }
 
     public void spawnParticles(Player player) {
