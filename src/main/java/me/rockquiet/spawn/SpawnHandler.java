@@ -3,6 +3,7 @@ package me.rockquiet.spawn;
 import me.rockquiet.spawn.configuration.ConfigFile;
 import me.rockquiet.spawn.configuration.FileManager;
 import me.rockquiet.spawn.configuration.Messages;
+import me.rockquiet.spawn.updater.Version;
 import org.bukkit.*;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -12,6 +13,8 @@ import java.util.List;
 import java.util.Locale;
 
 public class SpawnHandler {
+
+    private static final Version LEGACY_PARTICLES_VERSION = new Version(1, 8, 9);
 
     private static final String WORLD_KEY = "spawn.world";
     private static final String X_KEY = "spawn.x";
@@ -159,7 +162,7 @@ public class SpawnHandler {
             String particleName = config.getString("particles.particle");
             int particleAmount = config.getInt("particles.amount");
             try {
-                if (Spawn.getServerVersion().getMinor() > 8) {
+                if (Spawn.getServerVersion().compareTo(LEGACY_PARTICLES_VERSION) > 0) {
                     Particle particle = Particle.valueOf(particleName);
                     // display particles for player that teleported
                     player.spawnParticle(particle, spawnLocation, particleAmount);

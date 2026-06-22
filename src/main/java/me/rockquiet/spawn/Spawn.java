@@ -43,7 +43,7 @@ public final class Spawn extends JavaPlugin {
         FileManager fileManager = new FileManager(this);
 
         Messages messageManager;
-        if (!isPaper || SERVER_VERSION.getMinor() <= 18 && !SERVER_VERSION.equals(new Version(1, 18, 2))) {
+        if (!isPaper || SERVER_VERSION.compareTo(new Version(1, 18, 2)) < 0) {
             messageManager = new MessageManagerLegacy(fileManager);
         } else {
             messageManager = new MessageManager(fileManager);

@@ -4,6 +4,7 @@ import me.rockquiet.spawn.Spawn;
 import me.rockquiet.spawn.SpawnHandler;
 import me.rockquiet.spawn.configuration.FileManager;
 import me.rockquiet.spawn.configuration.Messages;
+import me.rockquiet.spawn.updater.Version;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -11,6 +12,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
 public class TeleportOnRespawnListener implements Listener {
+
+    private static final Version ANCHOR_ADDED_VERSION = new Version(1, 16, 0);
 
     private final FileManager fileManager;
     private final Messages messageManager;
@@ -41,7 +44,7 @@ public class TeleportOnRespawnListener implements Listener {
             return;
         }
 
-        if (Spawn.getServerVersion().getMinor() >= 16 && event.isAnchorSpawn() && !config.getBoolean("teleport-on-respawn.ignore-anchor-spawn")) {
+        if (Spawn.getServerVersion().compareTo(ANCHOR_ADDED_VERSION) >= 0 && event.isAnchorSpawn() && !config.getBoolean("teleport-on-respawn.ignore-anchor-spawn")) {
             return;
         }
 

@@ -6,6 +6,7 @@ import me.rockquiet.spawn.configuration.FileManager;
 import me.rockquiet.spawn.configuration.Messages;
 import me.rockquiet.spawn.scheduler.PlatformRunnable;
 import me.rockquiet.spawn.scheduler.PlatformTask;
+import me.rockquiet.spawn.updater.Version;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -21,6 +22,8 @@ import java.util.Map;
 import java.util.UUID;
 
 public class CommandDelay implements Listener {
+
+    private static final Version MC_VERSION_1_10 = new Version(1, 10, 0);
 
     private final Map<UUID, PlatformTask> delay = new HashMap<>();
 
@@ -92,7 +95,7 @@ public class CommandDelay implements Listener {
         }
 
         // remove the blindness effect only if the duration is equal to or less than the configured delay time (1.10.x +)
-        if (Spawn.getServerVersion().getMinor() >= 10 && player.getPotionEffect(PotionEffectType.BLINDNESS).getDuration() <= (getDelayTime() + 1) * 20) {
+        if (Spawn.getServerVersion().compareTo(MC_VERSION_1_10) >= 0 && player.getPotionEffect(PotionEffectType.BLINDNESS).getDuration() <= (getDelayTime() + 1) * 20) {
             player.removePotionEffect(PotionEffectType.BLINDNESS);
         }
     }
