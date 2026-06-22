@@ -14,6 +14,7 @@ import java.util.Locale;
 
 public class SpawnHandler {
 
+    private static final Version MC_VERSION_1_13 = new Version(1, 13, 0);
     private static final Version LEGACY_PARTICLES_VERSION = new Version(1, 8, 9);
 
     private static final String WORLD_KEY = "spawn.world";
@@ -160,7 +161,7 @@ public class SpawnHandler {
     }
 
     private void teleport(Player player, Location location) {
-        if (plugin.isPaper()) {
+        if (plugin.isPaper() && Spawn.getServerVersion().compareTo(MC_VERSION_1_13) >= 0) {
             player.teleportAsync(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
         } else {
             player.teleport(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
