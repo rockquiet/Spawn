@@ -33,11 +33,12 @@ public class SpawnHandler {
         this.plugin = plugin;
         this.fileManager = fileManager;
         this.messageManager = messageManager;
-
-        this.spawnLocation = loadSpawn();
     }
 
     public Location getSpawn() {
+        if (spawnLocation == null || !isWorldLoaded(spawnLocation)) {
+            setSpawn(loadSpawn(), false);
+        }
         return spawnLocation;
     }
 
@@ -92,7 +93,18 @@ public class SpawnHandler {
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean spawnExists() {
-        return spawnLocation != null || isLocationConfigValid();
+        final Location location = getSpawn();
+        return location != null && isWorldLoaded(location) && isLocationConfigValid();
+    }
+
+    // Location#isWorldLoaded is 1.14+
+    private boolean isWorldLoaded(Location location) {
+        try {
+            final World world = location.getWorld();
+            return world != null && Bukkit.getWorld(world.getUID()) != null;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
@@ -200,7 +212,7 @@ public class SpawnHandler {
         if (config.getBoolean("sounds.enabled")) {
             String sound = config.getString("sounds.sound");
             try {
-                player.playSound(getSpawn(), Sound.valueOf(sound), (float) config.getDouble("sounds.volume"), (float) config.getDouble("sounds.pitch"));
+                player.playSound(spawnLocation, Sound.valueOf(sound), (float) config.getDouble("sounds.volume"), (float) config.getDouble("sounds.pitch"));
             } catch (Exception e) {
                 plugin.getLogger().warning("The sound " + sound + " does not exist in this Minecraft version!");
             }
