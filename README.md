@@ -49,11 +49,3 @@ and [Hangar](https://hangar.papermc.io/rockquiet/Spawn).
 [<img alt="modrinth" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/modrinth_vector.svg">](https://modrinth.com/plugin/spawn)
 [<img alt="spigot" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/spigot_vector.svg">](https://www.spigotmc.org/resources/106188)
 [<img alt="hangar" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/hangar_vector.svg">](https://hangar.papermc.io/rockquiet/Spawn)
-
-## Metrics
-
-This plugin uses bStats to collect some (non-identifying) data about the servers it runs on.
-You can opt out by editing the `config.yml` in the `/plugins/bStats` folder located in your server directory. (More
-information [here](https://bstats.org/getting-started))
-
-[<img alt="bstats" src="https://bstats.org/signatures/bukkit/SpawnWasTaken.svg">](https://bstats.org/plugin/bukkit/SpawnWasTaken)
